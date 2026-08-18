@@ -1,0 +1,1286 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+
+/* =========================================================
+   CONFLICT RESOLUTION DASHBOARD
+   Inspired by supplied design
+   ========================================================= */
+
+.conflict-dashboard {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    min-height: calc(100vh - 80px);
+
+    padding: 0 0 35px;
+
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(18, 89, 67, .20),
+            transparent 32%
+        ),
+        #082317;
+
+    border: 2px solid #164b2e;
+    border-radius: 0 0 45px 45px;
+
+    overflow: hidden;
+
+    box-shadow:
+        inset 0 0 50px rgba(0, 0, 0, .20),
+        0 12px 40px rgba(0, 0, 0, .20);
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.conflict-topbar {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    min-height: 92px;
+
+    padding: 20px 28px;
+
+    background:
+        linear-gradient(
+            110deg,
+            #5b2479 0%,
+            #3e466a 45%,
+            #087d6d 100%
+        );
+
+    border-top: 6px solid #0c3427;
+}
+
+
+.conflict-brand h1 {
+    margin: 0;
+
+    color: #e5d66c;
+
+    font-size: 1.55rem;
+    font-weight: 800;
+
+    letter-spacing: .02em;
+}
+
+
+.conflict-brand p {
+    margin: 5px 0 0;
+
+    color: #d2b982;
+
+    font-size: .84rem;
+    font-weight: 700;
+
+    letter-spacing: .02em;
+}
+
+
+.conflict-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+
+.notification-bell {
+    position: relative;
+
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    color: #ffd53b;
+
+    font-size: 1.3rem;
+
+    text-decoration: none;
+
+    transition: transform .2s ease;
+}
+
+
+.notification-bell:hover {
+    color: #ffe778;
+    transform: translateY(-2px);
+}
+
+
+.notification-dot {
+    position: absolute;
+
+    top: 8px;
+    left: 3px;
+
+    width: 11px;
+    height: 11px;
+
+    border-radius: 50%;
+
+    background: #16b86d;
+
+    box-shadow: 0 0 10px rgba(22, 184, 109, .8);
+}
+
+
+/* =========================================================
+   CONTENT
+   ========================================================= */
+
+.conflict-content {
+    padding: 14px 22px 10px;
+}
+
+
+/* =========================================================
+   WORKFLOW CARD
+   ========================================================= */
+
+.workflow-card {
+    padding: 18px 16px 20px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(39, 38, 48, .98),
+            rgba(28, 30, 36, .98)
+        );
+
+    border: 1px solid #5b326b;
+
+    border-radius: 0 0 16px 16px;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.02),
+        0 8px 24px rgba(0,0,0,.18);
+}
+
+
+.workflow-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+
+    gap: 15px;
+
+    text-align: center;
+}
+
+
+.workflow-step {
+    position: relative;
+
+    min-width: 0;
+}
+
+
+.workflow-icon {
+    width: 50px;
+    height: 50px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 9px;
+
+    border: 2px solid #57316a;
+    border-radius: 50%;
+
+    background: #202127;
+
+    color: #f5c941;
+
+    font-size: 1.15rem;
+
+    box-shadow:
+        inset 0 0 12px rgba(0,0,0,.20),
+        0 0 12px rgba(108, 47, 131, .08);
+}
+
+
+.workflow-title {
+    display: block;
+
+    color: #c85ed1;
+
+    font-size: .78rem;
+    font-weight: 800;
+
+    letter-spacing: .04em;
+}
+
+
+.workflow-text {
+    max-width: 125px;
+
+    margin: 6px auto 0;
+
+    color: #728e78;
+
+    font-size: .69rem;
+    line-height: 1.45;
+}
+
+
+/* =========================================================
+   SECTION TITLE
+   ========================================================= */
+
+.dashboard-section {
+    margin-top: 23px;
+}
+
+
+.section-heading {
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+
+    margin: 0 0 13px;
+
+    color: #729477;
+
+    font-size: .73rem;
+    font-weight: 800;
+
+    letter-spacing: .24em;
+    text-transform: uppercase;
+}
+
+
+.section-heading::after {
+    content: "";
+
+    width: 37px;
+    height: 2px;
+
+    margin-left: 12px;
+
+    background: #603470;
+
+    box-shadow:
+        88px 0 0 #603470,
+        177px 0 0 #603470,
+        267px 0 0 #603470;
+}
+
+
+/* =========================================================
+   CONFLICT TYPE PILLS
+   ========================================================= */
+
+.conflict-types {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 8px;
+}
+
+
+.conflict-type {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+
+    min-height: 38px;
+
+    padding: 7px 12px 7px 14px;
+
+    border-radius: 999px;
+
+    text-decoration: none;
+
+    font-size: .76rem;
+    font-weight: 800;
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease;
+}
+
+
+.conflict-type:hover {
+    transform: translateY(-2px);
+}
+
+
+.conflict-type-icon {
+    font-size: .95rem;
+}
+
+
+.type-count {
+    min-width: 21px;
+    height: 21px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 5px;
+
+    border-radius: 50%;
+
+    font-size: .72rem;
+    font-weight: 900;
+}
+
+
+/* Crop Damage */
+
+.type-crop {
+    color: #e5af32;
+
+    background: rgba(79, 67, 13, .28);
+    border: 1px solid #625719;
+
+    box-shadow: inset 0 0 12px rgba(220, 180, 36, .04);
+}
+
+.type-crop .type-count {
+    color: #1f1a05;
+    background: #e8af24;
+}
+
+
+/* Water */
+
+.type-water {
+    color: #7192c3;
+
+    background: rgba(26, 59, 73, .45);
+    border: 1px solid #285467;
+}
+
+.type-water .type-count {
+    color: #15252d;
+    background: #6385b7;
+}
+
+
+/* Cattle */
+
+.type-cattle {
+    color: #c18c66;
+
+    background: rgba(68, 49, 28, .38);
+    border: 1px solid #594326;
+}
+
+.type-cattle .type-count {
+    color: #27180e;
+    background: #b97643;
+}
+
+
+/* Boundary */
+
+.type-boundary {
+    color: #c45bc9;
+
+    background: rgba(66, 35, 69, .42);
+    border: 1px solid #62366a;
+}
+
+.type-boundary .type-count {
+    color: #fff;
+    background: #8044ad;
+}
+
+
+/* Market */
+
+.type-market {
+    color: #4fc57d;
+
+    background: rgba(16, 76, 43, .38);
+    border: 1px solid #17673c;
+}
+
+.type-market .type-count {
+    color: #062817;
+    background: #29b967;
+}
+
+
+/* Other */
+
+.type-other {
+    color: #9ca3af;
+
+    background: rgba(61, 65, 70, .40);
+    border: 1px solid #525861;
+}
+
+.type-other .type-count {
+    color: #111827;
+    background: #9ca3af;
+}
+
+
+/* =========================================================
+   ACTIVE CASES
+   ========================================================= */
+
+.active-cases {
+    display: flex;
+    flex-direction: column;
+
+    gap: 11px;
+}
+
+
+.case-card {
+    position: relative;
+
+    display: block;
+
+    padding: 16px 20px 17px 23px;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            110deg,
+            #24242d,
+            #212229
+        );
+
+    border: 1px solid #4f3760;
+    border-left: 4px solid #8d45d1;
+
+    border-radius: 15px;
+
+    text-decoration: none;
+
+    box-shadow:
+        0 7px 20px rgba(0,0,0,.18),
+        inset 0 1px 0 rgba(255,255,255,.015);
+
+    transition:
+        transform .2s ease,
+        border-color .2s ease,
+        box-shadow .2s ease;
+}
+
+
+.case-card:hover {
+    transform: translateY(-2px);
+
+    border-color: #794d8f;
+
+    box-shadow:
+        0 12px 28px rgba(0,0,0,.28);
+}
+
+
+/* Severity-specific left borders */
+
+.case-card.severity-low {
+    border-left-color: #18b76c;
+}
+
+.case-card.severity-medium {
+    border-left-color: #d69b1f;
+}
+
+.case-card.severity-high {
+    border-left-color: #f33f57;
+}
+
+.case-card.severity-critical {
+    border-left-color: #ff1744;
+}
+
+
+/* =========================================================
+   CASE TOP
+   ========================================================= */
+
+.case-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 16px;
+}
+
+
+.case-name {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+
+    gap: 8px;
+}
+
+
+.case-id {
+    color: #6f8875;
+
+    font-size: .72rem;
+    font-weight: 900;
+
+    letter-spacing: .05em;
+}
+
+
+.case-type-name {
+    color: #d8d2c5;
+
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+
+.severity-badge {
+    flex-shrink: 0;
+
+    display: inline-flex;
+    align-items: center;
+
+    padding: 4px 10px;
+
+    border-radius: 999px;
+
+    font-size: .72rem;
+    font-weight: 900;
+
+    line-height: 1;
+}
+
+
+/* Severity badges */
+
+.badge-low {
+    color: #55d891;
+
+    background: rgba(15, 104, 58, .28);
+    border: 1px solid #157443;
+}
+
+
+.badge-medium {
+    color: #e6b63d;
+
+    background: rgba(117, 80, 11, .28);
+    border: 1px solid #8a6217;
+}
+
+
+.badge-high {
+    color: #ff5369;
+
+    background: rgba(111, 22, 37, .30);
+    border: 1px solid #9c293d;
+}
+
+
+.badge-critical {
+    color: #ff3453;
+
+    background: rgba(120, 13, 33, .35);
+    border: 1px solid #b31c39;
+}
+
+
+/* =========================================================
+   COMMUNITIES
+   ========================================================= */
+
+.case-communities {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+
+    gap: 6px;
+
+    margin-top: 11px;
+
+    color: #9bad9b;
+
+    font-size: .82rem;
+    font-weight: 600;
+}
+
+
+.community-arrow {
+    color: #718776;
+    font-size: .72rem;
+}
+
+
+/* =========================================================
+   CASE FOOTER
+   ========================================================= */
+
+.case-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    margin-top: 11px;
+}
+
+
+.stage-badge {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 4px 10px;
+
+    border-radius: 999px;
+
+    font-size: .71rem;
+    font-weight: 800;
+
+    line-height: 1;
+}
+
+
+/* Stage colors */
+
+.stage-reported {
+    color: #6ca6ff;
+    background: rgba(25, 77, 143, .25);
+    border: 1px solid #285d9b;
+}
+
+.stage-assessing {
+    color: #b68cff;
+    background: rgba(77, 45, 125, .28);
+    border: 1px solid #653d9b;
+}
+
+.stage-mediating {
+    color: #d172db;
+    background: rgba(91, 32, 104, .30);
+    border: 1px solid #703a7c;
+}
+
+.stage-agreed {
+    color: #f0b966;
+    background: rgba(107, 68, 14, .27);
+    border: 1px solid #80561a;
+}
+
+.stage-resolved {
+    color: #51c986;
+    background: rgba(15, 96, 52, .30);
+    border: 1px solid #1c7143;
+}
+
+.stage-referred {
+    color: #ff697d;
+    background: rgba(116, 21, 42, .30);
+    border: 1px solid #96253b;
+}
+
+
+.case-age {
+    color: #6f9076;
+
+    font-size: .71rem;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.conflict-empty {
+    padding: 55px 25px;
+
+    text-align: center;
+
+    background: #212229;
+
+    border: 1px solid #49335b;
+    border-radius: 15px;
+}
+
+
+.conflict-empty-icon {
+    width: 58px;
+    height: 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 14px;
+
+    border: 1px solid #653c75;
+    border-radius: 50%;
+
+    color: #d172db;
+
+    font-size: 1.4rem;
+}
+
+
+.conflict-empty h3 {
+    margin: 0 0 7px;
+
+    color: #d8d2c5;
+
+    font-size: 1rem;
+}
+
+
+.conflict-empty p {
+    margin: 0;
+
+    color: #758879;
+
+    font-size: .82rem;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .conflict-dashboard {
+        border-radius: 0 0 35px 35px;
+    }
+
+    .conflict-topbar {
+        min-height: 86px;
+        padding: 17px 26px;
+    }
+
+    .conflict-brand h1 {
+        font-size: 1.35rem;
+    }
+
+    .conflict-brand p {
+        font-size: .76rem;
+    }
+
+    .conflict-content {
+        padding: 14px 20px 8px;
+    }
+
+    .workflow-card {
+        padding: 13px 10px 18px;
+    }
+
+    .workflow-grid {
+        gap: 9px;
+    }
+
+    .workflow-icon {
+        width: 47px;
+        height: 47px;
+
+        font-size: 1rem;
+    }
+
+    .workflow-title {
+        font-size: .72rem;
+    }
+
+    .workflow-text {
+        font-size: .64rem;
+    }
+
+    .section-heading::after {
+        width: 28px;
+
+        box-shadow:
+            62px 0 0 #603470,
+            124px 0 0 #603470,
+            186px 0 0 #603470;
+    }
+}
+
+
+@media (max-width: 500px) {
+
+    .conflict-dashboard {
+        border-left-width: 1px;
+        border-right-width: 1px;
+    }
+
+    .conflict-topbar {
+        padding: 16px 26px;
+    }
+
+    .conflict-brand h1 {
+        font-size: 1.25rem;
+    }
+
+    .workflow-grid {
+        grid-template-columns: repeat(5, minmax(55px, 1fr));
+
+        overflow-x: auto;
+    }
+
+    .workflow-text {
+        font-size: .61rem;
+        line-height: 1.35;
+    }
+
+    .case-card {
+        padding: 15px 16px 15px 20px;
+    }
+
+    .case-type-name {
+        font-size: .93rem;
+    }
+
+    .case-top {
+        gap: 10px;
+    }
+}
+
+</style>
+
+
+<div class="conflict-dashboard">
+
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <header class="conflict-topbar">
+
+        <div class="conflict-brand">
+
+            <h1>
+                Conflict Resolution
+            </h1>
+
+            <p>
+                Report. Mediate. Resolve.
+            </p>
+
+        </div>
+
+
+        <div class="conflict-header-actions">
+
+            <a href="{% url 'conflict_report' %}" class="btn btn-primary" title="Report conflict"> Report </a>
+            <a href="{% url 'stakeholder_list' %}" class="btn btn-primary" title="Manage stakeholders"> Manage Stakeholders </a>
+
+        </div>
+
+    </header>
+
+
+    <div class="conflict-content">
+
+
+        <!-- =================================================
+             CONFLICT RESOLUTION WORKFLOW
+             ================================================= -->
+
+        <section class="workflow-card">
+
+            <div class="workflow-grid">
+
+
+                <!-- REPORT -->
+
+                <div class="workflow-step">
+
+                    <div class="workflow-icon">
+                        📣
+                    </div>
+
+                    <span class="workflow-title">
+                        Report
+                    </span>
+
+                    <p class="workflow-text">
+                        Any community member reports a conflict via voice,
+                        USSD or app in Dinka, Nuer, or Juba Arabic
+                    </p>
+
+                </div>
+
+
+                <!-- ASSESS -->
+
+                <div class="workflow-step">
+
+                    <div class="workflow-icon">
+                        ⚖️
+                    </div>
+
+                    <span class="workflow-title">
+                        Assess
+                    </span>
+
+                    <p class="workflow-text">
+                        Trained Peace Connecter classifies severity and
+                        selects responsible traditional authority support
+                    </p>
+
+                </div>
+
+
+                <!-- MEDIATE -->
+
+                <div class="workflow-step">
+
+                    <div class="workflow-icon">
+                        🤝
+                    </div>
+
+                    <span class="workflow-title">
+                        Mediate
+                    </span>
+
+                    <p class="workflow-text">
+                        Interest-based mediation facilitated to encourage
+                        economic relationships to be preserved
+                    </p>
+
+                </div>
+
+
+                <!-- DOCUMENT -->
+
+                <div class="workflow-step">
+
+                    <div class="workflow-icon">
+                        📋
+                    </div>
+
+                    <span class="workflow-title">
+                        Document
+                    </span>
+
+                    <p class="workflow-text">
+                        Outcome registered as agreement with platform
+                        access for both parties
+                    </p>
+
+                </div>
+
+
+                <!-- REFER -->
+
+                <div class="workflow-step">
+
+                    <div class="workflow-icon">
+                        🔗
+                    </div>
+
+                    <span class="workflow-title">
+                        Refer
+                    </span>
+
+                    <p class="workflow-text">
+                        Complex cases escalated to paramount chief,
+                        county authority, or NGO partner
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             CONFLICT TYPES
+             ================================================= -->
+
+        <section class="dashboard-section">
+
+            <h2 class="section-heading">
+                Conflict Types
+            </h2>
+
+
+            <div class="conflict-types">
+
+
+                <!-- Crop Damage -->
+
+                <div class="conflict-type type-crop">
+
+                    <span class="conflict-type-icon">
+                        🌾
+                    </span>
+
+                    <span>
+                        Crop damage
+                    </span>
+
+                    <span class="type-count">
+                        {{ conflict_type_counts.crop_damage|default:"0" }}
+                    </span>
+
+                </div>
+
+
+                <!-- Water Access -->
+
+                <div class="conflict-type type-water">
+
+                    <span class="conflict-type-icon">
+                        💧
+                    </span>
+
+                    <span>
+                        Water access
+                    </span>
+
+                    <span class="type-count">
+                        {{ conflict_type_counts.water_access|default:"0" }}
+                    </span>
+
+                </div>
+
+
+                <!-- Cattle Raiding -->
+
+                <div class="conflict-type type-cattle">
+
+                    <span class="conflict-type-icon">
+                        🦬
+                    </span>
+
+                    <span>
+                        Cattle raiding
+                    </span>
+
+                    <span class="type-count">
+                        {{ conflict_type_counts.cattle_raiding|default:"0" }}
+                    </span>
+
+                </div>
+
+
+                <!-- Boundary -->
+
+                <div class="conflict-type type-boundary">
+
+                    <span class="conflict-type-icon">
+                        🐦
+                    </span>
+
+                    <span>
+                        Boundary dispute
+                    </span>
+
+                    <span class="type-count">
+                        {{ conflict_type_counts.boundary|default:"0" }}
+                    </span>
+
+                </div>
+
+
+                <!-- Market -->
+
+                <div class="conflict-type type-market">
+
+                    <span class="conflict-type-icon">
+                        🏪
+                    </span>
+
+                    <span>
+                        Market dispute
+                    </span>
+
+                    <span class="type-count">
+                        {{ conflict_type_counts.market|default:"0" }}
+                    </span>
+
+                </div>
+
+
+                <!-- Other -->
+
+                {% if conflict_type_counts.other %}
+
+                <div class="conflict-type type-other">
+
+                    <span class="conflict-type-icon">
+                        ⚠️
+                    </span>
+
+                    <span>
+                        Other
+                    </span>
+
+                    <span class="type-count">
+                        {{ conflict_type_counts.other }}
+                    </span>
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             ACTIVE CASES
+             ================================================= -->
+
+        <section class="dashboard-section">
+
+            <h2 class="section-heading">
+                Active Cases
+            </h2>
+
+
+            <div class="active-cases">
+
+
+                {% for case in cases %}
+
+                <a
+                    href="{{ case.get_absolute_url }}"
+                    class="
+                        case-card
+                        severity-{{ case.severity }}
+                    "
+                >
+
+
+                    <!-- CASE HEADER -->
+
+                    <div class="case-top">
+
+                        <div class="case-name">
+
+                            <span class="case-id">
+                                {{ case.case_id }}
+                            </span>
+
+                            <span class="case-type-name">
+                                · {{ case.get_conflict_type_display }}
+                            </span>
+
+                        </div>
+
+
+                        <!-- SEVERITY -->
+
+                        <span
+                            class="
+                                severity-badge
+                                badge-{{ case.severity }}
+                            "
+                        >
+                            {{ case.get_severity_display }}
+                        </span>
+
+                    </div>
+
+
+                    <!-- COMMUNITIES -->
+
+                    <div class="case-communities">
+
+                        <span>
+                            {{ case.community_a }}
+                        </span>
+
+                        <span class="community-arrow">
+                            ↔
+                        </span>
+
+                        <span>
+                            {{ case.community_b }}
+                        </span>
+
+                    </div>
+
+
+                    <!-- CASE FOOTER -->
+
+                    <div class="case-footer">
+
+
+                        <!-- STAGE -->
+
+                        <span
+                            class="
+                                stage-badge
+                                stage-{{ case.stage }}
+                            "
+                        >
+                            {{ case.get_stage_display }}
+                        </span>
+
+
+                        <!-- AGE -->
+
+                        <span class="case-age">
+                            {{ case.created_at|timesince }} open
+                        </span>
+
+
+                    </div>
+
+                </a>
+
+
+                {% empty %}
+
+
+                <!-- EMPTY STATE -->
+
+                <div class="conflict-empty">
+
+                    <div class="conflict-empty-icon">
+                        <i class="fa-solid fa-scale-balanced"></i>
+                    </div>
+
+                    <h3>
+                        No Active Conflict Cases
+                    </h3>
+
+                    <p>
+                        No disputes have been reported yet.
+                    </p>
+
+                </div>
+
+
+                {% endfor %}
+
+
+            </div>
+
+        </section>
+
+    </div>
+
+</div>
+
+{% endblock %}

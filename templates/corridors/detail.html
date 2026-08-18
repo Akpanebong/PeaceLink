@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="section grid two">
+  <div class="panel">
+    <span class="tag amber">{{ notice.get_status_display }}</span>
+    <h2>{{ notice.herd_group }}</h2>
+    <p>{{ notice.message }}</p>
+    <div class="list">
+      <div class="item"><strong>Route</strong><span>{{ notice.route }}</span></div>
+      <div class="item"><strong>Cattle</strong><span>{{ notice.cattle_count }}</span></div>
+      <div class="item"><strong>Arrival</strong><span>{{ notice.arrival_date }}</span></div>
+    </div>
+    {% if user.is_authenticated and user.is_community_node %}
+      <p><a class="btn primary" href="{% url 'corridor_respond' notice.pk %}"><span class="btn-icon">&#10003;</span>Acknowledge or negotiate</a></p>
+    {% endif %}
+  </div>
+  <div class="panel">
+    <div class="label">Responses</div>
+    <div class="list" style="margin-top:12px">
+      {% for response in responses %}
+        <div class="item" id="response-{{ response.pk }}">
+          <span>
+            <strong>{{ response.get_response_type_display }}</strong><br>
+            <span class="muted">{{ response.notes }}</span>
+            {% if response.response_type == "negotiate" %}
+              <div class="negotiation-final">
+                <span class="label">Final negotiation response</span>
+                {% if response.negotiation_outcome %}
+                  <p>{{ response.negotiation_outcome }}</p>
+                {% else %}
+                  <p class="dim">No final negotiation decision recorded yet.</p>
+                {% endif %}
+                {% if user.is_authenticated and user.is_community_node %}
+                  {% if user == response.responder or user.is_staff or user.is_superuser %}
+                    <form method="post" action="{% url 'corridor_negotiation_outcome' response.pk %}" class="negotiation-final-form">
+                      {% csrf_token %}
+                      {{ response.negotiation_outcome_form.negotiation_outcome }}
+                      {{ response.negotiation_outcome_form.negotiation_outcome.errors }}
+                      <button class="btn primary" type="submit"><span class="btn-icon">&#10003;</span>Update final decision</button>
+                    </form>
+                  {% endif %}
+                {% endif %}
+              </div>
+            {% endif %}
+          </span>
+          <span>{{ response.responder }}</span>
+        </div>
+      {% empty %}<p>No community-node response yet.</p>{% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

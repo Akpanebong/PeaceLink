@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="section grid two">
+  <div class="panel">
+    <div class="trade-card-head">
+      <span class="tag">{{ offer.get_offer_type_display }}</span>
+      <span class="like-count">&#9829; {{ like_count }}</span>
+    </div>
+    <h1>{{ offer.commodity }}</h1>
+    <p>{{ offer.description|default:"No additional notes provided." }}</p>
+      <div class="grid two">
+        <div class="card"><div class="label">{{ UI.sold }}</div><strong>{{ offer.sold_quantity }}</strong></div>
+        <div class="card"><div class="label">{{ UI.remaining }}</div><strong>{% if remaining_quantity == None %}{{ UI.text_quantity }}{% else %}{{ remaining_quantity }}{% endif %}</strong></div>
+        <div class="card"><div class="label">{{ UI.quantity }}</div><strong>{{ offer.quantity }}</strong></div>
+        <div class="card"><div class="label">{{ UI.location }}</div><strong>{{ offer.location }}</strong></div>
+        <div class="card"><div class="label">{{ UI.community }}</div><strong>{{ offer.community|default:"Pending" }}</strong></div>
+      <div class="card"><div class="label">{{ UI.contact }}</div><strong>{{ offer.contact_method }}</strong></div>
+    </div>
+    {% if user.is_authenticated %}
+      <form method="post" action="{% url 'trade_like' offer.pk %}" class="inline-form">
+        {% csrf_token %}
+        <button class="btn" type="submit">
+          <span class="btn-icon">&#9829;</span>{% if user_liked %}{{ UI.unlike }}{% else %}{{ UI.like }}{% endif %}
+        </button>
+      </form>
+    {% endif %}
+  </div>
+  <div class="panel">
+    {% if can_view_connections %}
+      <h2 id="trade-matches">{{ UI.trade_matched }}</h2>
+      <p>{{ UI.connected_people }}</p>
+      <div class="list">
+        {% for connection in connections %}
+          <div class="item contact-item">
+            <span>
+              <strong>{{ connection.requester.get_full_name|default:connection.requester.username }}</strong><br>
+              <span class="muted">{{ connection.message|default:"No message provided." }}</span><br>
+              <span class="dim">Phone: {{ connection.requester.phone|default:"Not provided" }}</span><br>
+              <span class="dim">Email: {{ connection.requester.email|default:"Not provided" }}</span>
+              {% if connection.accepted %}
+                <br><span class="tag">{{ UI.accepted }}: {{ connection.quantity_sold }} {{ UI.sold }}</span>
+              {% endif %}
+            </span>
+            <span>
+              <span class="tag amber">{{ UI.connected }}</span>
+              {% if user == offer.owner or user.is_staff or user.is_superuser %}
+                <form method="post" action="{% url 'trade_accept_connection' connection.pk %}" class="accept-form">
+                  {% csrf_token %}
+                  {{ connection.accept_form.quantity_sold }}
+                  <button class="btn primary" type="submit"><span class="btn-icon">&#10003;</span>{{ UI.accept }}</button>
+                </form>
+              {% endif %}
+            </span>
+          </div>
+        {% empty %}
+          <p>{{ UI.no_connections }}</p>
+        {% endfor %}
+      </div>
+    {% elif can_connect %}
+      <h2>{{ UI.connect_to_offer }}</h2>
+      {% if has_connected %}<p>{{ UI.already_connected }}</p>{% endif %}
+      <form method="post" action="{% url 'trade_connect' offer.pk %}">
+        {% csrf_token %}
+        <div class="field">
+          <label for="{{ connection_form.message.id_for_label }}">{{ UI.message }}</label>
+          {{ connection_form.message }}
+        </div>
+        <button class="btn primary" type="submit"><span class="btn-icon">&#128279;</span>{{ UI.connect }}</button>
+      </form>
+    {% elif offer.status == "completed" %}
+      <h2>Oops!!! This trade is {{ offer.status }} and closed.</h2>
+    <p>Browse for other trades here <a href="{% url 'trade_list' %}" style="text-decoration: underline; color: #007bff;">here</a>.</p>
+    {% else %}
+      <h2>{{ UI.connect_to_offer }}</h2>
+      <p>{{ UI.sign_in_to_connect }}</p>
+      <a class="btn primary" href="{% url 'login' %}"><span class="btn-icon">&rarr;</span>{{ UI.sign_in }}</a>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

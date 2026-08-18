@@ -1,0 +1,2409 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+
+  /* =========================================================
+   PEACELINK — DYNAMIC CORRIDOR VISUAL MAP
+   ========================================================= */
+
+.corridor-map-section {
+    margin-bottom: 34px;
+}
+
+
+/* =========================================================
+   MAP HEADER
+   ========================================================= */
+
+.corridor-map-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 12px;
+}
+
+.corridor-map-header h2 {
+    margin: 0;
+
+    color: #deddd2;
+
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.corridor-map-header p {
+    margin: 5px 0 0;
+
+    color: #55705b;
+
+    font-size: 12px;
+}
+
+
+.corridor-map-status {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 5px 11px;
+
+    border-radius: 14px;
+
+    color: #00cf58;
+
+    border: 1px solid #087c39;
+
+    background: rgba(0, 173, 76, .08);
+
+    font-size: 11px;
+    font-weight: 900;
+}
+
+
+.map-status-dot {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #00c853;
+
+    box-shadow: 0 0 8px rgba(0, 200, 83, .6);
+}
+
+
+/* =========================================================
+   MAP CONTAINER
+   ========================================================= */
+
+.corridor-visual-map {
+    position: relative;
+
+    width: 100%;
+
+    height: 310px;
+
+    overflow: hidden;
+
+    border-radius: 0 0 20px 20px;
+
+    border: 1px solid #174b2c;
+
+    background:
+        linear-gradient(
+            180deg,
+            #162514 0%,
+            #073d22 54%,
+            #06351e 100%
+        );
+}
+
+
+/* subtle map texture */
+
+.corridor-visual-map::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    opacity: .18;
+
+    background-image:
+        radial-gradient(
+            circle at 20% 30%,
+            rgba(54, 126, 73, .35) 0,
+            transparent 2px
+        ),
+        radial-gradient(
+            circle at 70% 70%,
+            rgba(54, 126, 73, .25) 0,
+            transparent 2px
+        );
+
+    background-size: 120px 100px, 170px 140px;
+}
+
+
+/* =========================================================
+   SVG
+   ========================================================= */
+
+#corridor-network {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+}
+
+
+/* =========================================================
+   MAP LIVE BADGE
+   ========================================================= */
+
+.corridor-map-live {
+    position: absolute;
+
+    top: 7px;
+    right: 14px;
+
+    z-index: 10;
+
+    padding: 4px 13px;
+
+    border-radius: 15px;
+
+    background: #f4c400;
+
+    color: #10170e;
+
+    font-size: 12px;
+    font-weight: 900;
+}
+
+
+/* =========================================================
+   ROUTE
+   ========================================================= */
+
+.corridor-map-route {
+    fill: none;
+
+    stroke: #e4b700;
+
+    stroke-width: 4;
+
+    stroke-linecap: round;
+
+    stroke-dasharray: 10 8;
+
+    opacity: .95;
+
+    filter:
+        drop-shadow(
+            0 0 2px rgba(228,183,0,.20)
+        );
+}
+
+
+/* secondary route */
+
+.corridor-map-route-secondary {
+    fill: none;
+
+    stroke: #8d8300;
+
+    stroke-width: 2;
+
+    stroke-dasharray: 7 8;
+
+    opacity: .65;
+}
+
+
+/* =========================================================
+   COMMUNITY NODE
+   ========================================================= */
+
+.corridor-community-node {
+    fill: #00ad9c;
+
+    stroke: #006f64;
+
+    stroke-width: 8;
+
+    paint-order: stroke;
+
+}
+
+
+/* =========================================================
+   DESTINATION / WAYPOINT
+   ========================================================= */
+
+.corridor-waypoint {
+    fill: #00b84d;
+
+    stroke: #06351e;
+
+    stroke-width: 4;
+}
+
+
+/* =========================================================
+   ACTIVE MOVEMENT
+   ========================================================= */
+
+.corridor-active-node {
+    fill: #f0b900;
+
+    stroke: #bd8b00;
+
+    stroke-width: 7;
+
+    paint-order: stroke;
+}
+
+
+/* =========================================================
+   NODE LABEL
+   ========================================================= */
+
+.corridor-map-label {
+    fill: #e1e1d7;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    paint-order: stroke;
+
+    stroke: #081c11;
+
+    stroke-width: 5;
+
+    stroke-linejoin: round;
+}
+
+
+/* =========================================================
+   LEGEND
+   ========================================================= */
+
+.corridor-map-legend {
+    position: absolute;
+
+    left: 14px;
+    bottom: 15px;
+
+    z-index: 10;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+}
+
+
+.map-legend-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    color: #e0dfd4;
+
+    font-size: 11px;
+
+    font-weight: 700;
+}
+
+
+.legend-dot {
+    width: 11px;
+    height: 11px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+}
+
+
+.legend-active {
+    background: #f2bf00;
+}
+
+
+.legend-community {
+    background: #00ad9c;
+}
+
+
+.legend-waypoint {
+    background: #00b84d;
+}
+
+
+.legend-label {
+    padding: 2px 6px;
+
+    background: rgba(0,0,0,.43);
+
+    border-radius: 3px;
+}
+
+
+/* =========================================================
+   EMPTY MAP
+   ========================================================= */
+
+.corridor-map-empty {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 4;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 5px;
+
+    color: #718273;
+
+    text-align: center;
+}
+
+
+.map-empty-icon {
+    font-size: 32px;
+
+    color: #326c43;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .corridor-visual-map {
+        height: 270px;
+    }
+
+    .corridor-map-header {
+        align-items: flex-start;
+    }
+
+}
+
+
+@media (max-width: 450px) {
+
+    .corridor-visual-map {
+        height: 235px;
+    }
+
+    .corridor-map-header p {
+        display: none;
+    }
+
+    .corridor-map-status {
+        font-size: 10px;
+    }
+
+}
+
+/* =========================================================
+   PEACELINK — CATTLE CORRIDORS
+   ========================================================= */
+
+.corridor-screen {
+    width: 100%;
+    min-height: calc(100vh - 20px);
+
+    background: #081c11;
+    color: #dddccf;
+
+    border: 1px solid #185c38;
+    border-radius: 0 0 28px 28px;
+
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.corridor-header {
+    min-height: 94px;
+
+    padding: 20px clamp(24px, 4vw, 52px);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 25px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #007a66 0%,
+            #126e77 48%,
+            #216c7d 100%
+        );
+
+    box-sizing: border-box;
+}
+
+.corridor-header-content {
+    min-width: 0;
+}
+
+.corridor-header-title {
+    margin: 0;
+
+    font-size: clamp(21px, 2vw, 28px);
+    line-height: 1.1;
+    font-weight: 800;
+
+    color: #ffd229;
+}
+
+.corridor-header-subtitle {
+    margin-top: 6px;
+
+    font-size: clamp(13px, 1vw, 15px);
+
+    color: #b6bd7b;
+}
+
+
+/* =========================================================
+   HEADER ACTION
+   ========================================================= */
+
+.corridor-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    flex-shrink: 0;
+}
+
+.corridor-online {
+    width: 11px;
+    height: 11px;
+
+    border-radius: 50%;
+
+    background: #08ad54;
+
+    box-shadow:
+        0 0 0 4px rgba(8,173,84,.10),
+        0 0 12px rgba(8,173,84,.30);
+}
+
+.corridor-send-btn {
+    min-height: 42px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 0 17px;
+
+    border: 1px solid #00c853;
+    border-radius: 10px;
+
+    background: #00c853;
+    color: #fff;
+
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: 800;
+
+    transition: .18s ease;
+}
+
+.corridor-send-btn:hover {
+    background: #00df5b;
+    color: #fff;
+
+    transform: translateY(-1px);
+}
+
+.corridor-send-icon {
+    display: inline-flex;
+
+    width: 18px;
+    height: 18px;
+}
+
+.corridor-send-icon svg {
+    width: 18px;
+    height: 18px;
+
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+
+/* =========================================================
+   MAIN CONTENT
+   ========================================================= */
+
+.corridor-content {
+    padding:
+        30px
+        clamp(22px, 4vw, 52px)
+        45px;
+}
+
+
+/* =========================================================
+   SECTION HEADINGS
+   ========================================================= */
+
+.corridor-section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 16px;
+
+    gap: 20px;
+}
+
+.corridor-section-title {
+    margin: 0;
+
+    font-size: 13px;
+    font-weight: 800;
+
+    letter-spacing: .18em;
+    text-transform: uppercase;
+
+    color: #326c43;
+}
+
+.corridor-section-caption {
+    color: #55705b;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   DYNAMIC MAP
+   ========================================================= */
+
+.corridor-map-section {
+    margin-bottom: 32px;
+
+    border: 1px solid #174b2c;
+
+    border-radius: 18px;
+
+    background: #091e13;
+
+    overflow: hidden;
+}
+
+.corridor-map-header {
+    min-height: 70px;
+
+    padding: 15px 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    border-bottom: 1px solid #174b2c;
+
+    box-sizing: border-box;
+}
+
+.corridor-map-header h2 {
+    margin: 0;
+
+    color: #deddd2;
+
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.corridor-map-header p {
+    margin: 5px 0 0;
+
+    color: #718273;
+
+    font-size: 12px;
+}
+
+.corridor-map-status {
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+
+    color: #00cf58;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    white-space: nowrap;
+}
+
+.corridor-map-status span {
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    background: #00c853;
+
+    box-shadow:
+        0 0 0 3px rgba(0,200,83,.10);
+}
+
+
+/* ACTUAL MAP */
+
+#corridor-map {
+    width: 100%;
+    height: 380px;
+
+    background: #102318;
+}
+
+
+/* Leaflet popup */
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+    background: #091e13;
+
+    color: #dddccf;
+}
+
+.leaflet-popup-content {
+    font-size: 13px;
+
+    line-height: 1.5;
+}
+
+.leaflet-container a {
+    color: #ffc400;
+}
+
+
+/* =========================================================
+   ROUTE OVERVIEW
+   ========================================================= */
+
+.corridor-overview {
+    margin-bottom: 32px;
+}
+
+.corridor-routes {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 14px;
+}
+
+
+/* =========================================================
+   ROUTE CARD
+   ========================================================= */
+
+.corridor-route-card {
+    position: relative;
+
+    padding: 18px 19px;
+
+    background: #091e13;
+
+    border: 1px solid #174b2c;
+
+    border-radius: 15px;
+
+    box-sizing: border-box;
+
+    transition: .18s ease;
+}
+
+.corridor-route-card:hover {
+    background: #0b2417;
+
+    border-color: #276a40;
+
+    transform: translateY(-2px);
+}
+
+.corridor-route-name {
+    margin: 0 0 13px;
+
+    color: #deddd2;
+
+    font-size: 15px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   ORIGIN / DESTINATION
+   ========================================================= */
+
+.corridor-route-flow {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    margin-bottom: 14px;
+
+    min-width: 0;
+}
+
+.corridor-location {
+    min-width: 0;
+
+    flex: 1;
+}
+
+.corridor-location-label {
+    margin-bottom: 3px;
+
+    color: #627765;
+
+    font-size: 10px;
+
+    text-transform: uppercase;
+
+    letter-spacing: .08em;
+}
+
+.corridor-location-name {
+    color: #a7c1aa;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.corridor-route-arrow {
+    flex-shrink: 0;
+
+    color: #ffc400;
+
+    font-size: 18px;
+}
+
+
+/* =========================================================
+   ROUTE META
+   ========================================================= */
+
+.corridor-route-meta {
+    display: flex;
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 7px;
+}
+
+.corridor-route-status {
+    padding: 4px 9px;
+
+    border-radius: 12px;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.route-active {
+    color: #00cf58;
+
+    border: 1px solid #087c39;
+
+    background: rgba(0,173,76,.10);
+}
+
+.route-inactive {
+    color: #8d9a90;
+
+    border: 1px solid #46564b;
+
+    background: rgba(100,120,105,.08);
+}
+
+
+/* =========================================================
+   RISK
+   ========================================================= */
+
+.corridor-risk {
+    padding: 4px 9px;
+
+    border-radius: 12px;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.risk-low {
+    color: #68d391;
+
+    border: 1px solid #276a40;
+
+    background: rgba(0,200,83,.06);
+}
+
+.risk-medium {
+    color: #ffc400;
+
+    border: 1px solid #806800;
+
+    background: rgba(255,196,0,.07);
+}
+
+.risk-high {
+    color: #ff7777;
+
+    border: 1px solid #7d3333;
+
+    background: rgba(255,70,70,.07);
+}
+
+.corridor-notice-count {
+    margin-left: auto;
+
+    color: #718273;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   NOTICES
+   ========================================================= */
+
+.corridor-notices-section {
+    margin-top: 8px;
+}
+
+.corridor-notices {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 16px;
+}
+
+
+/* =========================================================
+   NOTICE CARD
+   ========================================================= */
+
+.corridor-card {
+    position: relative;
+
+    min-width: 0;
+
+    padding:
+        18px
+        20px
+        19px
+        25px;
+
+    background: #091e13;
+
+    border: 1px solid #174b2c;
+
+    border-radius: 16px;
+
+    overflow: hidden;
+
+    box-sizing: border-box;
+
+    transition:
+        background .18s ease,
+        border-color .18s ease,
+        transform .18s ease;
+}
+
+.corridor-card:hover {
+    background: #0b2417;
+
+    border-color: #286740;
+
+    transform: translateY(-2px);
+}
+
+
+/* =========================================================
+   ENTIRE CARD LINK
+   ========================================================= */
+
+.corridor-card-link {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 1;
+
+    display: block;
+
+    border-radius: 16px;
+}
+
+
+/* =========================================================
+   STATUS STRIPE
+   ========================================================= */
+
+.corridor-card::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 0;
+    bottom: 0;
+
+    width: 4px;
+
+    border-radius: 16px 0 0 16px;
+}
+
+.corridor-card.acknowledged::before {
+    background: #00c853;
+}
+
+.corridor-card.pending::before {
+    background: #ffc400;
+}
+
+.corridor-card.negotiating::before {
+    background: #a77bd3;
+}
+
+.corridor-card.closed::before {
+    background: #637167;
+}
+
+
+/* =========================================================
+   CARD CONTENT
+   ========================================================= */
+
+.corridor-card-content {
+    position: relative;
+
+    z-index: 2;
+
+    /*
+     * Allows the invisible full-card link underneath
+     * to remain clickable.
+     */
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   CARD HEADER
+   ========================================================= */
+
+.corridor-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    margin-bottom: 11px;
+}
+
+.corridor-herd {
+    min-width: 0;
+
+    color: #deddd2;
+
+    font-size: 16px;
+    font-weight: 800;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.corridor-status {
+    flex-shrink: 0;
+
+    padding: 4px 11px;
+
+    border-radius: 15px;
+
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.corridor-status.acknowledged {
+    color: #00cf58;
+
+    border: 1px solid #087c39;
+
+    background: rgba(0,173,76,.10);
+}
+
+.corridor-status.pending {
+    color: #ffc400;
+
+    border: 1px solid #8b7100;
+
+    background: rgba(255,196,0,.08);
+}
+
+.corridor-status.negotiating {
+    color: #c29ae9;
+
+    border: 1px solid #735493;
+
+    background: rgba(167,123,211,.08);
+}
+
+.corridor-status.closed {
+    color: #8d9a90;
+
+    border: 1px solid #46564b;
+
+    background: rgba(100,120,105,.08);
+}
+
+
+/* =========================================================
+   CARD INFO
+   ========================================================= */
+
+.corridor-info {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 6px;
+
+    margin-bottom: 9px;
+
+    font-size: 14px;
+}
+
+.corridor-cattle {
+    color: #aeb0a2;
+}
+
+.corridor-countdown {
+    color: #ffc400;
+
+    font-weight: 800;
+}
+
+.corridor-separator {
+    color: #647267;
+}
+
+
+/* =========================================================
+   ROUTE INFO
+   ========================================================= */
+
+.corridor-route-info {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 7px;
+
+    color: #82a886;
+
+    font-size: 14px;
+
+    line-height: 1.45;
+}
+
+.corridor-route-info small {
+    color: #55705b;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.corridor-actions {
+    position: relative;
+
+    z-index: 5;
+
+    display: flex;
+
+    gap: 10px;
+
+    margin-top: 16px;
+
+    /*
+     * Important because the card content has
+     * pointer-events disabled.
+     */
+    pointer-events: auto;
+}
+
+.corridor-action {
+    flex: 1;
+
+    min-height: 37px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    text-decoration: none;
+
+    font-size: 13px;
+    font-weight: 800;
+
+    pointer-events: auto;
+}
+
+.corridor-action-acknowledge {
+    background: #00c853;
+
+    border: 1px solid #00c853;
+
+    color: white;
+}
+
+.corridor-action-acknowledge:hover {
+    background: #00df5b;
+
+    color: white;
+}
+
+.corridor-action-negotiate {
+    background: transparent;
+
+    border: 1px solid #7da987;
+
+    color: #87a98b;
+}
+
+.corridor-action-negotiate:hover {
+    background: rgba(125,169,135,.08);
+
+    color: #b2cfb5;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.corridor-empty {
+    grid-column: 1 / -1;
+
+    padding: 50px 25px;
+
+    text-align: center;
+
+    border: 1px solid #174b2c;
+
+    border-radius: 16px;
+
+    background: #091e13;
+}
+
+.corridor-empty-title {
+    margin: 0 0 8px;
+
+    color: #d8d8cd;
+
+    font-size: 16px;
+}
+
+.corridor-empty-text {
+    max-width: 520px;
+
+    margin: auto;
+
+    color: #718273;
+
+    font-size: 13px;
+
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   MAP EMPTY STATE
+   ========================================================= */
+
+.corridor-map-empty {
+    height: 380px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 30px;
+
+    text-align: center;
+
+    box-sizing: border-box;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #12351f 0%,
+            #091e13 65%
+        );
+}
+
+.corridor-map-empty-inner {
+    max-width: 420px;
+}
+
+.corridor-map-empty-title {
+    margin: 0 0 8px;
+
+    color: #d8d8cd;
+
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.corridor-map-empty-text {
+    margin: 0;
+
+    color: #718273;
+
+    font-size: 13px;
+
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1050px) {
+
+    .corridor-routes {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}
+
+
+@media (max-width: 800px) {
+
+    .corridor-notices {
+        grid-template-columns: 1fr;
+    }
+
+    #corridor-map {
+        height: 330px;
+    }
+
+    .corridor-map-empty {
+        height: 330px;
+    }
+}
+
+
+@media (max-width: 700px) {
+
+    .corridor-header {
+        padding: 18px 20px;
+    }
+
+    .corridor-content {
+        padding:
+            22px
+            18px
+            35px;
+    }
+
+    .corridor-routes {
+        grid-template-columns: 1fr;
+    }
+
+    .corridor-section-caption {
+        display: none;
+    }
+
+    .corridor-online {
+        display: none;
+    }
+
+    .corridor-map-header {
+        padding: 14px 16px;
+    }
+}
+
+
+@media (max-width: 450px) {
+
+    .corridor-header {
+        align-items: flex-start;
+    }
+
+    .corridor-header-title {
+        font-size: 20px;
+    }
+
+    .corridor-header-subtitle {
+        font-size: 12px;
+    }
+
+    .corridor-send-btn {
+        width: 42px;
+
+        padding: 0;
+    }
+
+    .corridor-send-btn .send-label {
+        display: none;
+    }
+
+    .corridor-card {
+        padding:
+            16px
+            14px
+            17px
+            21px;
+    }
+
+    .corridor-card-header {
+        align-items: flex-start;
+    }
+
+    .corridor-herd {
+        font-size: 15px;
+    }
+
+    .corridor-actions {
+        flex-direction: column;
+    }
+
+    .corridor-action {
+        width: 100%;
+    }
+
+    #corridor-map {
+        height: 280px;
+    }
+
+    .corridor-map-empty {
+        height: 280px;
+    }
+}
+
+</style>
+
+
+<div class="corridor-screen">
+
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <header class="corridor-header">
+
+        <div class="corridor-header-content">
+
+            <h1 class="corridor-header-title">
+                Cattle Corridors
+            </h1>
+
+            <div class="corridor-header-subtitle">
+                Advance notice prevents conflict
+            </div>
+
+        </div>
+
+
+        <div class="corridor-header-actions">
+
+            <span
+                class="corridor-online"
+                title="System online"
+            ></span>
+
+
+            <a
+                href="{% url 'corridor_create' %}"
+                class="corridor-send-btn"
+            >
+
+                <span class="corridor-send-icon">
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                    >
+                        <path d="M12 19V5"></path>
+                        <path d="M6 11l6-6 6 6"></path>
+                    </svg>
+
+                </span>
+
+                <span class="send-label">
+                    Send Notice
+                </span>
+
+            </a>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         MAIN
+         ===================================================== -->
+
+    <main class="corridor-content">
+
+      <!-- =====================================================
+     DYNAMIC CORRIDOR MOVEMENT MAP
+     ===================================================== -->
+
+<section class="corridor-map-section">
+
+    <div class="corridor-map-header">
+
+        <div>
+            <h2>Corridor Network</h2>
+
+            <p>
+                Live livestock movement across registered corridors
+            </p>
+        </div>
+
+        <div class="corridor-map-status">
+            <span class="map-status-dot"></span>
+            LIVE
+        </div>
+
+    </div>
+
+
+    <div class="corridor-visual-map">
+
+        <div class="corridor-map-live">
+            LIVE
+        </div>
+
+
+        <svg
+            id="corridor-network"
+            viewBox="0 0 1000 420"
+            preserveAspectRatio="none"
+            aria-label="Cattle corridor network"
+        >
+
+            <!-- Dynamic routes will be inserted here -->
+
+        </svg>
+
+
+        <!-- Map legend -->
+
+        <div class="corridor-map-legend">
+
+            <div class="map-legend-item">
+
+                <span class="legend-dot legend-active"></span>
+
+                <span class="legend-label">
+                    Active movement
+                </span>
+
+            </div>
+
+
+            <div class="map-legend-item">
+
+                <span class="legend-dot legend-community"></span>
+
+                <span class="legend-label">
+                    Your community
+                </span>
+
+            </div>
+
+
+            <div class="map-legend-item">
+
+                <span class="legend-dot legend-waypoint"></span>
+
+                <span class="legend-label">
+                    Waypoints
+                </span>
+
+            </div>
+
+        </div>
+
+
+        {% if not active_routes %}
+
+            <div class="corridor-map-empty">
+
+                <div class="map-empty-icon">
+                    ◌
+                </div>
+
+                <strong>No corridor routes yet</strong>
+
+                <span>
+                    Registered routes will appear here.
+                </span>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+
+        <!-- =================================================
+             ROUTE OVERVIEW
+             ================================================= -->
+
+        <section class="corridor-overview">
+
+
+            <div class="corridor-section-heading">
+
+                <h2 class="corridor-section-title">
+                    Registered Corridors
+                </h2>
+
+                <span class="corridor-section-caption">
+                    Active livestock movement routes
+                </span>
+
+            </div>
+
+
+            <div class="corridor-routes">
+
+
+                {% for route in active_routes %}
+
+
+                    <article class="corridor-route-card">
+
+
+                        <h3 class="corridor-route-name">
+                            {{ route.name }}
+                        </h3>
+
+
+                        <div class="corridor-route-flow">
+
+
+                            <div class="corridor-location">
+
+                                <div class="corridor-location-label">
+                                    Origin
+                                </div>
+
+                                <div class="corridor-location-name">
+                                    📍 {{ route.origin }}
+                                </div>
+
+                            </div>
+
+
+                            <div class="corridor-route-arrow">
+                                →
+                            </div>
+
+
+                            <div class="corridor-location">
+
+                                <div class="corridor-location-label">
+                                    Destination
+                                </div>
+
+                                <div class="corridor-location-name">
+                                    🎯 {{ route.destination }}
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+
+                        <div class="corridor-route-meta">
+
+
+                            {% if route.active %}
+
+                                <span class="
+                                    corridor-route-status
+                                    route-active
+                                ">
+                                    ● Active
+                                </span>
+
+                            {% else %}
+
+                                <span class="
+                                    corridor-route-status
+                                    route-inactive
+                                ">
+                                    ● Inactive
+                                </span>
+
+                            {% endif %}
+
+
+                            <span class="
+                                corridor-risk
+                                risk-{{ route.risk_level }}
+                            ">
+                                {{ route.get_risk_level_display }} Risk
+                            </span>
+
+
+                            <span class="corridor-notice-count">
+
+                                {{ route.notice_count }}
+
+                                notice{{ route.notice_count|pluralize }}
+
+                            </span>
+
+
+                        </div>
+
+
+                    </article>
+
+
+                {% empty %}
+
+
+                    <div class="corridor-empty">
+
+                        <h3 class="corridor-empty-title">
+                            No active corridors
+                        </h3>
+
+                        <p class="corridor-empty-text">
+                            No active livestock corridors have been
+                            configured yet.
+                        </p>
+
+                    </div>
+
+
+                {% endfor %}
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             ACTIVE NOTICES
+             ================================================= -->
+
+        <section class="corridor-notices-section">
+
+
+            <div class="corridor-section-heading">
+
+                <h2 class="corridor-section-title">
+                    Active Notices
+                </h2>
+
+                <span class="corridor-section-caption">
+
+                    {{ corridor_stats.total }}
+
+                    total notice{{ corridor_stats.total|pluralize }}
+
+                </span>
+
+            </div>
+
+
+            <section class="corridor-notices">
+
+
+                {% for notice in notices %}
+
+
+                    <article class="
+                        corridor-card
+                        {{ notice.status }}
+                    ">
+
+
+                        <!-- =================================
+                             WHOLE CARD LINK
+                             ================================= -->
+
+                        <a
+                            href="{{ notice.get_absolute_url }}"
+                            class="corridor-card-link"
+                            aria-label="View {{ notice.herd_group }} corridor notice"
+                        ></a>
+
+
+                        <div class="corridor-card-content">
+
+
+                            <!-- =============================
+                                 CARD HEADER
+                                 ============================= -->
+
+                            <div class="corridor-card-header">
+
+
+                                <div class="corridor-herd">
+
+                                    🐄
+
+                                    {{ notice.herd_group }}
+
+                                </div>
+
+
+                                <span class="
+                                    corridor-status
+                                    {{ notice.status }}
+                                ">
+
+                                    {{ notice.get_status_display }}
+
+                                </span>
+
+
+                            </div>
+
+
+                            <!-- =============================
+                                 CATTLE / ARRIVAL
+                                 ============================= -->
+
+                            <div class="corridor-info">
+
+
+                                <span class="corridor-cattle">
+
+                                    📦
+                                    {{ notice.cattle_count }}
+                                    cattle
+
+                                </span>
+
+
+                                <span class="corridor-separator">
+                                    |
+                                </span>
+
+
+                                <span class="corridor-countdown">
+
+                                    📅
+                                    {{ notice.arrival_date }}
+
+                                </span>
+
+
+                            </div>
+
+
+                            <!-- =============================
+                                 ROUTE
+                                 ============================= -->
+
+                            <div class="corridor-route-info">
+
+                                <span>
+                                    🐄
+                                </span>
+
+
+                                <span>
+
+                                    <strong>
+                                        {{ notice.route.origin }}
+                                    </strong>
+
+                                    →
+
+                                    <strong>
+                                        {{ notice.route.destination }}
+                                    </strong>
+
+                                    <br>
+
+                                    <small>
+                                        {{ notice.route.name }}
+                                    </small>
+
+                                </span>
+
+                            </div>
+
+
+                            <!-- =============================
+                                 RISK
+                                 ============================= -->
+
+                            <div
+                                class="corridor-route-meta"
+                                style="margin-top: 12px;"
+                            >
+
+                                <span class="
+                                    corridor-risk
+                                    risk-{{ notice.route.risk_level }}
+                                ">
+
+                                    {{ notice.route.get_risk_level_display }}
+                                    Risk
+
+                                </span>
+
+
+                                {% if notice.route.active %}
+
+                                    <span class="
+                                        corridor-route-status
+                                        route-active
+                                    ">
+                                        ● Active route
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <!-- =============================
+                                 PENDING ACTIONS
+                                 ============================= -->
+
+                            {% if notice.status == "pending" %}
+
+
+                                <div class="corridor-actions">
+
+
+                                    <a
+                                        href="{{ notice.get_absolute_url }}"
+                                        class="
+                                            corridor-action
+                                            corridor-action-acknowledge
+                                        "
+                                    >
+                                        ✓ Acknowledge
+                                    </a>
+
+
+                                    <a
+                                        href="{{ notice.get_absolute_url }}"
+                                        class="
+                                            corridor-action
+                                            corridor-action-negotiate
+                                        "
+                                    >
+                                        Negotiate route
+                                    </a>
+
+
+                                </div>
+
+
+                            {% endif %}
+
+
+                        </div>
+
+
+                    </article>
+
+
+                {% empty %}
+
+
+                    <div class="corridor-empty">
+
+                        <h3 class="corridor-empty-title">
+                            No active notices
+                        </h3>
+
+                        <p class="corridor-empty-text">
+                            No cattle corridor notices have been submitted.
+                            Advance notice helps communities prepare and
+                            prevent conflict.
+                        </p>
+
+                    </div>
+
+
+                {% endfor %}
+
+
+            </section>
+
+        </section>
+
+
+    </main>
+
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const svg = document.getElementById("corridor-network");
+
+    if (!svg) {
+        return;
+    }
+
+
+    /*
+     * ---------------------------------------------------------
+     * Build route data from Django
+     * ---------------------------------------------------------
+     */
+
+    const routes = [
+
+        {% for route in active_routes %}
+
+            {% if route.origin.latitude and route.origin.longitude and route.destination.latitude and route.destination.longitude %}
+
+                {
+                    name: "{{ route.name|escapejs }}",
+
+                    origin: {
+                        name: "{{ route.origin|escapejs }}",
+                        lat: Number("{{ route.origin.latitude }}"),
+                        lng: Number("{{ route.origin.longitude }}")
+                    },
+
+                    destination: {
+                        name: "{{ route.destination|escapejs }}",
+                        lat: Number("{{ route.destination.latitude }}"),
+                        lng: Number("{{ route.destination.longitude }}")
+                    },
+
+                    risk: "{{ route.get_risk_level_display|escapejs }}"
+
+                },
+
+            {% endif %}
+
+        {% endfor %}
+
+    ];
+
+
+    /*
+     * ---------------------------------------------------------
+     * Nothing to draw
+     * ---------------------------------------------------------
+     */
+
+    if (!routes.length) {
+        return;
+    }
+
+
+    /*
+     * ---------------------------------------------------------
+     * Collect all coordinates
+     * ---------------------------------------------------------
+     */
+
+    const points = [];
+
+    routes.forEach(route => {
+
+        points.push(route.origin);
+        points.push(route.destination);
+
+    });
+
+
+    /*
+     * ---------------------------------------------------------
+     * Find geographic bounds
+     * ---------------------------------------------------------
+     */
+
+    const lats = points.map(point => point.lat);
+    const lngs = points.map(point => point.lng);
+
+
+    const minLat = Math.min(...lats);
+    const maxLat = Math.max(...lats);
+
+    const minLng = Math.min(...lngs);
+    const maxLng = Math.max(...lngs);
+
+
+    /*
+     * Prevent division by zero when
+     * all points have identical coordinates.
+     */
+
+    const latRange =
+        (maxLat - minLat) || 0.01;
+
+    const lngRange =
+        (maxLng - minLng) || 0.01;
+
+
+    /*
+     * ---------------------------------------------------------
+     * Convert geographic coordinates
+     * to our 1000 x 420 visual map.
+     * ---------------------------------------------------------
+     */
+
+    function project(point) {
+
+        const paddingX = 70;
+        const paddingY = 50;
+
+        const width = 1000 - (paddingX * 2);
+        const height = 420 - (paddingY * 2);
+
+
+        const x =
+            paddingX +
+            ((point.lng - minLng) / lngRange) * width;
+
+
+        const y =
+            420 -
+            paddingY -
+            ((point.lat - minLat) / latRange) * height;
+
+
+        return {
+            x: x,
+            y: y
+        };
+
+    }
+
+
+    /*
+     * ---------------------------------------------------------
+     * Draw routes
+     * ---------------------------------------------------------
+     */
+
+    routes.forEach((route, index) => {
+
+        const origin =
+            project(route.origin);
+
+        const destination =
+            project(route.destination);
+
+
+        /*
+         * Create a curved route rather than
+         * a straight geographic line.
+         */
+
+        const midX =
+            (origin.x + destination.x) / 2;
+
+
+        const distance =
+            Math.abs(destination.x - origin.x);
+
+
+        const curve =
+            Math.max(
+                35,
+                Math.min(110, distance * 0.22)
+            );
+
+
+        const direction =
+            index % 2 === 0 ? -1 : 1;
+
+
+        const controlY =
+            ((origin.y + destination.y) / 2)
+            + (curve * direction);
+
+
+        const path = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "path"
+        );
+
+
+        path.setAttribute(
+            "d",
+            `
+                M ${origin.x} ${origin.y}
+                Q ${midX} ${controlY}
+                  ${destination.x} ${destination.y}
+            `
+        );
+
+
+        path.setAttribute(
+            "class",
+            "corridor-map-route"
+        );
+
+
+        path.setAttribute(
+            "data-route",
+            route.name
+        );
+
+
+        svg.appendChild(path);
+
+
+        /*
+         * -----------------------------------------------------
+         * Origin/community node
+         * -----------------------------------------------------
+         */
+
+        const originNode =
+            document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "circle"
+            );
+
+
+        originNode.setAttribute(
+            "cx",
+            origin.x
+        );
+
+        originNode.setAttribute(
+            "cy",
+            origin.y
+        );
+
+        originNode.setAttribute(
+            "r",
+            8
+        );
+
+        originNode.setAttribute(
+            "class",
+            "corridor-community-node"
+        );
+
+
+        originNode.addEventListener(
+            "click",
+            function () {
+
+                alert(
+                    "Origin: " +
+                    route.origin.name +
+                    "\nRoute: " +
+                    route.name
+                );
+
+            }
+        );
+
+
+        svg.appendChild(originNode);
+
+
+        /*
+         * -----------------------------------------------------
+         * Active movement node
+         *
+         * Put it around the middle of the route.
+         * -----------------------------------------------------
+         */
+
+        const activeX =
+            origin.x +
+            ((destination.x - origin.x) * 0.42);
+
+
+        const activeY =
+            origin.y +
+            ((controlY - origin.y) * 0.52);
+
+
+        const activeNode =
+            document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "circle"
+            );
+
+
+        activeNode.setAttribute(
+            "cx",
+            activeX
+        );
+
+        activeNode.setAttribute(
+            "cy",
+            activeY
+        );
+
+        activeNode.setAttribute(
+            "r",
+            11
+        );
+
+        activeNode.setAttribute(
+            "class",
+            "corridor-active-node"
+        );
+
+
+        svg.appendChild(activeNode);
+
+
+        /*
+         * -----------------------------------------------------
+         * Destination / waypoint
+         * -----------------------------------------------------
+         */
+
+        const destinationNode =
+            document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "circle"
+            );
+
+
+        destinationNode.setAttribute(
+            "cx",
+            destination.x
+        );
+
+        destinationNode.setAttribute(
+            "cy",
+            destination.y
+        );
+
+        destinationNode.setAttribute(
+            "r",
+            10
+        );
+
+        destinationNode.setAttribute(
+            "class",
+            "corridor-waypoint"
+        );
+
+
+        destinationNode.addEventListener(
+            "click",
+            function () {
+
+                alert(
+                    "Destination: " +
+                    route.destination.name +
+                    "\nRoute: " +
+                    route.name
+                );
+
+            }
+        );
+
+
+        svg.appendChild(destinationNode);
+
+
+        /*
+         * -----------------------------------------------------
+         * Destination label
+         * -----------------------------------------------------
+         */
+
+        const label =
+            document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "text"
+            );
+
+
+        label.setAttribute(
+            "x",
+            destination.x + 15
+        );
+
+        label.setAttribute(
+            "y",
+            destination.y + 5
+        );
+
+        label.setAttribute(
+            "class",
+            "corridor-map-label"
+        );
+
+
+        label.textContent =
+            route.destination.name;
+
+
+        svg.appendChild(label);
+
+    });
+
+});
+</script>
+
+{% endblock %}

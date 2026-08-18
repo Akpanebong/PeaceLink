@@ -1,0 +1,1339 @@
+
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+
+/* =========================================================
+   TRADE MATCHING
+   Mobile-first marketplace interface
+   ========================================================= */
+
+.trade-page {
+    --trade-bg: #06180f;
+    --trade-surface: #0b2115;
+    --trade-surface-2: #102819;
+    --trade-border: #17452a;
+    --trade-green: #00c968;
+    --trade-green-dark: #008f68;
+    --trade-teal: #008f79;
+    --trade-yellow: #e0c300;
+    --trade-text: #e5e8d9;
+    --trade-muted: #729478;
+    --trade-soft: #365e40;
+
+    width: 100%;
+    min-height: calc(100vh - 80px);
+
+    margin: 0;
+    padding: 0 0 45px;
+
+    background: var(--trade-bg);
+    color: var(--trade-text);
+
+    font-family: inherit;
+}
+
+
+/* =========================================================
+   MAIN APP CONTAINER
+   ========================================================= */
+
+.trade-app {
+    width: 100%;
+    max-width: 1050px;
+
+    margin: 0 auto;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.trade-header {
+    position: relative;
+
+    overflow: hidden;
+
+    padding: 22px 24px 20px;
+
+    background:
+        linear-gradient(
+            110deg,
+            #008d78 0%,
+            #167b82 48%,
+            #28567e 100%
+        );
+
+    border-radius: 0 0 0 0;
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, .28);
+}
+
+
+.trade-header::before {
+    content: "";
+
+    position: absolute;
+
+    width: 170px;
+    height: 170px;
+
+    right: -70px;
+    top: -100px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, .05);
+}
+
+
+.trade-header::after {
+    content: "";
+
+    position: absolute;
+
+    width: 110px;
+    height: 110px;
+
+    left: 45%;
+    bottom: -80px;
+
+    border-radius: 50%;
+
+    background: rgba(0, 0, 0, .08);
+}
+
+
+.trade-header-content {
+    position: relative;
+    z-index: 2;
+}
+
+
+.trade-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+}
+
+
+.trade-kicker {
+    margin-bottom: 3px;
+
+    color: #f1df34;
+
+    font-size: .67rem;
+    font-weight: 900;
+
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+
+.trade-header h1 {
+    margin: 0;
+
+    color: #f5df3d;
+
+    font-size: clamp(1.35rem, 4vw, 1.85rem);
+    font-weight: 950;
+
+    line-height: 1.1;
+}
+
+
+.trade-header p {
+    margin: 5px 0 0;
+
+    color: #b8d98c;
+
+    font-size: .78rem;
+}
+
+
+/* =========================================================
+   HEADER STATUS
+   ========================================================= */
+
+.trade-header-actions {
+    display: flex;
+    align-items: center;
+
+    gap: 15px;
+}
+
+
+.trade-online {
+    width: 12px;
+    height: 12px;
+
+    border-radius: 50%;
+
+    background: #00d77a;
+
+    box-shadow:
+        0 0 0 5px rgba(0, 215, 122, .12),
+        0 0 12px rgba(0, 215, 122, .35);
+}
+
+
+.trade-notification {
+    border: 0;
+
+    background: transparent;
+
+    color: #ffd929;
+
+    font-size: 1.35rem;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   APP BODY
+   ========================================================= */
+
+.trade-body {
+    padding: 20px 24px 0;
+}
+
+
+/* =========================================================
+   MAIN NAVIGATION
+   ========================================================= */
+
+.trade-tabs {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 4px;
+
+    padding: 4px;
+
+    background: #020d08;
+
+    border-radius: 15px;
+
+    border: 1px solid #06170e;
+}
+
+
+.trade-tab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 40px;
+
+    padding: 8px 10px;
+
+    border-radius: 11px;
+
+    color: #547859;
+
+    text-decoration: none;
+
+    font-size: .73rem;
+    font-weight: 850;
+
+    transition:
+        background .2s ease,
+        color .2s ease;
+}
+
+
+.trade-tab:hover {
+    color: #92b993;
+    background: rgba(0, 201, 104, .07);
+}
+
+
+.trade-tab.active {
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            100deg,
+            #008f68,
+            #009c83
+        );
+
+    box-shadow:
+        0 4px 12px rgba(0, 145, 104, .22);
+}
+
+
+/* =========================================================
+   CATEGORY FILTERS
+   ========================================================= */
+
+.trade-categories {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin: 18px 0;
+
+    overflow-x: auto;
+
+    scrollbar-width: none;
+}
+
+
+.trade-categories::-webkit-scrollbar {
+    display: none;
+}
+
+
+.trade-category {
+    flex-shrink: 0;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 38px;
+
+    padding: 8px 15px;
+
+    border: 1px solid #183f25;
+
+    border-radius: 22px;
+
+    background: #0d2816;
+
+    color: #56825b;
+
+    text-decoration: none;
+
+    font-size: .72rem;
+    font-weight: 800;
+
+    transition:
+        background .2s ease,
+        border-color .2s ease,
+        color .2s ease;
+}
+
+
+.trade-category:hover {
+    color: #8fba89;
+
+    border-color: #226638;
+
+    background: #12351d;
+}
+
+
+.trade-category.active {
+    color: #ffffff;
+
+    border-color: #009e7b;
+
+    background:
+        linear-gradient(
+            100deg,
+            #009a78,
+            #008d72
+        );
+}
+
+
+/* =========================================================
+   OFFER LIST
+   ========================================================= */
+
+.trade-offers {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 13px;
+}
+
+
+/* =========================================================
+   OFFER CARD
+   ========================================================= */
+
+.trade-offer-card {
+    position: relative;
+
+    overflow: hidden;
+
+    padding: 17px 17px 15px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0c2415,
+            #0a2114
+        );
+
+    border: 1px solid #17472a;
+    border-left: 4px solid #00d46a;
+
+    border-radius: 15px;
+
+    box-shadow:
+        0 7px 18px rgba(0, 0, 0, .16);
+
+    transition:
+        transform .18s ease,
+        border-color .18s ease,
+        box-shadow .18s ease;
+}
+
+
+.trade-offer-card:hover {
+    transform: translateY(-2px);
+
+    border-color: #21633a;
+    border-left-color: #00e56f;
+
+    box-shadow:
+        0 12px 25px rgba(0, 0, 0, .23);
+}
+
+
+/* BUY cards */
+
+.trade-offer-card.buy {
+    border-left-color: #f0c400;
+}
+
+
+.trade-offer-card.buy:hover {
+    border-left-color: #ffd52c;
+}
+
+
+/* =========================================================
+   CARD HEADER
+   ========================================================= */
+
+.trade-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-bottom: 9px;
+}
+
+
+.trade-type {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 59px;
+
+    padding: 4px 10px;
+
+    border: 1px solid #008e45;
+
+    border-radius: 14px;
+
+    color: #00d86a;
+
+    background: rgba(0, 130, 62, .18);
+
+    font-size: .65rem;
+    font-weight: 900;
+
+    text-transform: uppercase;
+}
+
+
+.trade-type.buy {
+    color: #f3cf00;
+
+    border-color: #a48700;
+
+    background: rgba(194, 156, 0, .13);
+}
+
+
+.trade-like-count {
+    color: #5d825f;
+
+    font-size: .68rem;
+}
+
+
+/* =========================================================
+   COMMODITY
+   ========================================================= */
+
+.trade-commodity {
+    margin: 0;
+
+    color: #e2e5d7;
+
+    font-size: 1rem;
+    font-weight: 900;
+
+    line-height: 1.25;
+}
+
+
+.trade-quantity {
+    margin: 3px 0 0;
+
+    color: #4e7953;
+
+    font-size: .7rem;
+}
+
+
+/* =========================================================
+   LOCATION
+   ========================================================= */
+
+.trade-location {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin: 11px 0 13px;
+
+    color: #9bb99a;
+
+    font-size: .74rem;
+    line-height: 1.4;
+}
+
+
+.trade-location-icon {
+    color: #ff1591;
+
+    font-size: .75rem;
+
+    flex-shrink: 0;
+}
+
+
+.trade-location-separator {
+    color: #385d3d;
+}
+
+
+/* =========================================================
+   CARD FOOTER
+   ========================================================= */
+
+.trade-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+}
+
+
+/* =========================================================
+   COMMUNITY + RATING
+   ========================================================= */
+
+.trade-meta {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    min-width: 0;
+}
+
+
+.trade-community {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 3px 8px;
+
+    border: 1px solid #766500;
+
+    border-radius: 10px;
+
+    color: #e0cb00;
+
+    background: rgba(177, 149, 0, .16);
+
+    font-size: .61rem;
+    font-weight: 900;
+}
+
+
+.trade-rating {
+    white-space: nowrap;
+
+    color: #e1cf00;
+
+    font-size: .68rem;
+    letter-spacing: 1px;
+}
+
+
+.trade-rating .empty {
+    color: #315d3b;
+}
+
+
+/* =========================================================
+   CONNECT BUTTON
+   ========================================================= */
+
+.trade-connect {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 96px;
+
+    padding: 9px 14px;
+
+    border: 0;
+    border-radius: 11px;
+
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            100deg,
+            #009f7e,
+            #008e76
+        );
+
+    font-family: inherit;
+
+    font-size: .72rem;
+    font-weight: 900;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 5px 12px rgba(0, 143, 118, .16);
+
+    transition:
+        transform .18s ease,
+        filter .18s ease;
+}
+
+
+.trade-connect:hover {
+    color: #fff;
+
+    filter: brightness(1.1);
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   SECONDARY ACTIONS
+   ========================================================= */
+
+.trade-extra-actions {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 7px;
+
+    margin-top: 12px;
+
+    padding-top: 10px;
+
+    border-top: 1px solid #143b24;
+}
+
+
+.trade-extra-btn {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 5px;
+
+    padding: 6px 9px;
+
+    border: 1px solid #1c482b;
+    border-radius: 8px;
+
+    color: #6c956f;
+
+    background: #091b10;
+
+    font-size: .62rem;
+    font-weight: 750;
+
+    text-decoration: none;
+}
+
+
+.trade-extra-btn:hover {
+    color: #a4c4a2;
+
+    border-color: #2c6740;
+}
+
+
+.trade-extra-btn form {
+    margin: 0;
+}
+
+
+.trade-extra-btn button {
+    padding: 0;
+
+    border: 0;
+
+    color: inherit;
+
+    background: transparent;
+
+    font: inherit;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.trade-empty {
+    grid-column: 1 / -1;
+
+    padding: 55px 25px;
+
+    text-align: center;
+
+    background: #0b2115;
+
+    border: 1px solid #17452a;
+
+    border-radius: 15px;
+}
+
+
+.trade-empty-icon {
+    width: 55px;
+    height: 55px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 15px;
+
+    border-radius: 50%;
+
+    color: #00b979;
+
+    background: #102e1b;
+
+    font-size: 1.25rem;
+}
+
+
+.trade-empty h3 {
+    margin: 0 0 5px;
+
+    color: #dbe3d3;
+
+    font-size: .95rem;
+}
+
+
+.trade-empty p {
+    margin: 0;
+
+    color: #628266;
+
+    font-size: .72rem;
+}
+
+
+/* =========================================================
+   DESKTOP
+   ========================================================= */
+
+@media (min-width: 1000px) {
+
+    .trade-app {
+        max-width: 1080px;
+    }
+
+    .trade-header {
+        border-radius: 0 0 18px 18px;
+    }
+
+    .trade-body {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 800px) {
+
+    .trade-offers {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .trade-page {
+        min-height: 100vh;
+    }
+
+    .trade-header {
+        padding: 21px 18px 19px;
+    }
+
+    .trade-body {
+        padding: 18px 14px 0;
+    }
+
+    .trade-title-row {
+        align-items: flex-start;
+    }
+
+    .trade-header-actions {
+        gap: 11px;
+    }
+
+    .trade-online {
+        width: 10px;
+        height: 10px;
+    }
+
+    .trade-notification {
+        font-size: 1.2rem;
+    }
+
+    .trade-header h1 {
+        font-size: 1.35rem;
+    }
+
+    .trade-header p {
+        font-size: .72rem;
+    }
+
+    .trade-tabs {
+        border-radius: 13px;
+    }
+
+    .trade-tab {
+        min-height: 39px;
+
+        padding: 8px 5px;
+
+        font-size: .68rem;
+    }
+
+    .trade-category {
+        min-height: 37px;
+
+        padding: 8px 14px;
+    }
+
+    .trade-offers {
+        gap: 12px;
+    }
+
+    .trade-offer-card {
+        padding: 16px 15px 14px;
+    }
+
+    .trade-commodity {
+        font-size: .95rem;
+    }
+
+    .trade-location {
+        font-size: .71rem;
+    }
+
+    .trade-card-footer {
+        align-items: flex-end;
+    }
+
+    .trade-connect {
+        min-width: 94px;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 390px) {
+
+    .trade-header {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .trade-body {
+        padding-left: 11px;
+        padding-right: 11px;
+    }
+
+    .trade-card-footer {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .trade-meta {
+        justify-content: space-between;
+    }
+
+    .trade-connect {
+        width: 100%;
+    }
+
+}
+
+
+/* =========================================================
+   ACCESSIBILITY
+   ========================================================= */
+
+.trade-tab:focus-visible,
+.trade-category:focus-visible,
+.trade-connect:focus-visible,
+.trade-extra-btn:focus-visible {
+    outline: 2px solid #00d879;
+
+    outline-offset: 3px;
+}
+
+</style>
+
+
+<div class="trade-page">
+
+    <div class="trade-app">
+
+
+        <!-- =================================================
+             HEADER
+             ================================================= -->
+
+        <header class="trade-header">
+
+            <div class="trade-header-content">
+
+                <div class="trade-title-row">
+
+                    <div>
+
+                        <div class="trade-kicker">
+                            {{ UI.trade_matching|default:"Trade Matching" }}
+
+                        </div>
+
+                        <h1>
+                            Trade Matching
+                        </h1>
+
+                        <p>
+                            {{ UI.trade_intro|default:"Connect. Exchange. Build trust." }}
+                        </p>
+
+                    </div>
+
+
+                    <div class="trade-header-actions">
+
+                        <span
+                            class="trade-online"
+                            title="Online"
+                        ></span>
+
+                        <span
+                            class="trade-notification"
+                            aria-hidden="true"
+                        >
+                            🔔
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- =================================================
+             BODY
+             ================================================= -->
+
+        <main class="trade-body">
+
+
+            <!-- =================================================
+                 MAIN TABS
+                 ================================================= -->
+
+            <nav class="trade-tabs">
+
+                <a
+                    href="{% url 'trade_list' %}"
+                    class="trade-tab active"
+                >
+                    Browse Offers
+                </a>
+
+
+                <a
+                    href="{% url 'trade_create' %}"
+                    class="trade-tab"
+                >
+                    {{ UI.post_offer|default:"Post Offer" }}
+                </a>
+
+
+                {% if user.is_superuser %}
+
+                    <a
+                        href="{% url 'trade_matched' %}"
+                        class="trade-tab"
+                    >
+                        {{ UI.matched|default:"Matched" }}
+
+                    </a>
+
+
+                {% else %}
+
+                    <span class="trade-tab">
+                        Matched
+                    </span>
+
+                {% endif %}
+
+            </nav>
+
+
+            <!-- =================================================
+                 CATEGORY FILTERS
+                 ================================================= -->
+
+            <div class="trade-categories">
+
+                <a
+                    href="{% url 'trade_list' %}"
+                    class="trade-category {% if not request.GET.category %}active{% endif %}"
+                >
+                    All
+                </a>
+
+
+                {% for value,label in categories %}
+
+                    <a
+                        href="?category={{ value }}"
+                        class="trade-category
+                        {% if request.GET.category == value|stringformat:'s' %}
+                            active
+                        {% endif %}"
+                    >
+                        {{ label }}
+                    </a>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- =================================================
+                 OFFERS
+                 ================================================= -->
+
+            <section class="trade-offers">
+
+                {% for offer in offers %}
+
+                    <article
+                        class="trade-offer-card
+                        {% if offer.offer_type == 'buy' %}
+                            buy
+                        {% endif %}"
+                    >
+
+
+                        <!-- CARD HEADER -->
+
+                        <div class="trade-card-head">
+
+                            <span
+                                class="trade-type
+                                {% if offer.offer_type == 'buy' %}
+                                    buy
+                                {% endif %}"
+                            >
+                                {{ offer.get_offer_type_display }}
+                            </span>
+
+
+                            <span class="trade-like-count">
+
+                                ♥ {{ offer.likes.count }}
+
+                            </span>
+
+                        </div>
+
+
+                        <!-- COMMODITY -->
+
+                        <h3 class="trade-commodity">
+
+                            {{ offer.commodity }}
+
+                        </h3>
+
+
+                        <p class="trade-quantity">
+
+                            {{ offer.quantity }}
+
+                        </p>
+
+
+                        <!-- LOCATION -->
+
+                        <div class="trade-location">
+
+                            <span class="trade-location-icon">
+                                📍
+                            </span>
+
+
+                            <span>
+                                {{ offer.community|default:"Community pending" }}
+                            </span>
+
+
+                            <span class="trade-location-separator">
+                                ·
+                            </span>
+
+
+                            <span>
+                                {{ offer.location }}
+                            </span>
+
+                        </div>
+
+
+                        <!-- CARD FOOTER -->
+
+                        <div class="trade-card-footer">
+
+
+                            <div class="trade-meta">
+
+                                <span class="trade-community">
+
+                                    {% if offer.community %}
+                                        {{ offer.community }}
+                                    {% else %}
+                                        Community
+                                    {% endif %}
+
+                                </span>
+
+
+                                <span class="trade-rating"
+                                      aria-label="Rating">
+
+                                    ★★★★★
+
+                                </span>
+
+                            </div>
+
+
+                            {% if user.is_authenticated and user != offer.owner %}
+
+                                <a
+                                    href="{{ offer.get_absolute_url }}"
+                                    class="trade-connect"
+                                >
+                                    Connect
+                                </a>
+
+                            {% else %}
+
+                                <a
+                                    href="{{ offer.get_absolute_url }}"
+                                    class="trade-connect"
+                                >
+                                    View Offer
+                                </a>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- =================================================
+                             SECONDARY ACTIONS
+                             ================================================= -->
+
+                        <div class="trade-extra-actions">
+
+                            <a
+                                class="trade-extra-btn"
+                                href="{{ offer.get_absolute_url }}"
+                            >
+                                <span>→</span>
+                                {{ UI.view|default:"View" }}
+                            </a>
+
+
+                            {% if user.is_authenticated %}
+
+                                <form
+                                    method="post"
+                                    action="{% url 'trade_like' offer.pk %}"
+                                >
+
+                                    {% csrf_token %}
+
+                                    <input
+                                        type="hidden"
+                                        name="next"
+                                        value="{{ request.get_full_path }}"
+                                    >
+
+
+                                    <span class="trade-extra-btn">
+
+                                        <button type="submit">
+
+                                            ♥
+                                            {% if offer.pk in liked_offer_ids %}
+                                                {{ UI.unlike|default:"Unlike" }}
+                                            {% else %}
+                                                {{ UI.like|default:"Like" }}
+                                            {% endif %}
+
+                                        </button>
+
+                                    </span>
+
+                                </form>
+
+                            {% endif %}
+
+
+                            {% if offer.connections.count %}
+
+                                {% if user.is_authenticated %}
+
+                                    {% if user == offer.owner or user.is_staff %}
+
+                                        <a
+                                            class="trade-extra-btn"
+                                            href="{{ offer.get_absolute_url }}#trade-matches"
+                                        >
+                                            🔗
+                                            {{ UI.matched|default:"Matched" }}
+                                        </a>
+
+                                    {% endif %}
+
+                                {% endif %}
+
+                            {% endif %}
+
+
+                            {% if user != offer.owner %}
+
+                                <a
+                                    class="trade-extra-btn"
+                                    href="{{ offer.get_absolute_url }}"
+                                >
+                                    🔗
+                                    {{ offer.get_status_display|default:offer.status }}
+                                </a>
+
+                            {% endif %}
+
+                        </div>
+
+                    </article>
+
+
+                {% empty %}
+
+
+                    <!-- EMPTY STATE -->
+
+                    <div class="trade-empty">
+
+                        <div class="trade-empty-icon">
+
+                            <i class="fa-solid fa-store"></i>
+
+                        </div>
+
+                        <h3>
+                            No trade offers yet
+                        </h3>
+
+                        <p>
+                            Be the first to post an offer and connect
+                            with the community.
+                        </p>
+
+                    </div>
+
+
+                {% endfor %}
+
+            </section>
+
+        </main>
+
+    </div>
+
+</div>
+
+{% endblock %}

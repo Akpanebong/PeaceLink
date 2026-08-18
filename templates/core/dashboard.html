@@ -1,0 +1,1563 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+/* =========================================================
+   PEACELINK AFRICA — REGIONAL INTELLIGENCE DASHBOARD
+   ========================================================= */
+
+.peace-dashboard {
+    --pd-bg: #06130c;
+    --pd-panel: #091b10;
+    --pd-panel-2: #0b2114;
+    --pd-border: rgba(73, 137, 91, .28);
+    --pd-border-soft: rgba(73, 137, 91, .16);
+
+    --pd-green: #00c853;
+    --pd-green-soft: #14a968;
+    --pd-teal: #00bfa5;
+    --pd-blue: #3478c5;
+    --pd-yellow: #f2c500;
+    --pd-orange: #ffb300;
+    --pd-red: #ff1744;
+    --pd-purple: #9c27b0;
+
+    --pd-text: #f1ead7;
+    --pd-muted: #7aa17f;
+    --pd-dim: #416b4b;
+
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px 22px 40px;
+    color: var(--pd-text);
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.pd-header {
+    min-height: 108px;
+    padding: 24px 38px;
+    border-radius: 24px 24px 0 0;
+
+    background:
+        linear-gradient(
+            110deg,
+            #31588c 0%,
+            #24677b 42%,
+            #00866e 100%
+        );
+
+    border: 1px solid rgba(255,255,255,.08);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+
+    box-sizing: border-box;
+}
+
+.pd-brand h1 {
+    margin: 0;
+    color: #f7dc52;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(24px, 3vw, 34px);
+    line-height: 1.1;
+    letter-spacing: -.4px;
+}
+
+.pd-brand p {
+    margin: 6px 0 0;
+    color: #c7b979;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: .2px;
+}
+
+.pd-header-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.pd-live,
+.pd-community-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 7px 13px;
+    border-radius: 999px;
+
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .3px;
+
+    white-space: nowrap;
+}
+
+.pd-live {
+    color: #00df63;
+    border: 1px solid rgba(0, 223, 99, .35);
+    background: rgba(0, 100, 55, .20);
+}
+
+.pd-live-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #00df63;
+    box-shadow: 0 0 10px rgba(0,223,99,.75);
+}
+
+.pd-community-count {
+    color: #f1cf00;
+    border: 1px solid rgba(241,207,0,.35);
+    background: rgba(100,80,0,.18);
+}
+
+
+/* =========================================================
+   KPI STRIP
+   ========================================================= */
+
+.pd-kpis {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+
+    border-left: 1px solid var(--pd-border);
+    border-right: 1px solid var(--pd-border);
+
+    background: var(--pd-bg);
+}
+
+.pd-kpi {
+    min-height: 128px;
+    padding: 28px 28px 22px;
+
+    border-right: 1px solid var(--pd-border);
+    box-sizing: border-box;
+}
+
+.pd-kpi:last-child {
+    border-right: none;
+}
+
+.pd-kpi-value {
+    display: block;
+
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 44px;
+    font-weight: 700;
+    line-height: .95;
+
+    margin-bottom: 7px;
+}
+
+.pd-kpi:nth-child(1) .pd-kpi-value {
+    color: var(--pd-green);
+}
+
+.pd-kpi:nth-child(2) .pd-kpi-value {
+    color: var(--pd-teal);
+}
+
+.pd-kpi:nth-child(3) .pd-kpi-value {
+    color: #3d7fd4;
+}
+
+.pd-kpi:nth-child(4) .pd-kpi-value {
+    color: var(--pd-purple);
+}
+
+.pd-kpi-label {
+    display: block;
+    color: #83c17d;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.pd-kpi-delta {
+    display: block;
+    margin-top: 7px;
+    color: #37683f;
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   MAIN DASHBOARD GRID
+   ========================================================= */
+
+.pd-main {
+    display: grid;
+    grid-template-columns: minmax(0, 1.42fr) minmax(330px, .92fr);
+
+    border: 1px solid var(--pd-border);
+    border-top: none;
+
+    background: var(--pd-bg);
+}
+
+.pd-left,
+.pd-right {
+    min-width: 0;
+}
+
+.pd-left {
+    border-right: 1px solid var(--pd-border);
+}
+
+.pd-section {
+    padding: 25px 28px;
+}
+
+.pd-section + .pd-section {
+    border-top: 1px solid var(--pd-border);
+}
+
+.pd-section-title {
+    margin: 0 0 13px;
+
+    color: #2f7540;
+
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   MAP / COMMUNITY NETWORK
+   ========================================================= */
+
+.pd-map {
+    position: relative;
+    height: 285px;
+
+    overflow: hidden;
+
+    border: 1px solid rgba(72,135,83,.25);
+    border-radius: 15px;
+
+    background:
+        radial-gradient(
+            circle at 25% 30%,
+            rgba(104,122,30,.20),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 68% 60%,
+            rgba(0,145,78,.14),
+            transparent 30%
+        ),
+        #0a321a;
+}
+
+.pd-map::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background-image:
+        linear-gradient(
+            rgba(70,130,80,.07) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(70,130,80,.07) 1px,
+            transparent 1px
+        );
+
+    background-size: 55px 55px;
+    pointer-events: none;
+}
+
+.pd-map-route {
+    position: absolute;
+    height: 2px;
+
+    transform-origin: left center;
+
+    background: #858d1b;
+    box-shadow: 0 0 4px rgba(190,190,30,.25);
+
+    opacity: .85;
+}
+
+.pd-map-node {
+    position: absolute;
+
+    width: 11px;
+    height: 11px;
+
+    border-radius: 50%;
+
+    background: #55d2b0;
+    border: 3px solid rgba(0, 204, 150, .20);
+
+    box-shadow:
+        0 0 0 5px rgba(0, 204, 150, .12),
+        0 0 18px rgba(0, 204, 150, .30);
+
+    transform: translate(-50%, -50%);
+    z-index: 3;
+}
+
+.pd-map-node-label {
+    position: absolute;
+
+    transform: translate(-50%, 10px);
+
+    width: 120px;
+
+    color: #e3e7cf;
+    text-align: center;
+
+    font-size: 9px;
+    line-height: 1.2;
+
+    pointer-events: none;
+}
+
+.pd-map-node-label strong {
+    display: block;
+    color: #79c88b;
+}
+
+.pd-map-alert {
+    position: absolute;
+
+    padding: 8px 12px;
+
+    border-radius: 999px;
+
+    color: #e6c900;
+    background: rgba(72,79,18,.45);
+
+    font-size: 11px;
+    font-weight: 700;
+
+    z-index: 4;
+}
+
+.pd-map-case {
+    position: absolute;
+
+    padding: 8px 11px;
+
+    border-radius: 50%;
+
+    color: #ff405f;
+    background: rgba(84,34,46,.42);
+
+    font-size: 10px;
+    font-weight: 800;
+
+    z-index: 4;
+}
+
+.pd-map-legend {
+    position: absolute;
+    bottom: 9px;
+    left: 12px;
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    z-index: 5;
+}
+
+.pd-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    padding: 3px 5px;
+
+    color: #d8ddc9;
+    background: rgba(2,14,8,.65);
+    border-radius: 4px;
+
+    font-size: 10px;
+}
+
+.pd-legend-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+}
+
+.pd-dot-community {
+    background: #00bfa5;
+}
+
+.pd-dot-trade {
+    background: #d4b900;
+}
+
+.pd-dot-risk {
+    background: #ffb300;
+}
+
+.pd-dot-case {
+    background: #9c27b0;
+}
+
+
+/* =========================================================
+   EARLY WARNING
+   ========================================================= */
+
+.pd-warning {
+    position: relative;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+
+    padding: 14px 16px 14px 18px;
+    margin-bottom: 12px;
+
+    background: rgba(4, 17, 9, .72);
+
+    border: 1px solid rgba(67,120,77,.25);
+    border-radius: 12px;
+
+    overflow: hidden;
+}
+
+.pd-warning::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+
+    background: var(--warning-color, var(--pd-yellow));
+}
+
+.pd-warning-title {
+    color: #f2ecda;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.pd-warning-message {
+    margin-top: 8px;
+
+    color: #3b7749;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.pd-warning-tag {
+    flex-shrink: 0;
+
+    padding: 4px 10px;
+
+    border: 1px solid currentColor;
+    border-radius: 999px;
+
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   TRUST SCORES
+   ========================================================= */
+
+.pd-trust {
+    margin-bottom: 18px;
+}
+
+.pd-trust-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+
+    margin-bottom: 6px;
+}
+
+.pd-trust-name {
+    color: #8ac48e;
+    font-size: 13px;
+}
+
+.pd-trust-value {
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.pd-trust-track {
+    height: 8px;
+
+    overflow: hidden;
+
+    border-radius: 999px;
+    background: #030d08;
+}
+
+.pd-trust-fill {
+    height: 100%;
+
+    border-radius: inherit;
+
+    background: var(--pd-green);
+}
+
+
+/* =========================================================
+   WEEKLY TRADE CHART
+   ========================================================= */
+
+.pd-bars {
+    height: 120px;
+
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    align-items: end;
+
+    gap: 6px;
+}
+
+.pd-bar-column {
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 7px;
+}
+
+.pd-bar {
+    width: 100%;
+    max-width: 100px;
+
+    min-height: 8px;
+
+    border-radius: 5px 5px 0 0;
+
+    background: #075c49;
+}
+
+.pd-bar.current {
+    background: #00c853;
+}
+
+.pd-bar-day {
+    color: #3c7047;
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   ADR PIPELINE
+   ========================================================= */
+
+.pd-pipeline {
+    height: 110px;
+
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+
+    gap: 9px;
+
+    align-items: end;
+}
+
+.pd-stage {
+    min-width: 0;
+
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.pd-stage-value {
+    margin-bottom: 6px;
+
+    text-align: center;
+
+    color: #dce3d3;
+
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.pd-stage-bar {
+    min-height: 10px;
+
+    border-radius: 5px 5px 0 0;
+}
+
+.pd-stage-label {
+    margin-top: 6px;
+
+    color: #3d7248;
+
+    text-align: center;
+
+    font-size: 10px;
+}
+
+
+/* Pipeline colors */
+.pd-stage-reported .pd-stage-bar {
+    background: var(--pd-red);
+}
+
+.pd-stage-assessing .pd-stage-bar {
+    background: #d6aa00;
+}
+
+.pd-stage-mediating .pd-stage-bar {
+    background: var(--pd-purple);
+}
+
+.pd-stage-agreed .pd-stage-bar {
+    background: #3976ba;
+}
+
+.pd-stage-resolved .pd-stage-bar {
+    background: #009f37;
+}
+
+
+/* =========================================================
+   RIGHT COLUMN
+   ========================================================= */
+
+.pd-right {
+    background: rgba(5, 18, 10, .40);
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.pd-empty {
+    padding: 25px 10px;
+
+    color: #3c7047;
+
+    text-align: center;
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1050px) {
+    .pd-kpis {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .pd-kpi:nth-child(2) {
+        border-right: none;
+    }
+
+    .pd-kpi:nth-child(-n+2) {
+        border-bottom: 1px solid var(--pd-border);
+    }
+
+    .pd-main {
+        grid-template-columns: 1fr;
+    }
+
+    .pd-left {
+        border-right: none;
+    }
+
+    .pd-right {
+        border-top: 1px solid var(--pd-border);
+    }
+}
+
+
+@media (max-width: 700px) {
+
+    .peace-dashboard {
+        padding: 10px;
+    }
+
+    .pd-header {
+        padding: 20px;
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .pd-header-status {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .pd-kpis {
+        grid-template-columns: 1fr;
+    }
+
+    .pd-kpi {
+        border-right: none;
+        border-bottom: 1px solid var(--pd-border);
+    }
+
+    .pd-kpi:last-child {
+        border-bottom: none;
+    }
+
+    .pd-section {
+        padding: 20px 16px;
+    }
+
+    .pd-map {
+        height: 250px;
+    }
+
+    .pd-pipeline {
+        gap: 4px;
+    }
+}
+
+
+@media (max-width: 480px) {
+
+    .pd-brand h1 {
+        font-size: 23px;
+    }
+
+    .pd-brand p {
+        font-size: 11px;
+    }
+
+    .pd-kpi-value {
+        font-size: 38px;
+    }
+
+    .pd-header-status {
+        flex-wrap: wrap;
+    }
+
+    .pd-bars {
+        gap: 3px;
+    }
+}
+
+</style>
+
+
+<div class="peace-dashboard">
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <header class="pd-header">
+
+        <div class="pd-brand">
+            <h1>PeaceLink Africa — Regional Intelligence</h1>
+
+            <p>
+                Jonglei-Upper Nile Corridor
+                · UNDP / MCC Coordinator View
+            </p>
+        </div>
+
+        <div class="pd-header-status">
+
+            <span class="pd-live">
+                <span class="pd-live-dot"></span>
+                LIVE
+            </span>
+
+            <span class="pd-community-count">
+                {{ community_count }}
+                Communities
+            </span>
+
+        </div>
+
+    </header>
+
+
+    <!-- ====================================================
+         KPI CARDS
+         ================================================= -->
+
+    <section class="pd-kpis">
+
+        {% for stat in stats %}
+
+            <div class="pd-kpi">
+
+                <span class="pd-kpi-value">
+                    {{ stat.value }}
+                </span>
+
+                <span class="pd-kpi-label">
+                    {{ stat.label }}
+                </span>
+
+                {% if stat.delta %}
+                    <span class="pd-kpi-delta">
+                        {{ stat.delta }}
+                    </span>
+                {% endif %}
+
+            </div>
+
+        {% empty %}
+
+            <div class="pd-kpi">
+                <span class="pd-kpi-value">
+                    {{ trade_count|default:"0" }}
+                </span>
+                <span class="pd-kpi-label">
+                    Cross-community trades
+                </span>
+                <span class="pd-kpi-delta">
+                    Current activity
+                </span>
+            </div>
+
+            <div class="pd-kpi">
+                <span class="pd-kpi-value">
+                    {{ corridor_ack_rate|default:"0" }}%
+                </span>
+                <span class="pd-kpi-label">
+                    Corridor ack. rate
+                </span>
+                <span class="pd-kpi-delta">
+                    Current response rate
+                </span>
+            </div>
+
+            <div class="pd-kpi">
+                <span class="pd-kpi-value">
+                    {{ active_agreements|default:"0" }}
+                </span>
+                <span class="pd-kpi-label">
+                    Active agreements
+                </span>
+                <span class="pd-kpi-delta">
+                    {{ renewal_due|default:"0" }} renewal due
+                </span>
+            </div>
+
+            <div class="pd-kpi">
+                <span class="pd-kpi-value">
+                    {{ resolved_cases|default:"0" }}
+                </span>
+                <span class="pd-kpi-label">
+                    ADR cases resolved
+                </span>
+                <span class="pd-kpi-delta">
+                    {{ open_cases|default:"0" }} open
+                    · {{ referred_cases|default:"0" }} referred
+                </span>
+            </div>
+
+        {% endfor %}
+
+    </section>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+         ===================================================== -->
+
+    <main class="pd-main">
+
+
+        <!-- =================================================
+             LEFT COLUMN
+             ================================================= -->
+
+        <div class="pd-left">
+
+
+            <!-- =============================================
+                 COMMUNITY / TRADE FLOW MAP
+                 ============================================= -->
+
+            <section class="pd-section">
+
+                <h3 class="pd-section-title">
+                    Trade Flow Map
+                </h3>
+
+                <div class="pd-map" id="pdNetworkMap">
+
+                    {% if trust_scores %}
+
+                        {% for community in trust_scores %}
+
+                            <div
+                                class="pd-map-node"
+                                data-community="{{ community.name|escape }}"
+                                data-lat="{{ community.latitude|default:'0' }}"
+                                data-lng="{{ community.longitude|default:'0' }}"
+                                style="
+                                    left:
+                                    {% if forloop.counter0|divisibleby:4 %}
+                                        25%
+                                    {% elif forloop.counter0|add:1|divisibleby:4 %}
+                                        48%
+                                    {% elif forloop.counter0|add:2|divisibleby:4 %}
+                                        70%
+                                    {% else %}
+                                        84%
+                                    {% endif %};
+
+                                    top:
+                                    {% if forloop.counter0|divisibleby:3 %}
+                                        30%
+                                    {% elif forloop.counter0|add:1|divisibleby:3 %}
+                                        55%
+                                    {% else %}
+                                        75%
+                                    {% endif %};
+                                "
+                            >
+                            </div>
+
+                            <div
+                                class="pd-map-node-label"
+                                style="
+                                    left:
+                                    {% if forloop.counter0|divisibleby:4 %}
+                                        25%
+                                    {% elif forloop.counter0|add:1|divisibleby:4 %}
+                                        48%
+                                    {% elif forloop.counter0|add:2|divisibleby:4 %}
+                                        70%
+                                    {% else %}
+                                        84%
+                                    {% endif %};
+
+                                    top:
+                                    {% if forloop.counter0|divisibleby:3 %}
+                                        30%
+                                    {% elif forloop.counter0|add:1|divisibleby:3 %}
+                                        55%
+                                    {% else %}
+                                        75%
+                                    {% endif %};
+                                "
+                            >
+                                <strong>{{ community.name }}</strong>
+                                {{ community.county }}
+                            </div>
+
+                        {% endfor %}
+
+                    {% else %}
+
+                        <div class="pd-empty">
+                            Add communities with coordinates to populate
+                            the regional network.
+                        </div>
+
+                    {% endif %}
+
+
+                    {% if warnings|length > 0 %}
+
+                        <div class="pd-map-alert" style="left:58%;top:62%;">
+                            ⚠ Monitor
+                        </div>
+
+                    {% endif %}
+
+
+                    {% for case in warnings|slice:":2" %}
+
+                        <div
+                            class="pd-map-case"
+                            style="
+                                left:
+                                {% if forloop.first %}55%{% else %}40%{% endif %};
+                                top:
+                                {% if forloop.first %}30%{% else %}48%{% endif %};
+                            "
+                        >
+                            {{ case.case_id }}
+                        </div>
+
+                    {% endfor %}
+
+
+                    <div class="pd-map-legend">
+
+                        <span class="pd-legend-item">
+                            <i class="pd-legend-dot pd-dot-community"></i>
+                            Community
+                        </span>
+
+                        <span class="pd-legend-item">
+                            <i class="pd-legend-dot pd-dot-trade"></i>
+                            Trade flow
+                        </span>
+
+                        <span class="pd-legend-item">
+                            <i class="pd-legend-dot pd-dot-risk"></i>
+                            Risk zone
+                        </span>
+
+                        <span class="pd-legend-item">
+                            <i class="pd-legend-dot pd-dot-case"></i>
+                            ADR case
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =============================================
+                 WEEKLY TRADE VOLUME
+                 ============================================= -->
+
+            <section class="pd-section">
+
+                <h3 class="pd-section-title">
+                    Weekly Trade Volume
+                </h3>
+
+                {% if trade_weekly %}
+
+                    <div class="pd-bars">
+
+                        {% for day in trade_weekly %}
+
+                            <div class="pd-bar-column">
+
+                                <div
+                                    class="pd-bar {% if forloop.last %}current{% endif %}"
+                                    style="
+                                        height:
+                                        {% if day.percentage %}
+                                            {{ day.percentage }}%
+                                        {% else %}
+                                            {{ day.height|default:25 }}%
+                                        {% endif %};
+                                    "
+                                    title="{{ day.value }} trades"
+                                ></div>
+
+                                <span class="pd-bar-day">
+                                    {{ day.label }}
+                                </span>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="pd-bars">
+
+                        <div class="pd-bar-column">
+                            <div class="pd-bar" style="height:55%;"></div>
+                            <span class="pd-bar-day">M</span>
+                        </div>
+
+                        <div class="pd-bar-column">
+                            <div class="pd-bar" style="height:45%;"></div>
+                            <span class="pd-bar-day">T</span>
+                        </div>
+
+                        <div class="pd-bar-column">
+                            <div class="pd-bar" style="height:72%;"></div>
+                            <span class="pd-bar-day">W</span>
+                        </div>
+
+                        <div class="pd-bar-column">
+                            <div class="pd-bar" style="height:64%;"></div>
+                            <span class="pd-bar-day">T</span>
+                        </div>
+
+                        <div class="pd-bar-column">
+                            <div class="pd-bar" style="height:78%;"></div>
+                            <span class="pd-bar-day">F</span>
+                        </div>
+
+                        <div class="pd-bar-column">
+                            <div class="pd-bar" style="height:68%;"></div>
+                            <span class="pd-bar-day">S</span>
+                        </div>
+
+                        <div class="pd-bar-column">
+                            <div class="pd-bar current" style="height:90%;"></div>
+                            <span class="pd-bar-day">S</span>
+                        </div>
+
+                    </div>
+
+                {% endif %}
+
+            </section>
+
+
+            <!-- =============================================
+                 ADR PIPELINE
+                 ============================================= -->
+
+            <section class="pd-section">
+
+                <h3 class="pd-section-title">
+                    ADR Case Pipeline
+                </h3>
+
+                {% if pipeline %}
+
+                    <div class="pd-pipeline">
+
+                        {% for item in pipeline %}
+
+                            <div class="pd-stage">
+
+                                <div class="pd-stage-value">
+                                    {{ item.count }}
+                                </div>
+
+                                <div
+                                    class="
+                                        pd-stage-bar
+                                        pd-stage-{{ item.key }}
+                                    "
+                                    style="
+                                        height:
+                                        {{ item.height|default:30 }}%;
+                                    "
+                                ></div>
+
+                                <div class="pd-stage-label">
+                                    {{ item.label }}
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="pd-pipeline">
+
+                        <div class="pd-stage pd-stage-reported">
+
+                            <div class="pd-stage-value">
+                                {{ pipeline_reported|default:"0" }}
+                            </div>
+
+                            <div
+                                class="pd-stage-bar"
+                                style="height:30%;"
+                            ></div>
+
+                            <div class="pd-stage-label">
+                                Reported
+                            </div>
+
+                        </div>
+
+
+                        <div class="pd-stage pd-stage-assessing">
+
+                            <div class="pd-stage-value">
+                                {{ pipeline_assessing|default:"0" }}
+                            </div>
+
+                            <div
+                                class="pd-stage-bar"
+                                style="height:22%;"
+                            ></div>
+
+                            <div class="pd-stage-label">
+                                Assessing
+                            </div>
+
+                        </div>
+
+
+                        <div class="pd-stage pd-stage-mediating">
+
+                            <div class="pd-stage-value">
+                                {{ pipeline_mediating|default:"0" }}
+                            </div>
+
+                            <div
+                                class="pd-stage-bar"
+                                style="height:48%;"
+                            ></div>
+
+                            <div class="pd-stage-label">
+                                Mediating
+                            </div>
+
+                        </div>
+
+
+                        <div class="pd-stage pd-stage-agreed">
+
+                            <div class="pd-stage-value">
+                                {{ pipeline_agreed|default:"0" }}
+                            </div>
+
+                            <div
+                                class="pd-stage-bar"
+                                style="height:38%;"
+                            ></div>
+
+                            <div class="pd-stage-label">
+                                Agreed
+                            </div>
+
+                        </div>
+
+
+                        <div class="pd-stage pd-stage-resolved">
+
+                            <div class="pd-stage-value">
+                                {{ pipeline_resolved|default:"0" }}
+                            </div>
+
+                            <div
+                                class="pd-stage-bar"
+                                style="height:85%;"
+                            ></div>
+
+                            <div class="pd-stage-label">
+                                Resolved
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                {% endif %}
+
+            </section>
+
+        </div>
+
+
+        <!-- =================================================
+             RIGHT COLUMN
+             ================================================= -->
+
+        <aside class="pd-right">
+
+
+            <!-- =============================================
+                 EARLY WARNING SIGNALS
+                 ============================================= -->
+
+            <section class="pd-section">
+
+                <h3 class="pd-section-title">
+                    Early Warning Signals
+                </h3>
+
+                {% for case in warnings|slice:":4" %}
+
+                    <a
+                        href="
+                        {% if user.is_authenticated and user.is_community_node %}
+                            {{ case.get_absolute_url }}
+                        {% else %}
+                            {% url 'conflict_report' %}
+                        {% endif %}
+                        "
+                        style="text-decoration:none;color:inherit;"
+                    >
+
+                        <div
+                            class="pd-warning"
+                            style="
+                                --warning-color:
+                                {% if case.severity == 'critical' %}
+                                    #ff1744
+                                {% elif case.severity == 'high' %}
+                                    #ff1744
+                                {% elif case.severity == 'medium' %}
+                                    #ffb300
+                                {% else %}
+                                    #00bfa5
+                                {% endif %}
+                                ;
+                            "
+                        >
+
+                            <div>
+
+                                <div class="pd-warning-title">
+                                    {{ case.get_conflict_type_display }}
+                                    — {{ case.community_a.county }}
+                                </div>
+
+                                <div class="pd-warning-message">
+                                    {{ case.case_id }}
+                                    · {{ case.get_severity_display }}
+                                    · {{ case.community_a }}
+                                    / {{ case.community_b }}
+                                </div>
+
+                            </div>
+
+                            <span
+                                class="pd-warning-tag"
+                                style="
+                                    color:
+                                    {% if case.severity == 'critical' or case.severity == 'high' %}
+                                        #ff1744
+                                    {% elif case.severity == 'medium' %}
+                                        #ffb300
+                                    {% else %}
+                                        #00bfa5
+                                    {% endif %}
+                                    ;
+                                "
+                            >
+                                {% if case.severity == "critical" %}
+                                    ACTION
+                                {% elif case.severity == "high" %}
+                                    ALERT
+                                {% elif case.severity == "medium" %}
+                                    WATCH
+                                {% else %}
+                                    INFO
+                                {% endif %}
+                            </span>
+
+                        </div>
+
+                    </a>
+
+                {% empty %}
+
+                    <div class="pd-empty">
+                        No active warning signals.
+                    </div>
+
+                {% endfor %}
+
+            </section>
+
+
+            <!-- =============================================
+                 COMMUNITY TRUST SCORES
+                 ============================================= -->
+
+            <section class="pd-section">
+
+                <h3 class="pd-section-title">
+                    Community Trust Scores
+                </h3>
+
+                {% for community in trust_scores %}
+
+                    <div class="pd-trust">
+
+                        <div class="pd-trust-header">
+
+                            <span class="pd-trust-name">
+                                {{ community.name }}
+                                {% if community.county %}
+                                    <span style="color:#315f3c;">
+                                        — {{ community.county }}
+                                    </span>
+                                {% endif %}
+                            </span>
+
+                            <span
+                                class="pd-trust-value"
+                                style="
+                                    color:
+                                    {% if community.trust_score >= 70 %}
+                                        #00c853
+                                    {% elif community.trust_score >= 50 %}
+                                        #00bfa5
+                                    {% elif community.trust_score >= 40 %}
+                                        #f2c500
+                                    {% else %}
+                                        #ff1744
+                                    {% endif %}
+                                    ;
+                                "
+                            >
+                                {{ community.trust_score }}%
+                            </span>
+
+                        </div>
+
+                        <div class="pd-trust-track">
+
+                            <div
+                                class="pd-trust-fill"
+                                style="
+                                    width:{{ community.trust_score }}%;
+                                    background:
+                                    {% if community.trust_score >= 70 %}
+                                        #00c853
+                                    {% elif community.trust_score >= 50 %}
+                                        #00bfa5
+                                    {% elif community.trust_score >= 40 %}
+                                        #f2c500
+                                    {% else %}
+                                        #ff1744
+                                    {% endif %}
+                                    ;
+                                "
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+                {% empty %}
+
+                    <div class="pd-empty">
+                        Add communities in admin to populate
+                        trust intelligence.
+                    </div>
+
+                {% endfor %}
+
+            </section>
+
+        </aside>
+
+    </main>
+
+</div>
+
+
+<script>
+/*
+ * ==========================================================
+ * PEACELINK NETWORK VISUALIZATION
+ * Draws lightweight connections between community nodes.
+ * ==========================================================
+ */
+
+(function () {
+
+    const map = document.getElementById("pdNetworkMap");
+
+    if (!map) return;
+
+    const nodes = Array.from(
+        map.querySelectorAll(".pd-map-node")
+    );
+
+    if (nodes.length < 2) return;
+
+
+    function drawRoutes() {
+
+        map.querySelectorAll(".pd-map-route")
+            .forEach(route => route.remove());
+
+        const mapRect = map.getBoundingClientRect();
+
+        for (let i = 0; i < nodes.length - 1; i++) {
+
+            const first = nodes[i].getBoundingClientRect();
+            const second = nodes[i + 1].getBoundingClientRect();
+
+            const x1 =
+                first.left +
+                first.width / 2 -
+                mapRect.left;
+
+            const y1 =
+                first.top +
+                first.height / 2 -
+                mapRect.top;
+
+            const x2 =
+                second.left +
+                second.width / 2 -
+                mapRect.left;
+
+            const y2 =
+                second.top +
+                second.height / 2 -
+                mapRect.top;
+
+            const dx = x2 - x1;
+            const dy = y2 - y1;
+
+            const distance = Math.sqrt(
+                (dx * dx) +
+                (dy * dy)
+            );
+
+            const angle =
+                Math.atan2(dy, dx) *
+                180 /
+                Math.PI;
+
+            const route =
+                document.createElement("div");
+
+            route.className =
+                "pd-map-route";
+
+            route.style.left =
+                x1 + "px";
+
+            route.style.top =
+                y1 + "px";
+
+            route.style.width =
+                distance + "px";
+
+            route.style.transform =
+                "rotate(" + angle + "deg)";
+
+            map.insertBefore(
+                route,
+                map.firstChild
+            );
+        }
+    }
+
+
+    drawRoutes();
+
+    window.addEventListener(
+        "resize",
+        drawRoutes
+    );
+
+})();
+</script>
+
+{% endblock %}

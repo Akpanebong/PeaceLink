@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="panel">
+    <div class="kicker">Corridor response</div>
+    <h1>{{ title }}</h1>
+    <p>{{ notice.herd_group }} &middot; {{ notice.route }} &middot; arriving {{ notice.arrival_date }}</p>
+    <form method="post" style="margin-top:18px">
+      {% csrf_token %}
+      <div class="field">
+        {{ form.response_type.label_tag }}
+        {{ form.response_type }}
+        {{ form.response_type.errors }}
+      </div>
+      <div class="field">
+        {{ form.notes.label_tag }}
+        {{ form.notes }}
+        {{ form.notes.errors }}
+      </div>
+      <button class="btn primary" type="submit"><span class="btn-icon">&#10003;</span>Save response</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

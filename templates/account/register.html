@@ -1,0 +1,1767 @@
+{% extends "base.html" %}
+
+{% block title %}Create PeaceLink Account{% endblock %}
+
+{% block content %}
+<style>
+
+/* =========================================================
+   PEACELINK — REGISTRATION
+   Same visual system as Conflict Form
+   ========================================================= */
+
+.register-page {
+
+    width: 100%;
+
+    max-width: 900px;
+
+    margin: 0 auto;
+
+    padding: 0 0 45px;
+
+    color: #d8d2c5;
+}
+
+
+/* =========================================================
+   CONTAINER
+   ========================================================= */
+
+.register-container {
+
+    width: 100%;
+
+    max-width: 760px;
+
+    margin: 0 auto;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.register-header {
+
+    position: relative;
+
+    overflow: hidden;
+
+    padding: 24px 28px;
+
+    background:
+        linear-gradient(
+            110deg,
+            #5b2479 0%,
+            #41486b 48%,
+            #087d6d 100%
+        );
+
+    border-radius: 0 0 20px 20px;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.22);
+
+    text-align: left;
+}
+
+
+.register-header::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 190px;
+    height: 190px;
+
+    right: -70px;
+    top: -110px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(255,255,255,.04);
+}
+
+
+.register-kicker {
+
+    position: relative;
+
+    z-index: 2;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-bottom: 8px;
+
+    color: #d1b94c;
+
+    font-size: .68rem;
+
+    font-weight: 900;
+
+    letter-spacing: .17em;
+
+    text-transform: uppercase;
+}
+
+
+.register-header h1 {
+
+    position: relative;
+
+    z-index: 2;
+
+    margin: 0;
+
+    color: #f1e9d9;
+
+    font-size:
+        clamp(1.45rem, 4vw, 2rem);
+
+    font-weight: 900;
+}
+
+
+.register-header p {
+
+    position: relative;
+
+    z-index: 2;
+
+    max-width: 650px;
+
+    margin: 7px 0 0;
+
+    color: #aebaaa;
+
+    font-size: .78rem;
+
+    line-height: 1.55;
+}
+
+
+/* =========================================================
+   MAIN REGISTRATION CARD
+   ========================================================= */
+
+.register-card {
+
+    overflow: hidden;
+
+    margin-top: 15px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #24242d,
+            #202127
+        );
+
+    border:
+        1px solid #49325a;
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.20),
+        inset 0 1px 0
+        rgba(255,255,255,.015);
+
+    padding: 0;
+}
+
+
+/* =========================================================
+   PROGRESS
+   ========================================================= */
+
+.register-progress {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 7px;
+
+    padding: 18px 20px 0;
+}
+
+
+.progress-step {
+
+    height: 4px;
+
+    border-radius: 20px;
+
+    background: #35323c;
+
+    transition: .25s ease;
+}
+
+
+.progress-step.active {
+
+    background:
+        linear-gradient(
+            100deg,
+            #67367a,
+            #82418c
+        );
+}
+
+
+/* =========================================================
+   TABS
+   ========================================================= */
+
+.form-tabs {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 9px;
+
+    padding: 18px 20px;
+
+    border-bottom:
+        1px solid #37333e;
+}
+
+
+.form-tab {
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    min-height: 44px;
+
+    padding: 9px 12px;
+
+    color: #89978b;
+
+    background: #25272d;
+
+    border:
+        1px solid #3e3a45;
+
+    border-radius: 9px;
+
+    font-family: inherit;
+
+    font-size: .72rem;
+
+    font-weight: 900;
+
+    cursor: pointer;
+
+    transition:
+        border-color .2s ease,
+        background .2s ease,
+        color .2s ease,
+        transform .2s ease;
+}
+
+
+.form-tab:hover {
+
+    color: #c8d0c7;
+
+    border-color: #5b4264;
+
+    background: #292a31;
+}
+
+
+.form-tab.active {
+
+    color: #e5dce8;
+
+    background:
+        linear-gradient(
+            100deg,
+            rgba(103,54,122,.35),
+            rgba(130,65,140,.25)
+        );
+
+    border-color: #80508c;
+
+    box-shadow:
+        0 0 0 1px
+        rgba(134,80,147,.08);
+}
+
+
+.form-tab.completed {
+
+    color: #a8b5aa;
+
+    border-color: #4b594f;
+}
+
+
+.tab-number {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 23px;
+
+    height: 23px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: #34363b;
+
+    color: #8e9b91;
+
+    font-size: .65rem;
+
+    font-weight: 900;
+}
+
+
+.form-tab.active .tab-number {
+
+    background: #82418c;
+
+    color: #f1e9d9;
+}
+
+
+/* =========================================================
+   FORM SECTIONS
+   ========================================================= */
+
+.form-section {
+
+    display: none;
+
+    padding: 22px 20px;
+
+    animation: fadeIn .2s ease;
+}
+
+
+.form-section.active {
+
+    display: block;
+}
+
+
+@keyframes fadeIn {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateY(5px);
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0);
+    }
+}
+
+
+/* =========================================================
+   SECTION HEADING
+   ========================================================= */
+
+.section-heading {
+
+    margin-bottom: 22px;
+}
+
+
+.section-heading h2 {
+
+    margin: 0;
+
+    color: #ddd6c8;
+
+    font-size: .98rem;
+
+    font-weight: 900;
+}
+
+
+.section-heading p {
+
+    margin: 5px 0 0;
+
+    color: #6f8172;
+
+    font-size: .7rem;
+
+    line-height: 1.55;
+}
+
+
+/* =========================================================
+   FORM GRID
+   ========================================================= */
+
+.form-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 0 18px;
+}
+
+
+.form-group {
+
+    min-width: 0;
+
+    margin-bottom: 18px;
+}
+
+
+.form-group.full {
+
+    grid-column: 1 / -1;
+}
+
+
+/* =========================================================
+   LABELS
+   ========================================================= */
+
+.form-label {
+
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #92a192;
+
+    font-size: .7rem;
+
+    font-weight: 900;
+
+    letter-spacing: .02em;
+}
+
+
+.required {
+
+    margin-left: 3px;
+
+    color: #d86678;
+}
+
+
+/* =========================================================
+   INPUTS
+   ========================================================= */
+
+.register-card
+input:not([type="checkbox"]):not([type="radio"]),
+
+.register-card select,
+
+.register-card textarea {
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 11px 12px;
+
+    color: #d5dbd2;
+
+    background: #181a1f;
+
+    border:
+        1px solid #45354d;
+
+    border-radius: 9px;
+
+    outline: none;
+
+    font-family: inherit;
+
+    font-size: .79rem;
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease,
+        background .2s ease;
+}
+
+
+.register-card
+input:not([type="checkbox"]):not([type="radio"]):hover,
+
+.register-card select:hover,
+
+.register-card textarea:hover {
+
+    border-color: #5b4264;
+}
+
+
+.register-card
+input:not([type="checkbox"]):not([type="radio"]):focus,
+
+.register-card select:focus,
+
+.register-card textarea:focus {
+
+    border-color: #865093;
+
+    background: #1a1c21;
+
+    box-shadow:
+        0 0 0 2px
+        rgba(134,80,147,.12);
+}
+
+
+.register-card
+input::placeholder,
+
+.register-card
+textarea::placeholder {
+
+    color: #5e6c62;
+}
+
+
+.register-card select option {
+
+    background: #202127;
+
+    color: #d5dbd2;
+}
+
+
+.phone-field {
+
+    display: grid;
+
+    grid-template-columns: minmax(150px, .85fr) minmax(0, 1.15fr);
+
+    gap: 9px;
+}
+
+
+.phone-field .form-label,
+
+.phone-field .field-help,
+
+.phone-field .field-error {
+
+    grid-column: 1 / -1;
+}
+
+
+.phone-field .phone-country-select,
+
+.phone-field .phone-number-input {
+
+    min-width: 0;
+}
+
+
+/* =========================================================
+   HELP TEXT
+   ========================================================= */
+
+.field-help {
+
+    display: block;
+
+    margin-top: 6px;
+
+    color: #657669;
+
+    font-size: .67rem;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   ERRORS
+   ========================================================= */
+
+.field-error {
+
+    margin-top: 6px;
+
+    color: #ff6678;
+
+    font-size: .68rem;
+
+    font-weight: 700;
+}
+
+
+.non-field-errors {
+
+    margin-bottom: 18px;
+
+    padding: 11px 13px;
+
+    color: #ff7585;
+
+    background:
+        rgba(117,24,44,.20);
+
+    border:
+        1px solid #713243;
+
+    border-radius: 9px;
+
+    font-size: .72rem;
+}
+
+
+/* =========================================================
+   SECURITY NOTE
+   ========================================================= */
+
+.security-note {
+
+    margin-top: 4px;
+
+    padding: 13px 15px;
+
+    color: #718076;
+
+    background:
+        rgba(10,25,18,.30);
+
+    border:
+        1px solid #35443a;
+
+    border-radius: 9px;
+
+    font-size: .68rem;
+
+    line-height: 1.6;
+}
+
+
+.security-note strong {
+
+    color: #aebaae;
+}
+
+
+/* =========================================================
+   SECTION FOOTER / ACTIONS
+   ========================================================= */
+
+.section-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 14px;
+
+    margin-top: 22px;
+
+    padding-top: 16px;
+
+    border-top:
+        1px solid #35323c;
+}
+
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.btn {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    min-height: 38px;
+
+    padding: 9px 15px;
+
+    border-radius: 9px;
+
+    font-family: inherit;
+
+    font-size: .74rem;
+
+    font-weight: 900;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        border-color .18s ease,
+        background .18s ease;
+}
+
+
+.btn:hover {
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   SECONDARY BUTTON
+   ========================================================= */
+
+.btn-secondary {
+
+    color: #9aab9d;
+
+    background: #25282b;
+
+    border:
+        1px solid #3e4941;
+}
+
+
+.btn-secondary:hover {
+
+    color: #d0d8cf;
+
+    border-color: #526057;
+}
+
+
+/* =========================================================
+   PRIMARY BUTTON
+   ========================================================= */
+
+.btn-primary {
+
+    color: #f0e8d9;
+
+    background:
+        linear-gradient(
+            100deg,
+            #67367a,
+            #82418c
+        );
+
+    border:
+        1px solid #8a4b96;
+
+    box-shadow:
+        0 7px 18px
+        rgba(103,54,122,.20);
+}
+
+
+.btn-primary:hover {
+
+    background:
+        linear-gradient(
+            100deg,
+            #744084,
+            #914b9b
+        );
+
+    border-color: #9a59a5;
+}
+
+
+/* =========================================================
+   SUBMIT BUTTON
+   ========================================================= */
+
+.btn-submit {
+
+    min-width: 180px;
+
+    color: #f0e8d9;
+
+    background:
+        linear-gradient(
+            100deg,
+            #67367a,
+            #82418c
+        );
+
+    border:
+        1px solid #8a4b96;
+
+    box-shadow:
+        0 7px 18px
+        rgba(103,54,122,.20);
+}
+
+
+.btn-submit:hover {
+
+    background:
+        linear-gradient(
+            100deg,
+            #744084,
+            #914b9b
+        );
+
+    border-color: #9a59a5;
+}
+
+
+/* =========================================================
+   REGISTRATION FOOTER
+   ========================================================= */
+
+.register-footer {
+
+    margin-top: 17px;
+
+    padding: 0 10px;
+
+    text-align: center;
+
+    color: #657669;
+
+    font-size: .67rem;
+}
+
+
+.register-footer a {
+
+    color: #b58cc0;
+
+    font-weight: 900;
+
+    text-decoration: none;
+}
+
+
+.register-footer a:hover {
+
+    color: #d3a7d8;
+
+    text-decoration: underline;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .register-header {
+
+        padding: 21px 22px;
+    }
+
+
+    .register-card {
+
+        margin-top: 15px;
+    }
+
+
+    .form-tabs {
+
+        padding: 15px 16px;
+
+        gap: 6px;
+    }
+
+
+    .form-tab {
+
+        min-height: 42px;
+
+        padding: 8px 5px;
+
+        font-size: .66rem;
+    }
+
+
+    .tab-number {
+
+        width: 21px;
+
+        height: 21px;
+
+        font-size: .6rem;
+    }
+
+
+    .form-section {
+
+        padding: 19px 16px;
+    }
+
+
+    .form-grid {
+
+        grid-template-columns: 1fr;
+    }
+
+
+    .form-group.full {
+
+        grid-column: auto;
+    }
+
+
+    .phone-field {
+
+        grid-template-columns: 1fr;
+    }
+
+
+    .section-actions {
+
+        align-items: stretch;
+
+        flex-direction: column-reverse;
+    }
+
+
+    .section-actions .btn {
+
+        width: 100%;
+    }
+
+
+    .btn-submit {
+
+        min-width: 0;
+    }
+}
+
+
+@media (max-width: 430px) {
+
+    .register-header h1 {
+
+        font-size: 1.35rem;
+    }
+
+
+    .register-header p {
+
+        font-size: .72rem;
+    }
+
+
+    .register-kicker {
+
+        font-size: .62rem;
+    }
+}
+
+</style>
+
+
+<section class="register-page">
+
+    <div class="register-container">
+
+        <!-- HEADER -->
+        <header class="register-header">
+
+            <div class="register-kicker">
+                PEACELINK
+            </div>
+
+            <h1>Create your account</h1>
+
+            <p>
+                Join PeaceLink and connect with communities,
+                organizations and peacebuilding partners.
+            </p>
+
+        </header>
+
+
+        <!-- CARD -->
+        <div class="register-card">
+
+            <!-- PROGRESS -->
+            <div class="register-progress">
+                <div class="progress-step active" data-progress="1"></div>
+                <div class="progress-step" data-progress="2"></div>
+                <div class="progress-step" data-progress="3"></div>
+            </div>
+
+
+            <!-- TABS -->
+            <div class="form-tabs">
+
+                <button
+                    type="button"
+                    class="form-tab active"
+                    data-section="contact"
+                >
+                    <span class="tab-number">1</span>
+                    Contact
+                </button>
+
+                <button
+                    type="button"
+                    class="form-tab"
+                    data-section="organization"
+                >
+                    <span class="tab-number">2</span>
+                    Organization
+                </button>
+
+                <button
+                    type="button"
+                    class="form-tab"
+                    data-section="account"
+                >
+                    <span class="tab-number">3</span>
+                    Account
+                </button>
+
+            </div>
+
+
+            <!-- FORM -->
+            <form method="post" novalidate>
+
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="non-field-errors">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+
+                <!-- =====================================================
+                     STEP 1 — CONTACT
+                     ===================================================== -->
+
+                <section
+                    class="form-section active"
+                    id="section-contact"
+                >
+
+                    <div class="section-heading">
+                        <h2>Contact information</h2>
+
+                        <p>
+                            Tell us how we can identify and contact you.
+                        </p>
+                    </div>
+
+
+                    <div class="form-grid">
+
+                        <!-- First name -->
+                        <div class="form-group">
+
+                            <label class="form-label" for="{{ form.first_name.id_for_label }}">
+                                First name
+                                {% if form.first_name.field.required %}
+                                    <span class="required">*</span>
+                                {% endif %}
+                            </label>
+
+                            {{ form.first_name }}
+
+                            {% if form.first_name.errors %}
+                                <div class="field-error">
+                                    {{ form.first_name.errors }}
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- Last name -->
+                        <div class="form-group">
+
+                            <label class="form-label" for="{{ form.last_name.id_for_label }}">
+                                Last name
+                                {% if form.last_name.field.required %}
+                                    <span class="required">*</span>
+                                {% endif %}
+                            </label>
+
+                            {{ form.last_name }}
+
+                            {% if form.last_name.errors %}
+                                <div class="field-error">
+                                    {{ form.last_name.errors }}
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- Email -->
+                        <div class="form-group full">
+
+                            <label class="form-label" for="{{ form.email.id_for_label }}">
+                                Email address
+                                {% if form.email.field.required %}
+                                    <span class="required">*</span>
+                                {% endif %}
+                            </label>
+
+                            {{ form.email }}
+
+                            {% if form.email.errors %}
+                                <div class="field-error">
+                                    {{ form.email.errors }}
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+
+
+                        <!-- Phone -->
+                        <div class="form-group full phone-field">
+
+                            <label class="form-label" for="{{ form.phone.id_for_label }}">
+                                Phone number
+                                {% if form.phone.field.required %}
+                                    <span class="required">*</span>
+                                {% endif %}
+                            </label>
+
+                            {{ form.phone }}
+
+                            {% if form.phone.errors %}
+                                <div class="field-error">
+                                    {{ form.phone.errors }}
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- Community -->
+                        <div class="form-group full">
+
+                            <label class="form-label" for="{{ form.community.id_for_label }}">
+                                Community
+                                {% if form.community.field.required %}
+                                    <span class="required">*</span>
+                                {% endif %}
+                            </label>
+
+                            {{ form.community }}
+
+                            <small class="field-help">
+                                Select the community you are primarily connected with.
+                            </small>
+
+                            {% if form.community.errors %}
+                                <div class="field-error">
+                                    {{ form.community.errors }}
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="section-actions">
+
+                        <span></span>
+
+                        <button
+                            type="button"
+                            class="btn btn-primary next-btn"
+                            data-next="organization"
+                        >
+                            Continue to Organization →
+                        </button>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =====================================================
+                     STEP 2 — ORGANIZATION
+                     ===================================================== -->
+
+                <section
+                    class="form-section"
+                    id="section-organization"
+                >
+
+                    <div class="section-heading">
+
+                        <h2>Organization & role</h2>
+
+                        <p>
+                            Help us understand your role and organizational
+                            affiliation within the PeaceLink network.
+                        </p>
+
+                    </div>
+
+
+                    <div class="form-grid">
+
+                        <!-- Role -->
+                        <div class="form-group">
+
+                            <label class="form-label" for="{{ form.role.id_for_label }}">
+                                Role
+                                {% if form.role.field.required %}
+                                    <span class="required">*</span>
+                                {% endif %}
+                            </label>
+
+                            {{ form.role }}
+
+                            {% if form.role.errors %}
+                                <div class="field-error">
+                                    {{ form.role.errors }}
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- Preferred language -->
+                        <div class="form-group">
+
+                            <label
+                                class="form-label"
+                                for="{{ form.preferred_language.id_for_label }}"
+                            >
+                                Preferred language
+                            </label>
+
+                            {{ form.preferred_language }}
+
+                            {% if form.preferred_language.errors %}
+                                <div class="field-error">
+                                    {{ form.preferred_language.errors }}
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- Organization -->
+                        <div class="form-group full">
+
+                            <label
+                                class="form-label"
+                                for="{{ form.organization.id_for_label }}"
+                            >
+                                Organization
+                            </label>
+
+                            {{ form.organization }}
+
+                            <small class="field-help">
+                                Enter the organization, institution,
+                                government body or group you represent.
+                            </small>
+
+                            {% if form.organization.errors %}
+                                <div class="field-error">
+                                    {{ form.organization.errors }}
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- Designation -->
+                        <div class="form-group">
+
+                            <label
+                                class="form-label"
+                                for="{{ form.designation.id_for_label }}"
+                            >
+                                Designation
+                            </label>
+
+                            {{ form.designation }}
+
+                            {% if form.designation.errors %}
+                                <div class="field-error">
+                                    {{ form.designation.errors }}
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- USSD identifier -->
+                        <div class="form-group">
+
+                            <label
+                                class="form-label"
+                                for="{{ form.ussd_identifier.id_for_label }}"
+                            >
+                                USSD identifier
+                            </label>
+
+                            {{ form.ussd_identifier }}
+
+                            <small class="field-help">
+                                Optional identifier used for PeaceLink
+                                mobile/USSD services.
+                            </small>
+
+                            {% if form.ussd_identifier.errors %}
+                                <div class="field-error">
+                                    {{ form.ussd_identifier.errors }}
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="section-actions">
+
+                        <button
+                            type="button"
+                            class="btn btn-secondary prev-btn"
+                            data-prev="contact"
+                        >
+                            ← Back
+                        </button>
+
+                        <button
+                            type="button"
+                            class="btn btn-primary next-btn"
+                            data-next="account"
+                        >
+                            Continue to Account →
+                        </button>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =====================================================
+                     STEP 3 — ACCOUNT
+                     ===================================================== -->
+
+                <section
+                    class="form-section"
+                    id="section-account"
+                >
+
+                    <div class="section-heading">
+
+                        <h2>Account security</h2>
+
+                        <p>
+                            Create the credentials you will use to sign in
+                            to your PeaceLink account.
+                        </p>
+
+                    </div>
+
+
+                    <div class="form-grid">
+
+                        <!-- Username -->
+                        {% if form.username %}
+                        <div class="form-group full">
+
+                            <label
+                                class="form-label"
+                                for="{{ form.username.id_for_label }}"
+                            >
+                                Username
+                                {% if form.username.field.required %}
+                                    <span class="required">*</span>
+                                {% endif %}
+                            </label>
+
+                            {{ form.username }}
+
+                            {% if form.username.errors %}
+                                <div class="field-error">
+                                    {{ form.username.errors }}
+                                </div>
+                            {% endif %}
+
+                        </div>
+                        {% endif %}
+
+
+                        <!-- Password 1 -->
+                        {% if form.password1 %}
+                        <div class="form-group">
+
+                            <label
+                                class="form-label"
+                                for="{{ form.password1.id_for_label }}"
+                            >
+                                Password
+                                {% if form.password1.field.required %}
+                                    <span class="required">*</span>
+                                {% endif %}
+                            </label>
+
+                            {{ form.password1 }}
+
+                            {% if form.password1.help_text %}
+                                <small class="field-help">
+                                    {{ form.password1.help_text|safe }}
+                                </small>
+                            {% endif %}
+
+                            {% if form.password1.errors %}
+                                <div class="field-error">
+                                    {{ form.password1.errors }}
+                                </div>
+                            {% endif %}
+
+                        </div>
+                        {% endif %}
+
+
+                        <!-- Password 2 -->
+                        {% if form.password2 %}
+                        <div class="form-group">
+
+                            <label
+                                class="form-label"
+                                for="{{ form.password2.id_for_label }}"
+                            >
+                                Confirm password
+                                {% if form.password2.field.required %}
+                                    <span class="required">*</span>
+                                {% endif %}
+                            </label>
+
+                            {{ form.password2 }}
+
+                            {% if form.password2.errors %}
+                                <div class="field-error">
+                                    {{ form.password2.errors }}
+                                </div>
+                            {% endif %}
+
+                        </div>
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="security-note">
+
+                        🔐
+                        <strong>Your information is protected.</strong>
+
+                        Your account details are used only to provide access
+                        to PeaceLink services and support secure communication
+                        across the network.
+
+                    </div>
+
+
+                    <div class="section-actions">
+
+                        <button
+                            type="button"
+                            class="btn btn-secondary prev-btn"
+                            data-prev="organization"
+                        >
+                            ← Back
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="btn btn-submit"
+                        >
+                            Create PeaceLink Account →
+                        </button>
+
+                    </div>
+
+                </section>
+
+            </form>
+
+        </div>
+
+
+        <!-- FOOTER -->
+        <div class="register-footer">
+
+            Already have an account?
+
+            <a href="{% url 'login' %}">
+                Sign in
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const sections = {
+        contact: document.getElementById("section-contact"),
+        organization: document.getElementById("section-organization"),
+        account: document.getElementById("section-account")
+    };
+
+    const tabs = document.querySelectorAll(".form-tab");
+    const progress = document.querySelectorAll(".progress-step");
+
+    const order = [
+        "contact",
+        "organization",
+        "account"
+    ];
+
+    let current = "contact";
+
+
+    function showSection(sectionName) {
+
+        if (!sections[sectionName]) {
+            return;
+        }
+
+        current = sectionName;
+
+        /* Hide all sections */
+        Object.values(sections).forEach(section => {
+            section.classList.remove("active");
+        });
+
+        /* Show selected section */
+        sections[sectionName].classList.add("active");
+
+
+        /* Update tabs */
+        tabs.forEach(tab => {
+
+            const tabSection = tab.dataset.section;
+
+            tab.classList.remove("active");
+
+            if (tabSection === sectionName) {
+                tab.classList.add("active");
+            }
+
+            const currentIndex = order.indexOf(current);
+            const tabIndex = order.indexOf(tabSection);
+
+            if (tabIndex < currentIndex) {
+                tab.classList.add("completed");
+            } else {
+                tab.classList.remove("completed");
+            }
+
+        });
+
+
+        /* Update progress */
+        const currentIndex = order.indexOf(sectionName);
+
+        progress.forEach((bar, index) => {
+
+            if (index <= currentIndex) {
+                bar.classList.add("active");
+            } else {
+                bar.classList.remove("active");
+            }
+
+        });
+
+        /* Keep the current section visible at top */
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    }
+
+
+    /* =========================================================
+       TAB BUTTONS
+       ========================================================= */
+
+    tabs.forEach(tab => {
+
+        tab.addEventListener("click", function () {
+
+            const target = this.dataset.section;
+
+            /*
+             * Allow navigation between all sections.
+             *
+             * Django remains responsible for final validation.
+             */
+            showSection(target);
+
+        });
+
+    });
+
+
+    /* =========================================================
+       NEXT BUTTONS
+       ========================================================= */
+
+    document.querySelectorAll(".next-btn").forEach(button => {
+
+        button.addEventListener("click", function () {
+
+            const target = this.dataset.next;
+
+            showSection(target);
+
+        });
+
+    });
+
+
+    /* =========================================================
+       BACK BUTTONS
+       ========================================================= */
+
+    document.querySelectorAll(".prev-btn").forEach(button => {
+
+        button.addEventListener("click", function () {
+
+            const target = this.dataset.prev;
+
+            showSection(target);
+
+        });
+
+    });
+
+
+    /* =========================================================
+       RETURN TO THE SECTION CONTAINING DJANGO VALIDATION ERROR
+       ========================================================= */
+
+    const errorFields = document.querySelectorAll(
+        ".field-error, .non-field-errors"
+    );
+
+    if (errorFields.length) {
+
+        const sectionsWithErrors = [
+            {
+                name: "contact",
+                fields: [
+                    "first_name",
+                    "last_name",
+                    "email",
+                    "phone",
+                    "community"
+                ]
+            },
+
+            {
+                name: "organization",
+                fields: [
+                    "role",
+                    "preferred_language",
+                    "organization",
+                    "designation",
+                    "ussd_identifier"
+                ]
+            },
+            {
+                name: "account",
+                fields: [
+                    "username",
+                    "password1",
+                    "password2"
+                ]
+            }
+        ];
+
+        let errorSection = null;
+
+        for (const section of sectionsWithErrors) {
+
+            for (const fieldName of section.fields) {
+
+                const field = document.getElementById(
+                    "id_" + fieldName
+                );
+
+                if (
+                    field &&
+                    (
+                        field.classList.contains("is-invalid") ||
+                        field.parentElement.querySelector(".field-error")
+                    )
+                ) {
+                    errorSection = section.name;
+                    break;
+                }
+
+            }
+
+            if (errorSection) {
+                break;
+            }
+        }
+
+        if (errorSection) {
+            showSection(errorSection);
+        }
+    }
+
+});
+</script>
+
+{% endblock %}

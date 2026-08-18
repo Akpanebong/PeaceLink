@@ -1,0 +1,109 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ APP_NAME }}{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/peacelink.css' %}">
+  <link rel="icon" href="{% static 'images/peacelink.png' %}">
+
+</head>
+<body>
+  <input class="sidebar-toggle-input" type="checkbox" id="sidebar-toggle" aria-label="Collapse sidebar">
+  <aside class="sidebar">
+    <div class="sidebar-head">
+      <a class="brand" href="{% url 'home' %}">
+        <img class="brand-logo" src="{% static 'images/peacelink.png' %}" alt="PeaceLink logo">
+        <span class="brand-copy">
+          <span class="brand-title">{{ APP_NAME }}</span>
+          <span class="brand-subtitle">{{ APP_TAGLINE }}</span>
+        </span>
+      </a>
+      <label class="sidebar-toggle" for="sidebar-toggle" title="Collapse sidebar">
+        <span class="btn-icon">&#9776;</span>
+      </label>
+    </div>
+    <nav class="nav sidebar-nav">
+      <a href="{% url 'home' %}"><span class="nav-icon">&#8962;</span><span class="nav-text">{{ UI.home }}</span></a>
+      <a href="{% url 'trade_list' %}"><span class="nav-icon">&harr;</span><span class="nav-text">{{ UI.trade }}</span></a>
+      <a href="{% url 'corridor_list' %}"><span class="nav-icon">!</span><span class="nav-text">{{ UI.corridors }}</span></a>
+      <a href="{% url 'agreement_list' %}"><span class="nav-icon">&#10003;</span><span class="nav-text">{{ UI.agreements }}</span></a>
+      <a href="{% url 'conflict_list' %}"><span class="nav-icon">?</span><span class="nav-text">{{ UI.resolve }}</span></a>
+      <a href="{% url 'dashboard' %}"><span class="nav-icon">&#9638;</span><span class="nav-text">{{ UI.dashboard }}</span></a>
+      {% if user.is_authenticated %}
+        <a href="{% url 'profile' %}"><span class="nav-icon">&#9679;</span><span class="nav-text">{{ UI.profile }}</span></a>
+        <a href="{% url 'logout' %}"><span class="nav-icon">&larr;</span><span class="nav-text">{{ UI.sign_out }} {{ user.get_full_name|default:user.username }}</span></a>
+      {% else %}
+        <a href="{% url 'login' %}"><span class="nav-icon">&rarr;</span><span class="nav-text">{{ UI.sign_in }}</span></a>
+      {% endif %}
+    </nav>
+  </aside>
+
+  <header class="mobile-topbar shell">
+    <a class="brand" href="{% url 'home' %}">
+      <img class="brand-logo" src="{% static 'images/peacelink.png' %}" alt="PeaceLink logo">
+      <span class="brand-copy">
+        <span class="brand-title">{{ APP_NAME }}</span>
+        <span class="brand-subtitle">{{ APP_TAGLINE }}</span>
+      </span>
+    </a>
+  </header>
+
+  <div class="page-frame">
+    <div class="page-top">
+      {% if user.is_authenticated %}
+        <details class="language-picker">
+          <summary aria-label="Language">
+            <span class="notification-icon">A</span>
+          </summary>
+          <form class="language-menu" method="post" action="{% url 'set_language_preference' %}">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.get_full_path }}">
+            <label class="label" for="id_language">{{ UI.language }}</label>
+            <select class="input" id="id_language" name="language" onchange="this.form.submit()">
+              {% for code,label in LANGUAGES %}
+                <option value="{{ code }}" {% if code == ACTIVE_LANGUAGE %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </form>
+        </details>
+        <details class="notifications">
+          <summary aria-label="Notifications">
+            <span class="notification-icon">!</span>
+            {% if NOTIFICATION_COUNT %}<span class="notification-badge">{{ NOTIFICATION_COUNT }}</span>{% endif %}
+          </summary>
+          <div class="notification-menu">
+            <div class="label">{{ UI.notifications }}</div>
+            {% for notification in NOTIFICATIONS %}
+              <a class="notification-item" href="{{ notification.get_absolute_url }}">
+                <strong>{{ notification.title }}</strong>
+                <span>{{ notification.message }}</span>
+              </a>
+            {% empty %}
+              <p>{{ UI.no_new_notifications }}</p>
+            {% endfor %}
+          </div>
+        </details>
+      {% endif %}
+    </div>
+    <main class="shell">
+      {% if messages %}
+        <div class="messages">
+          {% for message in messages %}<div class="message">{{ message }}</div>{% endfor %}
+        </div>
+      {% endif %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  <nav class="bottom-nav">
+    <a href="{% url 'home' %}">{{ UI.home }}</a>
+    <a href="{% url 'trade_list' %}">{{ UI.trade }}</a>
+    <a href="{% url 'corridor_list' %}">{{ UI.routes }}</a>
+    <a href="{% url 'agreement_list' %}">{{ UI.agreements }}</a>
+    <a href="{% url 'conflict_report' %}">{{ UI.resolve }}</a>
+    <a href="{% url 'dashboard' %}">{{ UI.intel }}</a>
+  </nav>
+</body>
+</html>

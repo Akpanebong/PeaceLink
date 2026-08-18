@@ -1,0 +1,756 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Stakeholders
+{% endblock %}
+
+{% block content %}
+
+<style>
+    .stakeholder-page {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 20px 18px 50px;
+    }
+
+    /* --------------------------------
+       HEADER
+    -------------------------------- */
+
+    .stakeholder-header {
+        background: linear-gradient(
+            135deg,
+            #7415a8,
+            #087d69
+        );
+
+        margin: -20px -18px 18px;
+        padding: 22px 24px;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .stakeholder-header h1 {
+        margin: 0;
+        color: #e7ed36;
+        font-size: 24px;
+        font-weight: 800;
+    }
+
+    .stakeholder-header p {
+        margin: 4px 0 0;
+        color: rgba(255,255,255,.65);
+        font-size: 14px;
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .status-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #0abf63;
+        box-shadow: 0 0 10px rgba(10,191,99,.4);
+    }
+
+    .notification-icon {
+        font-size: 22px;
+    }
+
+
+    /* --------------------------------
+       PAGE INTRO
+    -------------------------------- */
+
+    .stakeholder-intro {
+        margin: 18px 4px;
+    }
+
+    .stakeholder-intro h2 {
+        margin: 0;
+        font-size: 20px;
+        color: #e7eadf;
+    }
+
+    .stakeholder-intro p {
+        margin: 5px 0 0;
+        color: #6d9b73;
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+
+    /* --------------------------------
+       GROUP CARDS
+    -------------------------------- */
+
+    .stakeholder-groups {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .stakeholder-card {
+        position: relative;
+
+        display: flex;
+        align-items: center;
+        gap: 16px;
+
+        padding: 16px 18px;
+
+        background: #0b2416;
+
+        border: 1px solid #1d5330;
+        border-radius: 16px;
+
+        text-decoration: none;
+
+        transition:
+            transform .15s ease,
+            border-color .15s ease,
+            background .15s ease;
+    }
+
+    .stakeholder-card:hover {
+        transform: translateY(-1px);
+        border-color: #3c7447;
+        background: #0d2919;
+    }
+
+
+    /* --------------------------------
+       COLOUR STRIPE
+    -------------------------------- */
+
+    .stakeholder-card::before {
+        content: "";
+
+        position: absolute;
+        left: -1px;
+        top: -1px;
+        bottom: -1px;
+
+        width: 4px;
+
+        border-radius: 16px 0 0 16px;
+    }
+
+    .government::before {
+        background: #4c8de8;
+    }
+
+    .ngo::before {
+        background: #c61be8;
+    }
+
+    .community-leader::before {
+        background: #f0b800;
+    }
+
+    .religious-leader::before {
+        background: #ef1744;
+    }
+
+    .other::before {
+        background: #26a96c;
+    }
+
+
+    /* --------------------------------
+       ICON
+    -------------------------------- */
+
+    .stakeholder-icon {
+        flex: 0 0 54px;
+
+        width: 54px;
+        height: 54px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 14px;
+
+        background: #102c1d;
+        border: 1px solid #28573a;
+
+        font-size: 25px;
+    }
+
+
+    /* --------------------------------
+       CARD CONTENT
+    -------------------------------- */
+
+    .stakeholder-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .stakeholder-content h3 {
+        margin: 0;
+
+        color: #e8eadf;
+        font-size: 16px;
+        font-weight: 750;
+    }
+
+    .stakeholder-description {
+        margin: 5px 0 0;
+
+        color: #4f7f57;
+
+        font-size: 13px;
+        line-height: 1.4;
+    }
+
+    .stakeholder-count {
+        display: inline-block;
+
+        margin-top: 7px;
+
+        color: #7eaf82;
+        font-size: 12px;
+    }
+
+
+    /* --------------------------------
+       ARROW
+    -------------------------------- */
+
+    .stakeholder-arrow {
+        color: #3c7546;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+
+    /* --------------------------------
+       CONTACT LIST
+    -------------------------------- */
+
+    .contact-list {
+        margin-top: 20px;
+    }
+
+    .contact-list-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        margin-bottom: 12px;
+    }
+
+    .contact-list-header h2 {
+        margin: 0;
+
+        color: #e7eadf;
+        font-size: 19px;
+    }
+
+    .back-link {
+        color: #76ad7d;
+        text-decoration: none;
+        font-size: 13px;
+    }
+
+    .back-link:hover {
+        color: #a7d8ad;
+    }
+
+
+    .contact-card {
+        position: relative;
+
+        margin-bottom: 10px;
+        padding: 15px;
+
+        background: #0b2416;
+
+        border: 1px solid #1d5330;
+        border-radius: 14px;
+    }
+
+    .contact-name {
+        color: #e7eadf;
+        font-size: 16px;
+        font-weight: 750;
+        margin-bottom: 4px;
+    }
+
+    .contact-designation {
+        color: #6fa477;
+        font-size: 13px;
+    }
+
+    .contact-organization {
+        color: #9bc29f;
+        font-size: 13px;
+        margin-top: 4px;
+    }
+
+    .contact-details {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 12px;
+    }
+
+    .contact-detail {
+        padding: 6px 9px;
+
+        border: 1px solid #28573a;
+        border-radius: 8px;
+
+        color: #79ad80;
+        font-size: 12px;
+
+        text-decoration: none;
+    }
+
+    .contact-detail:hover {
+        border-color: #4d8055;
+    }
+
+    .holder-id {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+
+        color: #426c49;
+        font-size: 10px;
+    }
+
+
+    /* --------------------------------
+       PRIVACY NOTICE
+    -------------------------------- */
+
+    .privacy-notice {
+        margin-top: 18px;
+
+        padding: 17px 18px;
+
+        border: 1px solid #1d5330;
+        border-radius: 15px;
+
+        background: #0b2416;
+
+        color: #75a77b;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+
+    /* --------------------------------
+       EMPTY STATE
+    -------------------------------- */
+
+    .empty-state {
+        padding: 35px 20px;
+
+        text-align: center;
+
+        border: 1px dashed #28573a;
+        border-radius: 15px;
+
+        color: #639369;
+    }
+
+
+    /* --------------------------------
+       MOBILE
+    -------------------------------- */
+
+    @media (max-width: 600px) {
+
+        .stakeholder-page {
+            padding-left: 14px;
+            padding-right: 14px;
+        }
+
+        .stakeholder-header {
+            margin-left: -14px;
+            margin-right: -14px;
+        }
+
+        .stakeholder-card {
+            padding: 15px;
+        }
+
+        .stakeholder-icon {
+            width: 48px;
+            height: 48px;
+            flex-basis: 48px;
+        }
+    }
+</style>
+
+
+<div class="stakeholder-page">
+
+    <!-- HEADER -->
+
+    <div class="stakeholder-header">
+
+        <div>
+            <h1>Stakeholders</h1>
+
+            <p>
+                Connect. Coordinate. Collaborate.
+            </p>
+        </div>
+
+        <div class="header-actions">
+            <span class="status-dot"></span>
+            <span class="notification-icon">🔔</span>
+        </div>
+
+    </div>
+
+
+    {% if not current_type %}
+
+        <!-- ==========================================
+             MAIN STAKEHOLDER GROUPS
+        =========================================== -->
+
+        <div class="stakeholder-intro">
+
+            <h2>Stakeholder Directory</h2>
+
+            <p>
+                Find and connect with relevant institutions,
+                leaders, partners and community actors.
+            </p>
+
+        </div>
+
+
+        <div class="stakeholder-groups">
+
+            {% for group in stakeholder_groups %}
+
+                {% if group.value == "government" %}
+                    {% with icon="🏛️" css_class="government" %}
+                        <a
+                            href="{% url 'stakeholder_type_list' group.value %}"
+                            class="stakeholder-card {{ css_class }}"
+                        >
+                            <div class="stakeholder-icon">
+                                {{ icon }}
+                            </div>
+
+                            <div class="stakeholder-content">
+
+                                <h3>
+                                    {{ group.label }}
+                                </h3>
+
+                                <p class="stakeholder-description">
+                                    Government institutions,
+                                    departments and public officials.
+                                </p>
+
+                                <span class="stakeholder-count">
+                                    {{ group.count }} contact{{ group.count|pluralize }}
+                                </span>
+
+                            </div>
+
+                            <div class="stakeholder-arrow">
+                                ▼
+                            </div>
+                        </a>
+                    {% endwith %}
+
+                {% elif group.value == "ngo" %}
+
+                    {% with icon="🌍" css_class="ngo" %}
+                        <a
+                            href="{% url 'stakeholder_type_list' group.value %}"
+                            class="stakeholder-card {{ css_class }}"
+                        >
+
+                            <div class="stakeholder-icon">
+                                {{ icon }}
+                            </div>
+
+                            <div class="stakeholder-content">
+
+                                <h3>
+                                    {{ group.label }}
+                                </h3>
+
+                                <p class="stakeholder-description">
+                                    NGO partners, humanitarian agencies
+                                    and civil society organisations.
+                                </p>
+
+                                <span class="stakeholder-count">
+                                    {{ group.count }} contact{{ group.count|pluralize }}
+                                </span>
+
+                            </div>
+
+                            <div class="stakeholder-arrow">
+                                ▼
+                            </div>
+
+                        </a>
+                    {% endwith %}
+
+                {% elif group.value == "community_leader" %}
+
+                    {% with icon="🏘️" css_class="community-leader" %}
+                        <a
+                            href="{% url 'stakeholder_type_list' group.value %}"
+                            class="stakeholder-card {{ css_class }}"
+                        >
+
+                            <div class="stakeholder-icon">
+                                {{ icon }}
+                            </div>
+
+                            <div class="stakeholder-content">
+
+                                <h3>
+                                    {{ group.label }}
+                                </h3>
+
+                                <p class="stakeholder-description">
+                                    Paramount chiefs, local leaders,
+                                    elders and community representatives.
+                                </p>
+
+                                <span class="stakeholder-count">
+                                    {{ group.count }} contact{{ group.count|pluralize }}
+                                </span>
+
+                            </div>
+
+                            <div class="stakeholder-arrow">
+                                ▼
+                            </div>
+
+                        </a>
+                    {% endwith %}
+
+                {% elif group.value == "religious_leader" %}
+
+                    {% with icon="🕊️" css_class="religious-leader" %}
+                        <a
+                            href="{% url 'stakeholder_type_list' group.value %}"
+                            class="stakeholder-card {{ css_class }}"
+                        >
+
+                            <div class="stakeholder-icon">
+                                {{ icon }}
+                            </div>
+
+                            <div class="stakeholder-content">
+
+                                <h3>
+                                    {{ group.label }}
+                                </h3>
+
+                                <p class="stakeholder-description">
+                                    Faith leaders, churches, mosques
+                                    and religious institutions.
+                                </p>
+
+                                <span class="stakeholder-count">
+                                    {{ group.count }} contact{{ group.count|pluralize }}
+                                </span>
+
+                            </div>
+
+                            <div class="stakeholder-arrow">
+                                ▼
+                            </div>
+
+                        </a>
+                    {% endwith %}
+
+                {% else %}
+
+                    {% with icon="👥" css_class="other" %}
+                        <a
+                            href="{% url 'stakeholder_type_list' group.value %}"
+                            class="stakeholder-card {{ css_class }}"
+                        >
+
+                            <div class="stakeholder-icon">
+                                {{ icon }}
+                            </div>
+
+                            <div class="stakeholder-content">
+
+                                <h3>
+                                    {{ group.label }}
+                                </h3>
+
+                                <p class="stakeholder-description">
+                                    Other relevant stakeholders
+                                    and strategic contacts.
+                                </p>
+
+                                <span class="stakeholder-count">
+                                    {{ group.count }} contact{{ group.count|pluralize }}
+                                </span>
+
+                            </div>
+
+                            <div class="stakeholder-arrow">
+                                ▼
+                            </div>
+
+                        </a>
+                    {% endwith %}
+
+                {% endif %}
+
+            {% endfor %}
+
+        </div>
+
+
+        <!-- PRIVACY -->
+
+        <div class="privacy-notice">
+            🔒 Stakeholder contact information is protected and
+            should only be accessed and shared for legitimate
+            PeaceLink coordination and engagement purposes.
+        </div>
+
+
+    {% else %}
+
+        <!-- ==========================================
+             SPECIFIC STAKEHOLDER GROUP
+        =========================================== -->
+
+        <div class="contact-list">
+
+            <div class="contact-list-header">
+
+                <div>
+                    <h2>
+                        {{ current_type_label }}
+                    </h2>
+                </div>
+
+                <a
+                    href="{% url 'stakeholder_list' %}"
+                    class="back-link"
+                >
+                    ← All stakeholders
+                </a>
+
+            </div>
+
+
+            {% if stakeholders %}
+
+                {% for stakeholder in stakeholders %}
+
+                    <div class="contact-card">
+
+                        <span class="holder-id">
+                            {{ stakeholder.holder_id }}
+                        </span>
+
+                        <div class="contact-name">
+                            {{ stakeholder.name }}
+                        </div>
+
+                        {% if stakeholder.designation %}
+                            <div class="contact-designation">
+                                {{ stakeholder.designation }}
+                            </div>
+                        {% endif %}
+
+                        {% if stakeholder.organization %}
+                            <div class="contact-organization">
+                                {{ stakeholder.organization }}
+                            </div>
+                        {% endif %}
+
+
+                        <div class="contact-details">
+
+                            {% if stakeholder.email %}
+                                <a
+                                    href="mailto:{{ stakeholder.email }}"
+                                    class="contact-detail"
+                                >
+                                    ✉ {{ stakeholder.email }}
+                                </a>
+                            {% endif %}
+
+                            {% if stakeholder.phone %}
+                                <a
+                                    href="tel:{{ stakeholder.phone }}"
+                                    class="contact-detail"
+                                >
+                                    ☎ {{ stakeholder.phone }}
+                                </a>
+                            {% endif %}
+
+                        </div>
+
+
+                        {% if stakeholder.communities.all %}
+
+                            <div
+                                style="
+                                    margin-top:12px;
+                                    color:#557f5b;
+                                    font-size:12px;
+                                "
+                            >
+                                📍
+
+                                {% for community in stakeholder.communities.all %}
+                                    {{ community.name }}{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="empty-state">
+
+                    <div style="font-size:32px; margin-bottom:10px;">
+                        👥
+                    </div>
+
+                    <div>
+                        No {{ current_type_label|lower }} stakeholders
+                        have been added yet.
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

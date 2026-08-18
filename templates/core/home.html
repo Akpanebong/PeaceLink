@@ -1,0 +1,661 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+/* =========================================================
+   PEACELINK HOME
+   ========================================================= */
+
+.peacelink-home {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 10px 0 55px;
+    color: #d8d2c5;
+}
+
+/* ---------------------------------------------------------
+   HERO
+   --------------------------------------------------------- */
+
+.home-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(300px, .8fr);
+    gap: 20px;
+    margin-bottom: 22px;
+}
+
+.home-hero-main,
+.home-pulse,
+.home-panel {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.035),
+            rgba(255,255,255,.012)
+        );
+    border: 1px solid rgba(216, 210, 197, .11);
+    border-radius: 18px;
+    box-shadow: 0 14px 40px rgba(0,0,0,.12);
+}
+
+.home-hero-main {
+    padding: 36px;
+    position: relative;
+    overflow: hidden;
+}
+
+.home-hero-main::after {
+    content: "";
+    position: absolute;
+    width: 260px;
+    height: 260px;
+    right: -100px;
+    bottom: -120px;
+    border-radius: 50%;
+    border: 1px solid rgba(210, 180, 120, .14);
+}
+
+.home-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: #c9a96a;
+    margin-bottom: 15px;
+}
+
+.home-kicker::before {
+    content: "";
+    width: 25px;
+    height: 1px;
+    background: #c9a96a;
+}
+
+.home-title {
+    max-width: 760px;
+    margin: 0;
+    font-size: clamp(2rem, 4vw, 3.25rem);
+    line-height: 1.08;
+    letter-spacing: -.035em;
+    color: #f0ebe0;
+}
+
+.home-intro {
+    max-width: 720px;
+    margin: 18px 0 0;
+    color: #aaa59b;
+    line-height: 1.75;
+    font-size: .98rem;
+}
+
+/* ---------------------------------------------------------
+   ACTIONS
+   --------------------------------------------------------- */
+
+.home-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 28px;
+}
+
+.home-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    min-height: 43px;
+    padding: 0 15px;
+    border-radius: 10px;
+    border: 1px solid rgba(216,210,197,.13);
+    background: rgba(255,255,255,.025);
+    color: #dcd5c8;
+    text-decoration: none;
+    font-size: .84rem;
+    font-weight: 600;
+    transition:
+        transform .18s ease,
+        border-color .18s ease,
+        background .18s ease;
+}
+
+.home-action:hover {
+    transform: translateY(-2px);
+    border-color: rgba(201,169,106,.45);
+    background: rgba(201,169,106,.07);
+    color: #f0ebe0;
+}
+
+.home-action.primary {
+    background: #c9a96a;
+    border-color: #c9a96a;
+    color: #171612;
+}
+
+.home-action.primary:hover {
+    background: #d6b879;
+    color: #171612;
+}
+
+.home-action-icon {
+    width: 22px;
+    height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    font-size: .78rem;
+    background: rgba(0,0,0,.12);
+}
+
+/* ---------------------------------------------------------
+   PULSE
+   --------------------------------------------------------- */
+
+.home-pulse {
+    padding: 25px;
+}
+
+.home-panel-label {
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: #aaa59b;
+}
+
+.home-pulse-title {
+    margin: 7px 0 20px;
+    font-size: 1.2rem;
+    color: #eee8dc;
+}
+
+.home-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.home-stat {
+    min-height: 105px;
+    padding: 17px;
+    border-radius: 13px;
+    border: 1px solid rgba(216,210,197,.09);
+    background: rgba(0,0,0,.12);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.home-stat-value {
+    display: block;
+    font-size: 1.8rem;
+    line-height: 1;
+    font-weight: 700;
+    color: #eee8dc;
+}
+
+.home-stat-label {
+    margin-top: 8px;
+    font-size: .76rem;
+    color: #8f8a81;
+}
+
+.home-stat.accent .home-stat-value {
+    color: #c9a96a;
+}
+
+/* ---------------------------------------------------------
+   LOWER CONTENT
+   --------------------------------------------------------- */
+
+.home-content-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 20px;
+}
+
+.home-panel {
+    padding: 24px;
+}
+
+.home-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(216,210,197,.08);
+}
+
+.home-panel-title {
+    margin: 4px 0 0;
+    color: #eee8dc;
+    font-size: 1.15rem;
+}
+
+.home-panel-count {
+    min-width: 28px;
+    height: 28px;
+    padding: 0 8px;
+    border-radius: 99px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(201,169,106,.10);
+    color: #c9a96a;
+    font-size: .72rem;
+    font-weight: 700;
+}
+
+/* ---------------------------------------------------------
+   LISTS
+   --------------------------------------------------------- */
+
+.home-list {
+    margin-top: 8px;
+}
+
+.home-item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 16px 4px;
+    border-bottom: 1px solid rgba(216,210,197,.07);
+    text-decoration: none;
+    color: inherit;
+}
+
+.home-item:last-child {
+    border-bottom: 0;
+}
+
+.home-item:hover .home-item-title {
+    color: #c9a96a;
+}
+
+.home-item-title {
+    display: block;
+    color: #ddd7cb;
+    font-size: .87rem;
+    font-weight: 650;
+    transition: color .18s ease;
+}
+
+.home-item-detail {
+    display: block;
+    margin-top: 5px;
+    color: #88847c;
+    font-size: .77rem;
+    line-height: 1.5;
+}
+
+.home-item-time {
+    flex-shrink: 0;
+    color: #77736c;
+    font-size: .7rem;
+    white-space: nowrap;
+}
+
+.home-tag {
+    flex-shrink: 0;
+    padding: 5px 9px;
+    border-radius: 7px;
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.06);
+    color: #aaa59b;
+    font-size: .65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+}
+
+.home-tag.red {
+    color: #e09b8f;
+    background: rgba(180,70,60,.08);
+    border-color: rgba(180,70,60,.15);
+}
+
+.home-tag.amber {
+    color: #d8b76f;
+    background: rgba(201,169,106,.08);
+    border-color: rgba(201,169,106,.15);
+}
+
+/* ---------------------------------------------------------
+   EMPTY STATE
+   --------------------------------------------------------- */
+
+.home-empty {
+    padding: 30px 10px;
+    text-align: center;
+    color: #77736c;
+    font-size: .82rem;
+    line-height: 1.6;
+}
+
+/* ---------------------------------------------------------
+   RESPONSIVE
+   --------------------------------------------------------- */
+
+@media (max-width: 900px) {
+    .home-hero {
+        grid-template-columns: 1fr;
+    }
+
+    .home-content-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .peacelink-home {
+        padding-top: 0;
+    }
+
+    .home-hero-main,
+    .home-pulse,
+    .home-panel {
+        border-radius: 14px;
+    }
+
+    .home-hero-main {
+        padding: 25px 20px;
+    }
+
+    .home-pulse,
+    .home-panel {
+        padding: 20px;
+    }
+
+    .home-title {
+        font-size: 2rem;
+    }
+
+    .home-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .home-action {
+        justify-content: center;
+    }
+
+    .home-item {
+        gap: 8px;
+    }
+
+    .home-item-time {
+        display: none;
+    }
+}
+</style>
+
+
+<div class="peacelink-home">
+
+    <!-- =====================================================
+         HERO
+         ===================================================== -->
+
+    <section class="home-hero">
+
+        <div class="home-hero-main">
+
+            <div class="home-kicker">
+                Trade Peace Connector
+            </div>
+
+            <h1 style="font-size: 1.5rem;" class="home-title">
+                Connect communities, protect corridors, and resolve disputes.
+            </h1>
+
+            <p class="home-intro">
+                PeaceLink supports South Sudanese community members,
+                community nodes, leaders, NGOs, and government stakeholders
+                with practical tools for trade, cattle corridor notices,
+                agreements, and ADR follow-up.
+            </p>
+
+            <div class="home-actions">
+
+                <a class="home-action primary"
+                   href="{% url 'trade_create' %}">
+                    <span class="home-action-icon">+</span>
+                    Post trade offer
+                </a>
+
+                <a class="home-action"
+                   href="{% url 'corridor_create' %}">
+                    <span class="home-action-icon">!</span>
+                    Send corridor notice
+                </a>
+
+                <a class="home-action"
+                   href="{% url 'conflict_report' %}">
+                    <span class="home-action-icon">?</span>
+                    Report conflict
+                </a>
+
+                <a class="home-action"
+                   href="{% url 'agreement_create' %}">
+                    <span class="home-action-icon">&#10003;</span>
+                    Register agreement
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             COMMUNITY PULSE
+             ================================================= -->
+
+        <div class="home-pulse">
+
+            <div class="home-panel-label">
+                Community pulse
+            </div>
+
+            <h2 class="home-pulse-title">
+                PeaceLink at a glance
+            </h2>
+
+            <div class="home-stat-grid">
+
+                <div class="home-stat accent">
+                    <span class="home-stat-value">
+                        {{ trade_count }}
+                    </span>
+                    <span class="home-stat-label">
+                        Active trade records
+                    </span>
+                </div>
+
+                <div class="home-stat">
+                    <span class="home-stat-value">
+                        {{ corridor_count }}
+                    </span>
+                    <span class="home-stat-label">
+                        Corridor notices
+                    </span>
+                </div>
+
+                <div class="home-stat">
+                    <span class="home-stat-value">
+                        {{ resolved_count }}
+                    </span>
+                    <span class="home-stat-label">
+                        Conflicts resolved
+                    </span>
+                </div>
+
+                <div class="home-stat">
+                    <span class="home-stat-value">
+                        {{ member_count }}
+                    </span>
+                    <span class="home-stat-label">
+                        Platform members
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         ALERTS + ACTIVITY
+         ===================================================== -->
+
+    <section class="home-content-grid">
+
+        <!-- ALERTS -->
+
+        <div class="home-panel">
+
+            <div class="home-panel-header">
+
+                <div>
+                    <div class="home-panel-label">
+                        Community safety
+                    </div>
+
+                    <h2 class="home-panel-title">
+                        Alerts
+                    </h2>
+                </div>
+
+                <span class="home-panel-count">
+                    {{ alerts|length }}
+                </span>
+
+            </div>
+
+
+            <div class="home-list">
+
+                {% for alert in alerts %}
+
+                    <a class="home-item"
+                       href="{{ alert.get_absolute_url }}">
+
+                        <span>
+
+                            <strong class="home-item-title">
+                                {{ alert.title }}
+                            </strong>
+
+                            <span class="home-item-detail">
+                                {{ alert.message }}
+                            </span>
+
+                            {% if alert.community %}
+                                <span class="home-item-detail">
+                                    {{ alert.community }}
+                                </span>
+                            {% endif %}
+
+                        </span>
+
+
+                        <span class="home-tag
+                            {% if alert.level == 'action' %}
+                                red
+                            {% elif alert.level == 'watch' %}
+                                amber
+                            {% endif %}
+                        ">
+                            {{ alert.get_level_display }}
+                        </span>
+
+                    </a>
+
+                {% empty %}
+
+                    <div class="home-empty">
+                        No alerts have been issued yet.
+                        New trade, corridor, agreement, and ADR
+                        activity will appear here.
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+
+        <!-- RECENT ACTIVITY -->
+
+        <div class="home-panel">
+
+            <div class="home-panel-header">
+
+                <div>
+                    <div class="home-panel-label">
+                        Platform activity
+                    </div>
+
+                    <h2 class="home-panel-title">
+                        Recent activity
+                    </h2>
+                </div>
+
+                <span class="home-panel-count">
+                    {{ activities|length }}
+                </span>
+
+            </div>
+
+
+            <div class="home-list">
+
+                {% for activity in activities %}
+
+                    <div class="home-item">
+
+                        <span>
+
+                            <strong class="home-item-title">
+                                {{ activity.verb }}
+                            </strong>
+
+                            <span class="home-item-detail">
+                                {{ activity.detail }}
+                            </span>
+
+                        </span>
+
+                        <span class="home-item-time">
+                            {{ activity.happened_at|timesince }} ago
+                        </span>
+
+                    </div>
+
+                {% empty %}
+
+                    <div class="home-empty">
+                        Activity will build as the platform
+                        is used by community members and partners.
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

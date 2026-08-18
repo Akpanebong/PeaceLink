@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+{% if request.user.is_superuser %}
+
+<section class="section">
+  <div class="kicker">{{ UI.trade_matching }}</div>
+  <h2>{{ UI.matched_trades }}</h2>
+  {% if user.is_superuser %}
+    <p>{{ UI.all_matched_trades }}</p>
+  {% else %}
+    <p>{{ UI.your_matched_trades }}</p>
+  {% endif %}
+</section>
+<section class="grid">
+  {% for offer in offers %}
+    <article class="card trade-card">
+      <div class="trade-card-head">
+        <span class="tag {% if offer.offer_type == 'buy' %}amber{% endif %}">{{ offer.get_offer_type_display }}</span>
+        <span class="like-count">&#128279; {{ offer.connections.count }}</span>
+      </div>
+      <h3 style="margin-top:10px">{{ offer.commodity }}</h3>
+      <p>{{ offer.quantity }} &middot; {{ offer.location }}</p>
+      <p class="dim">
+        {{ UI.sold }}: {{ offer.sold_quantity }} &middot;
+        {{ UI.remaining }}: {% if offer.remaining_quantity == None %}{{ UI.text_quantity }}{% else %}{{ offer.remaining_quantity }}{% endif %} &middot;
+        {{ offer.get_status_display }}
+      </p>
+      <div class="list" style="margin-top:12px">
+        {% for connection in offer.connections.all %}
+          <div class="item contact-item">
+            <span>
+              <strong>{{ connection.requester.get_full_name|default:connection.requester.username }}</strong><br>
+              <span class="dim">{{ connection.requester.phone|default:"No phone" }} &middot; {{ connection.requester.email|default:"No email" }}</span>
+            </span>
+            <span class="tag {% if connection.accepted %}purple{% else %}amber{% endif %}">
+              {% if connection.accepted %}{{ UI.accepted }} {{ connection.quantity_sold }}{% else %}{{ UI.connected }}{% endif %}
+            </span>
+          </div>
+        {% endfor %}
+      </div>
+      <div class="trade-actions">
+        <a class="btn" href="{{ offer.get_absolute_url }}#trade-matches"><span class="btn-icon">&rarr;</span>{{ UI.view_matches }}</a>
+      </div>
+    </article>
+  {% empty %}
+    <div class="panel"><p>{{ UI.no_matches }}</p></div>
+  {% endfor %}
+</section>
+{% endif %}
+{% endblock %}

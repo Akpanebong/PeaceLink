@@ -1,0 +1,3276 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if object %}
+        Edit Agreement
+    {% else %}
+        Register Community Agreement
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+/* =========================================================
+   PEACELINK AGREEMENT FORM
+   Standalone template
+   Consistent with Conflict / Trade forms
+   ========================================================= */
+
+.peacelink-agreement-page {
+    width: 100%;
+    max-width: 950px;
+    margin: 0 auto;
+    padding: 0 0 45px;
+    color: #d8d2c5;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.agreement-header {
+    position: relative;
+    overflow: hidden;
+
+    padding: 24px 28px;
+
+    background:
+        linear-gradient(
+            110deg,
+            #5b2479 0%,
+            #41486b 48%,
+            #087d6d 100%
+        );
+
+    border-radius: 0 0 20px 20px;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.22);
+
+    margin-bottom: 15px;
+}
+
+.agreement-header::after {
+    content: "";
+
+    position: absolute;
+
+    width: 200px;
+    height: 200px;
+
+    right: -70px;
+    top: -115px;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,.04);
+}
+
+.agreement-header-content {
+    position: relative;
+    z-index: 2;
+}
+
+.agreement-kicker {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-bottom: 8px;
+
+    color: #d1b94c;
+
+    font-size: .68rem;
+    font-weight: 900;
+
+    letter-spacing: .17em;
+    text-transform: uppercase;
+}
+
+.agreement-kicker i {
+    color: #e4b932;
+}
+
+.agreement-header h1 {
+    margin: 0;
+
+    color: #f1e9d9;
+
+    font-size: clamp(1.45rem, 4vw, 2rem);
+    font-weight: 900;
+}
+
+.agreement-header p {
+    max-width: 720px;
+
+    margin: 7px 0 0;
+
+    color: #aebaaa;
+
+    font-size: .78rem;
+    line-height: 1.55;
+}
+
+
+/* =========================================================
+   SECTION NAVIGATION
+   ========================================================= */
+
+.agreement-sections {
+    display: grid;
+
+    grid-template-columns:
+        repeat(5, minmax(0, 1fr));
+
+    gap: 8px;
+
+    margin-bottom: 15px;
+}
+
+.section-tab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    min-width: 0;
+
+    padding: 10px 7px;
+
+    background: #20252a;
+
+    border: 1px solid #32413a;
+
+    border-radius: 9px;
+
+    color: #718575;
+
+    font-family: inherit;
+    font-size: .63rem;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition:
+        color .2s ease,
+        background .2s ease,
+        border-color .2s ease,
+        transform .18s ease;
+}
+
+.section-tab:hover {
+    color: #b8c7bc;
+
+    border-color: #526057;
+
+    transform: translateY(-1px);
+}
+
+.section-tab.active {
+    color: #d071d9;
+
+    background: rgba(88,39,102,.28);
+
+    border-color: #693b74;
+
+    box-shadow:
+        0 5px 14px rgba(103,54,122,.10);
+}
+
+.section-tab.completed {
+    color: #91b8a1;
+
+    border-color: #3d5b4d;
+}
+
+.section-tab i {
+    color: #d2ad3a;
+}
+
+.section-tab-number {
+    font-size: .58rem;
+    opacity: .75;
+}
+
+
+/* =========================================================
+   MAIN FORM PANEL
+   ========================================================= */
+
+.agreement-panel {
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            135deg,
+            #24242d,
+            #202127
+        );
+
+    border: 1px solid #49325a;
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.20),
+        inset 0 1px 0 rgba(255,255,255,.015);
+}
+
+
+/* =========================================================
+   FORM SECTIONS
+   ========================================================= */
+
+.agreement-section {
+    display: none;
+
+    padding: 22px 20px;
+}
+
+.agreement-section.active {
+    display: block;
+}
+
+
+/* =========================================================
+   SECTION HEADER
+   ========================================================= */
+
+.section-header {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding-bottom: 17px;
+
+    margin-bottom: 20px;
+
+    border-bottom: 1px solid #37333e;
+}
+
+.section-icon {
+    width: 39px;
+    height: 39px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border: 1px solid #693b74;
+
+    border-radius: 11px;
+
+    background: rgba(88,39,102,.25);
+
+    color: #d36ada;
+
+    font-size: .95rem;
+}
+
+.section-header h2 {
+    margin: 0;
+
+    color: #ddd6c8;
+
+    font-size: .98rem;
+    font-weight: 900;
+}
+
+.section-header p {
+    margin: 4px 0 0;
+
+    color: #6f8172;
+
+    font-size: .7rem;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   FORM GRID
+   ========================================================= */
+
+.agreement-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 0 18px;
+}
+
+.agreement-field {
+    min-width: 0;
+
+    margin-bottom: 18px;
+}
+
+.agreement-field.full-width {
+    grid-column: 1 / -1;
+}
+
+.agreement-field:last-child {
+    margin-bottom: 0;
+}
+
+
+/* =========================================================
+   LABELS
+   ========================================================= */
+
+.agreement-field label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #92a192;
+
+    font-size: .7rem;
+    font-weight: 900;
+
+    letter-spacing: .02em;
+}
+
+.agreement-field label .required {
+    margin-left: 3px;
+
+    color: #d86678;
+}
+
+
+/* =========================================================
+   INPUTS
+   ========================================================= */
+
+.agreement-field input:not([type="checkbox"]):not([type="radio"]),
+.agreement-field select,
+.agreement-field textarea {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 11px 12px;
+
+    color: #d5dbd2;
+
+    background: #181a1f;
+
+    border: 1px solid #45354d;
+
+    border-radius: 9px;
+
+    outline: none;
+
+    font-family: inherit;
+    font-size: .79rem;
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease,
+        background .2s ease;
+}
+
+.agreement-field input:hover,
+.agreement-field select:hover,
+.agreement-field textarea:hover {
+    border-color: #5b4264;
+}
+
+.agreement-field input:focus,
+.agreement-field select:focus,
+.agreement-field textarea:focus {
+    border-color: #865093;
+
+    background: #1a1c21;
+
+    box-shadow:
+        0 0 0 2px rgba(134,80,147,.12);
+}
+
+.agreement-field textarea {
+    min-height: 120px;
+
+    resize: vertical;
+
+    line-height: 1.55;
+}
+
+.agreement-field select option {
+    background: #202127;
+    color: #d5dbd2;
+}
+
+
+/* =========================================================
+   CHECKBOX GROUPS
+   ========================================================= */
+
+.choice-box {
+    padding: 13px;
+
+    background: #181a1f;
+
+    border: 1px solid #45354d;
+
+    border-radius: 9px;
+}
+
+.choice-box ul {
+    margin: 0;
+    padding: 0;
+
+    list-style: none;
+}
+
+.choice-box li {
+    margin-bottom: 9px;
+
+    color: #aeb9b0;
+
+    font-size: .76rem;
+}
+
+.choice-box li:last-child {
+    margin-bottom: 0;
+}
+
+.choice-box input[type="checkbox"],
+.choice-box input[type="radio"] {
+    width: auto !important;
+
+    margin-right: 8px;
+
+    accent-color: #8a4d98;
+
+    box-shadow: none !important;
+}
+
+
+/* =========================================================
+   HELP TEXT
+   ========================================================= */
+
+.field-help {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 6px;
+
+    margin-top: 6px;
+
+    color: #657669;
+
+    font-size: .67rem;
+
+    line-height: 1.5;
+}
+
+.field-help i {
+    margin-top: 2px;
+
+    color: #d2ad3a;
+
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   ERRORS
+   ========================================================= */
+
+.field-errors {
+    margin-top: 6px;
+
+    padding: 7px 9px;
+
+    color: #ff6678;
+
+    background: rgba(117,24,44,.16);
+
+    border: 1px solid #713243;
+
+    border-radius: 7px;
+
+    font-size: .68rem;
+    font-weight: 700;
+}
+
+.field-errors ul {
+    margin: 0;
+    padding: 0;
+
+    list-style: none;
+}
+
+.non-field-errors {
+    margin-bottom: 18px;
+
+    padding: 11px 13px;
+
+    color: #ff7585;
+
+    background: rgba(117,24,44,.20);
+
+    border: 1px solid #713243;
+
+    border-radius: 9px;
+
+    font-size: .72rem;
+}
+
+
+/* =========================================================
+   LOCATION
+   ========================================================= */
+
+.location-box {
+    position: relative;
+}
+
+.location-status {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top: 7px;
+
+    padding: 8px 10px;
+
+    color: #9aaa9e;
+
+    background: rgba(32,52,43,.35);
+
+    border: 1px solid #3d5146;
+
+    border-radius: 8px;
+
+    font-size: .67rem;
+}
+
+.location-status.loading {
+    color: #d2ad3a;
+
+    border-color: #65562d;
+
+    background: rgba(92,75,25,.15);
+}
+
+.location-status.success {
+    color: #82b49b;
+
+    border-color: #365846;
+
+    background: rgba(30,70,48,.18);
+}
+
+.location-status.error {
+    color: #e57b86;
+
+    border-color: #713243;
+
+    background: rgba(117,24,44,.15);
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: currentColor;
+}
+
+
+/* =========================================================
+   STAKEHOLDER CARDS
+   ========================================================= */
+
+.stakeholder-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 15px;
+}
+
+.stakeholder-card {
+    padding: 17px;
+
+    background: #1b1d22;
+
+    border: 1px solid #41344a;
+
+    border-radius: 12px;
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease;
+}
+
+.stakeholder-card:hover {
+    border-color: #5c4566;
+
+    box-shadow:
+        0 7px 18px rgba(0,0,0,.15);
+}
+
+.stakeholder-title {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin-bottom: 16px;
+
+    color: #c9c0cc;
+
+    font-size: .78rem;
+    font-weight: 900;
+}
+
+.stakeholder-title i {
+    color: #d2ad3a;
+}
+
+
+/* =========================================================
+   REVIEW CARD
+   ========================================================= */
+
+.review-box {
+    padding: 17px;
+
+    background: #181a1f;
+
+    border: 1px solid #45354d;
+
+    border-radius: 10px;
+
+    color: #9daaa0;
+
+    font-size: .74rem;
+
+    line-height: 1.6;
+}
+
+.review-box strong {
+    color: #d5dbd2;
+}
+
+
+/* =========================================================
+   SECTION NAVIGATION BUTTONS
+   ========================================================= */
+
+.section-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    padding-top: 20px;
+
+    margin-top: 20px;
+
+    border-top: 1px solid #37333e;
+}
+
+.section-navigation-left,
+.section-navigation-right {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+}
+
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.agreement-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    min-height: 38px;
+
+    padding: 9px 15px;
+
+    border-radius: 9px;
+
+    font-family: inherit;
+    font-size: .74rem;
+    font-weight: 900;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        border-color .18s ease;
+}
+
+.agreement-button:hover {
+    transform: translateY(-1px);
+}
+
+.agreement-button.secondary {
+    color: #9aab9d;
+
+    background: #25282b;
+
+    border: 1px solid #3e4941;
+}
+
+.agreement-button.secondary:hover {
+    color: #d0d8cf;
+
+    border-color: #526057;
+}
+
+.agreement-button.primary {
+    color: #f0e8d9;
+
+    background:
+        linear-gradient(
+            100deg,
+            #67367a,
+            #82418c
+        );
+
+    border: 1px solid #8a4b96;
+
+    box-shadow:
+        0 7px 18px rgba(103,54,122,.20);
+}
+
+.agreement-button.success {
+    color: #f0e8d9;
+
+    background:
+        linear-gradient(
+            100deg,
+            #087d6d,
+            #116f66
+        );
+
+    border: 1px solid #198f80;
+
+    box-shadow:
+        0 7px 18px rgba(8,125,109,.18);
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.agreement-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 14px;
+
+    padding: 16px 20px;
+
+    background: rgba(10,25,18,.25);
+
+    border-top: 1px solid #35323c;
+}
+
+.agreement-footer-note {
+    color: #657669;
+
+    font-size: .67rem;
+}
+
+.agreement-footer-actions {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 800px) {
+
+    .agreement-sections {
+        overflow-x: auto;
+
+        grid-template-columns:
+            repeat(5, minmax(125px, 1fr));
+
+        padding-bottom: 2px;
+    }
+
+    .section-tab {
+        min-width: 125px;
+    }
+
+    .agreement-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .agreement-field.full-width {
+        grid-column: auto;
+    }
+
+    .stakeholder-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .agreement-header {
+        padding: 21px 22px;
+    }
+
+    .agreement-section {
+        padding: 19px 16px;
+    }
+
+    .section-navigation {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .section-navigation-left,
+    .section-navigation-right {
+        width: 100%;
+    }
+
+    .agreement-button {
+        flex: 1;
+    }
+
+    .agreement-footer {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .agreement-footer-actions {
+        width: 100%;
+    }
+}
+
+
+@media (max-width: 430px) {
+
+    .peacelink-agreement-page {
+        padding-bottom: 30px;
+    }
+
+    .agreement-header h1 {
+        font-size: 1.35rem;
+    }
+
+    .agreement-header p {
+        font-size: .72rem;
+    }
+
+    .section-header h2 {
+        font-size: .9rem;
+    }
+
+    .section-header p {
+        font-size: .67rem;
+    }
+}
+
+</style>
+
+
+<div class="peacelink-agreement-page">
+
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <header class="agreement-header">
+
+        <div class="agreement-header-content">
+
+            <div class="agreement-kicker">
+
+                <i class="fa-solid fa-handshake"></i>
+
+                PeaceLink · Conflict Resolution
+
+            </div>
+
+            <h1>
+                {% if object %}
+                    Edit Community Agreement
+                {% else %}
+                    {{ title|default:"Register Community Agreement" }}
+                {% endif %}
+            </h1>
+
+            <p>
+                Record a formal community agreement, document its key
+                terms, capture the signing location and register the
+                responsible stakeholders.
+            </p>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         SECTION TABS
+         ===================================================== -->
+
+    <nav class="agreement-sections"
+         aria-label="Agreement form sections">
+
+        <button
+            type="button"
+            class="section-tab active"
+            data-section="section-details">
+
+            <span class="section-tab-number">01</span>
+
+            <i class="fa-solid fa-file-signature"></i>
+
+            <span>Agreement</span>
+
+        </button>
+
+
+        <button
+            type="button"
+            class="section-tab"
+            data-section="section-dispute">
+
+            <span class="section-tab-number">02</span>
+
+            <i class="fa-solid fa-scale-balanced"></i>
+
+            <span>Dispute & Terms</span>
+
+        </button>
+
+
+        <button
+            type="button"
+            class="section-tab"
+            data-section="section-signing">
+
+            <span class="section-tab-number">03</span>
+
+            <i class="fa-solid fa-location-dot"></i>
+
+            <span>Signing</span>
+
+        </button>
+
+
+        <button
+            type="button"
+            class="section-tab"
+            data-section="section-stakeholders">
+
+            <span class="section-tab-number">04</span>
+
+            <i class="fa-solid fa-users"></i>
+
+            <span>Stakeholders</span>
+
+        </button>
+
+
+        <button
+            type="button"
+            class="section-tab"
+            data-section="section-review">
+
+            <span class="section-tab-number">05</span>
+
+            <i class="fa-solid fa-clipboard-check"></i>
+
+            <span>Review</span>
+
+        </button>
+
+    </nav>
+
+
+    <!-- =====================================================
+         FORM PANEL
+         ===================================================== -->
+
+    <section class="agreement-panel">
+
+
+        <form
+            method="post"
+            class="agreement-form"
+            novalidate
+        >
+
+            {% csrf_token %}
+
+
+            <!-- =================================================
+                 NON FIELD ERRORS
+                 ================================================= -->
+
+            {% if form.non_field_errors %}
+
+                <div style="padding:20px;">
+
+                    <div class="non-field-errors">
+                        {{ form.non_field_errors }}
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+
+            <!-- =================================================
+                 SECTION 01
+                 AGREEMENT DETAILS
+                 ================================================= -->
+
+            <section
+                id="section-details"
+                class="agreement-section active"
+                data-section-panel
+            >
+
+                <div class="section-header">
+
+                    <div class="section-icon">
+                        <i class="fa-solid fa-file-signature"></i>
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Agreement details
+                        </h2>
+
+                        <p>
+                            Identify the communities and establish the
+                            basic information for this agreement.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="agreement-grid">
+
+
+                    {% for field in form %}
+
+                        {% if field.name == "community_a" or field.name == "community_b" or field.name == "date_signed" or field.name == "end_date" %}
+
+                            <div class="agreement-field">
+
+                                {{ field.label_tag }}
+
+                                {{ field }}
+
+                                {% if field.help_text %}
+                                    <div class="field-help">
+                                        <i class="fa-solid fa-circle-info"></i>
+                                        <span>{{ field.help_text|safe }}</span>
+                                    </div>
+                                {% endif %}
+
+                                {% if field.errors %}
+                                    <div class="field-errors">
+                                        {{ field.errors }}
+                                    </div>
+                                {% endif %}
+
+                            </div>
+
+                        {% endif %}
+
+                    {% endfor %}
+
+                </div>
+
+
+                <div class="section-navigation">
+
+                    <div></div>
+
+                    <div class="section-navigation-right">
+
+                        <button
+                            type="button"
+                            class="agreement-button primary"
+                            data-next="section-dispute"
+                        >
+                            Continue
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 SECTION 02
+                 DISPUTE & TERMS
+                 ================================================= -->
+
+            <section
+                id="section-dispute"
+                class="agreement-section"
+                data-section-panel
+            >
+
+                <div class="section-header">
+
+                    <div class="section-icon">
+                        <i class="fa-solid fa-scale-balanced"></i>
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Dispute & agreement terms
+                        </h2>
+
+                        <p>
+                            Document the dispute addressed and the terms
+                            agreed upon by the communities.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="agreement-grid">
+
+
+                    {% for field in form %}
+
+                        {% if field.name == "dispute_types" or field.name == "dispute_other" or field.name == "key_terms" or field.name == "key_terms_other" or field.name == "detailed_terms" %}
+
+                            <div class="agreement-field
+                                {% if field.name == 'dispute_types' or field.name == 'key_terms' or field.name == 'detailed_terms' %}
+                                    full-width
+                                {% endif %}
+                            ">
+
+                                {{ field.label_tag }}
+
+
+                                {% if field.name == "dispute_types" or field.name == "key_terms" %}
+
+                                    <div class="choice-box">
+                                        {{ field }}
+                                    </div>
+
+                                {% else %}
+
+                                    {{ field }}
+
+                                {% endif %}
+
+
+                                {% if field.help_text %}
+                                    <div class="field-help">
+                                        <i class="fa-solid fa-circle-info"></i>
+                                        <span>{{ field.help_text|safe }}</span>
+                                    </div>
+                                {% endif %}
+
+
+                                {% if field.errors %}
+                                    <div class="field-errors">
+                                        {{ field.errors }}
+                                    </div>
+                                {% endif %}
+
+                            </div>
+
+                        {% endif %}
+
+                    {% endfor %}
+
+                </div>
+
+
+                <div class="section-navigation">
+
+                    <div class="section-navigation-left">
+
+                        <button
+                            type="button"
+                            class="agreement-button secondary"
+                            data-prev="section-details"
+                        >
+                            <i class="fa-solid fa-arrow-left"></i>
+                            Back
+                        </button>
+
+                    </div>
+
+
+                    <div class="section-navigation-right">
+
+                        <button
+                            type="button"
+                            class="agreement-button primary"
+                            data-next="section-signing"
+                        >
+                            Continue
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 SECTION 03
+                 SIGNING & LOCATION
+                 ================================================= -->
+
+            <section
+                id="section-signing"
+                class="agreement-section"
+                data-section-panel
+            >
+
+                <div class="section-header">
+
+                    <div class="section-icon">
+                        <i class="fa-solid fa-location-dot"></i>
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Signing & location
+                        </h2>
+
+                        <p>
+                            Record where the agreement was signed.
+                            The coordinates are captured automatically.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="agreement-grid">
+
+
+                    {% for field in form %}
+
+                        {% if field.name == "signing_location" or field.name == "signing_latitude" or field.name == "signing_longitude" %}
+
+                            {% if field.is_hidden %}
+
+                                {{ field }}
+
+                            {% else %}
+
+                                <div class="agreement-field full-width">
+
+                                    {{ field.label_tag }}
+
+                                    <div class="location-box">
+
+                                        {{ field }}
+
+                                        <div
+                                            class="location-status loading"
+                                            data-location-status
+                                        >
+
+                                            <span class="status-dot"></span>
+
+                                            <span>
+                                                Detecting signing location...
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    {% if field.help_text %}
+                                        <div class="field-help">
+                                            <i class="fa-solid fa-circle-info"></i>
+                                            <span>{{ field.help_text|safe }}</span>
+                                        </div>
+                                    {% endif %}
+
+
+                                    {% if field.errors %}
+                                        <div class="field-errors">
+                                            {{ field.errors }}
+                                        </div>
+                                    {% endif %}
+
+                                </div>
+
+                            {% endif %}
+
+                        {% endif %}
+
+                    {% endfor %}
+
+
+                    {% for field in form %}
+
+                        {% if field.name == "mediators" or field.name == "follow_up_date" or field.name == "status" or field.name == "escalation_contact" %}
+
+                            <div class="agreement-field
+                                {% if field.name == 'mediators' or field.name == 'escalation_contact' %}
+                                    full-width
+                                {% endif %}
+                            ">
+
+                                {{ field.label_tag }}
+
+                                {{ field }}
+
+
+                                {% if field.help_text %}
+                                    <div class="field-help">
+                                        <i class="fa-solid fa-circle-info"></i>
+                                        <span>{{ field.help_text|safe }}</span>
+                                    </div>
+                                {% endif %}
+
+
+                                {% if field.errors %}
+                                    <div class="field-errors">
+                                        {{ field.errors }}
+                                    </div>
+                                {% endif %}
+
+                            </div>
+
+                        {% endif %}
+
+                    {% endfor %}
+
+                </div>
+
+
+                <div class="section-navigation">
+
+                    <div class="section-navigation-left">
+
+                        <button
+                            type="button"
+                            class="agreement-button secondary"
+                            data-prev="section-dispute"
+                        >
+                            <i class="fa-solid fa-arrow-left"></i>
+                            Back
+                        </button>
+
+                    </div>
+
+
+                    <div class="section-navigation-right">
+
+                        <button
+                            type="button"
+                            class="agreement-button primary"
+                            data-next="section-stakeholders"
+                        >
+                            Continue
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 SECTION 04
+                 STAKEHOLDERS
+                 ================================================= -->
+
+            <section
+                id="section-stakeholders"
+                class="agreement-section"
+                data-section-panel
+            >
+
+                <div class="section-header">
+
+                    <div class="section-icon">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Stakeholders
+                        </h2>
+
+                        <p>
+                            Review and configure the stakeholders who
+                            should receive or acknowledge this agreement.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                {% if formset %}
+
+                    {{ formset.management_form }}
+
+
+                    <div class="stakeholder-grid">
+
+                        {% for notice_form in formset %}
+
+                            <div class="stakeholder-card">
+
+                                <div class="stakeholder-title">
+
+                                    <i class="fa-solid fa-user-group"></i>
+
+                                    Stakeholder
+                                    {{ forloop.counter }}
+
+                                </div>
+
+
+                                {% for field in notice_form %}
+
+                                    {% if field.is_hidden %}
+
+                                        {{ field }}
+
+                                    {% else %}
+
+                                        <div class="agreement-field">
+
+                                            {{ field.label_tag }}
+
+                                            {{ field }}
+
+
+                                            {% if field.help_text %}
+
+                                                <div class="field-help">
+
+                                                    <i class="fa-solid fa-circle-info"></i>
+
+                                                    <span>
+                                                        {{ field.help_text|safe }}
+                                                    </span>
+
+                                                </div>
+
+                                            {% endif %}
+
+
+                                            {% if field.errors %}
+
+                                                <div class="field-errors">
+
+                                                    {{ field.errors }}
+
+                                                </div>
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    {% endif %}
+
+                                {% endfor %}
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="review-box">
+
+                        <i class="fa-solid fa-circle-info"></i>
+
+                        No stakeholder forms are currently available.
+
+                    </div>
+
+                {% endif %}
+
+
+                <div class="section-navigation">
+
+                    <div class="section-navigation-left">
+
+                        <button
+                            type="button"
+                            class="agreement-button secondary"
+                            data-prev="section-signing"
+                        >
+                            <i class="fa-solid fa-arrow-left"></i>
+                            Back
+                        </button>
+
+                    </div>
+
+
+                    <div class="section-navigation-right">
+
+                        <button
+                            type="button"
+                            class="agreement-button primary"
+                            data-next="section-review"
+                        >
+                            Review
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 SECTION 05
+                 REVIEW
+                 ================================================= -->
+
+            <section
+                id="section-review"
+                class="agreement-section"
+                data-section-panel
+            >
+
+                <div class="section-header">
+
+                    <div class="section-icon">
+                        <i class="fa-solid fa-clipboard-check"></i>
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Review & submit
+                        </h2>
+
+                        <p>
+                            Verify the information before registering
+                            the community agreement.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="review-box">
+
+                    <p>
+                        <strong>Before submitting:</strong>
+                    </p>
+
+                    <ul>
+
+                        <li>
+                            Confirm both communities are correct.
+                        </li>
+
+                        <li>
+                            Confirm the dispute types and agreement terms.
+                        </li>
+
+                        <li>
+                            Confirm the signing location has been detected.
+                        </li>
+
+                        <li>
+                            Confirm stakeholder information.
+                        </li>
+
+                        <li>
+                            Confirm the agreement status and follow-up date.
+                        </li>
+
+                    </ul>
+
+                </div>
+
+
+                <div class="section-navigation">
+
+                    <div class="section-navigation-left">
+
+                        <button
+                            type="button"
+                            class="agreement-button secondary"
+                            data-prev="section-stakeholders"
+                        >
+                            <i class="fa-solid fa-arrow-left"></i>
+                            Back
+                        </button>
+
+                    </div>
+
+
+                    <div class="section-navigation-right">
+
+                        <button
+                            type="submit"
+                            class="agreement-button success"
+                        >
+
+                            <i class="fa-solid fa-check"></i>
+
+                            {% if object %}
+                                Update agreement
+                            {% else %}
+                                Register agreement
+                            {% endif %}
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 FOOTER
+                 ================================================= -->
+
+            <div class="agreement-footer">
+
+                <div class="agreement-footer-note">
+
+                    <i class="fa-solid fa-shield-halved"></i>
+
+                    Agreement information is handled securely
+                    within the PeaceLink workspace.
+
+                </div>
+
+
+                <div class="agreement-footer-actions">
+
+                    <a
+                        href="{% url 'conflict_list' %}"
+                        class="agreement-button secondary"
+                    >
+
+                        <i class="fa-solid fa-arrow-left"></i>
+
+                        Cancel
+
+                    </a>
+
+                </div>
+
+            </div>
+
+
+        </form>
+
+    </section>
+
+</div>
+
+
+{% if stakeholder_data %}
+    {{ stakeholder_data|json_script:"stakeholder-data" }}
+{% endif %}
+
+<script>
+(() => {
+
+    "use strict";
+
+
+    /* =========================================================
+       CONFIGURATION
+       ========================================================= */
+
+    const SELECTORS = {
+
+        tabs:
+            ".section-tab",
+
+        panels:
+            "[data-section-panel]",
+
+        next:
+            "[data-next]",
+
+        previous:
+            "[data-prev]",
+
+        formPanel:
+            ".agreement-panel",
+
+        stakeholderCards:
+            ".stakeholder-card",
+
+        stakeholderData:
+            "#stakeholder-data",
+
+        locationStatus:
+            "[data-location-status]"
+
+    };
+
+
+    /* =========================================================
+       DOM HELPERS
+       ========================================================= */
+
+    const $ = (
+        selector,
+        parent = document
+    ) => parent.querySelector(selector);
+
+
+    const $$ = (
+        selector,
+        parent = document
+    ) => Array.from(
+        parent.querySelectorAll(selector)
+    );
+
+
+    /* =========================================================
+       SECTION NAVIGATION
+       ========================================================= */
+
+    const tabs =
+        $$(SELECTORS.tabs);
+
+    const sections =
+        $$(SELECTORS.panels);
+
+
+    function showSection(sectionId) {
+
+        if (!sectionId) {
+            return;
+        }
+
+
+        /*
+         * Show selected section.
+         */
+
+        sections.forEach(section => {
+
+            section.classList.toggle(
+                "active",
+                section.id === sectionId
+            );
+
+        });
+
+
+        /*
+         * Activate selected tab.
+         */
+
+        tabs.forEach(tab => {
+
+            const active =
+                tab.dataset.section === sectionId;
+
+            tab.classList.toggle(
+                "active",
+                active
+            );
+
+        });
+
+
+        /*
+         * Mark previous sections as completed.
+         */
+
+        const currentIndex =
+            sections.findIndex(
+                section =>
+                    section.id === sectionId
+            );
+
+
+        tabs.forEach((tab, index) => {
+
+            tab.classList.toggle(
+                "completed",
+                index < currentIndex
+            );
+
+        });
+
+
+        /*
+         * Keep the form panel visible.
+         */
+
+        const formPanel =
+            $(SELECTORS.formPanel);
+
+        if (formPanel) {
+
+            const top =
+                formPanel.getBoundingClientRect().top
+                + window.scrollY
+                - 20;
+
+            window.scrollTo({
+                top: top,
+                behavior: "smooth"
+            });
+
+        }
+
+    }
+
+
+    /* =========================================================
+       TAB BUTTONS
+       ========================================================= */
+
+    tabs.forEach(tab => {
+
+        tab.addEventListener(
+            "click",
+            () => {
+
+                showSection(
+                    tab.dataset.section
+                );
+
+            }
+        );
+
+    });
+
+
+    /* =========================================================
+       NEXT BUTTONS
+       ========================================================= */
+
+    $$(SELECTORS.next)
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    showSection(
+                        button.dataset.next
+                    );
+
+                }
+            );
+
+        });
+
+
+    /* =========================================================
+       PREVIOUS BUTTONS
+       ========================================================= */
+
+    $$(SELECTORS.previous)
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    showSection(
+                        button.dataset.prev
+                    );
+
+                }
+            );
+
+        });
+
+
+    /* =========================================================
+       LOCATION DETECTION
+       ========================================================= */
+
+    function detectSigningLocation() {
+
+        const latitude =
+            document.querySelector(
+                '[name="signing_latitude"]'
+            );
+
+        const longitude =
+            document.querySelector(
+                '[name="signing_longitude"]'
+            );
+
+        const location =
+            document.querySelector(
+                '[name="signing_location"]'
+            );
+
+        const status =
+            $(SELECTORS.locationStatus);
+
+
+        if (
+            !latitude ||
+            !longitude ||
+            !location ||
+            !status
+        ) {
+            return;
+        }
+
+
+        /*
+         * If an existing agreement already has
+         * coordinates, don't unnecessarily overwrite them.
+         */
+
+        if (
+            latitude.value &&
+            longitude.value
+        ) {
+
+            location.value =
+                `Lat ${latitude.value}, Lng ${longitude.value}`;
+
+
+            status.classList.remove(
+                "loading",
+                "error"
+            );
+
+            status.classList.add(
+                "success"
+            );
+
+            status.innerHTML = `
+                <span class="status-dot"></span>
+                <span>
+                    Signing location loaded successfully.
+                </span>
+            `;
+
+            return;
+        }
+
+
+        /*
+         * Browser does not support geolocation.
+         */
+
+        if (!navigator.geolocation) {
+
+            status.classList.remove(
+                "loading"
+            );
+
+            status.classList.add(
+                "error"
+            );
+
+            status.innerHTML = `
+                <span class="status-dot"></span>
+                <span>
+                    Automatic location detection is not supported
+                    by this browser.
+                </span>
+            `;
+
+            return;
+        }
+
+
+        status.classList.remove(
+            "error",
+            "success"
+        );
+
+        status.classList.add(
+            "loading"
+        );
+
+
+        status.innerHTML = `
+            <span class="status-dot"></span>
+            <span>
+                Detecting your signing location...
+            </span>
+        `;
+
+
+        navigator.geolocation.getCurrentPosition(
+
+            position => {
+
+                const lat =
+                    position.coords.latitude;
+
+                const lng =
+                    position.coords.longitude;
+
+
+                /*
+                 * Populate hidden coordinates.
+                 */
+
+                latitude.value =
+                    lat;
+
+                longitude.value =
+                    lng;
+
+
+                /*
+                 * Populate visible location.
+                 */
+
+                location.value =
+                    `Lat ${lat}, Lng ${lng}`;
+
+
+                /*
+                 * Trigger input/change events in case
+                 * another script is listening.
+                 */
+
+                latitude.dispatchEvent(
+                    new Event(
+                        "change",
+                        {
+                            bubbles: true
+                        }
+                    )
+                );
+
+                longitude.dispatchEvent(
+                    new Event(
+                        "change",
+                        {
+                            bubbles: true
+                        }
+                    )
+                );
+
+
+                location.dispatchEvent(
+                    new Event(
+                        "change",
+                        {
+                            bubbles: true
+                        }
+                    )
+                );
+
+
+                status.classList.remove(
+                    "loading",
+                    "error"
+                );
+
+                status.classList.add(
+                    "success"
+                );
+
+
+                status.innerHTML = `
+                    <span class="status-dot"></span>
+                    <span>
+                        Signing location detected successfully.
+                    </span>
+                `;
+
+            },
+
+            error => {
+
+                console.error(
+                    "Location detection error:",
+                    error
+                );
+
+
+                status.classList.remove(
+                    "loading",
+                    "success"
+                );
+
+                status.classList.add(
+                    "error"
+                );
+
+
+                let message =
+                    "Unable to detect your signing location.";
+
+
+                if (
+                    error.code ===
+                    error.PERMISSION_DENIED
+                ) {
+
+                    message =
+                        "Location permission was denied. Please enable location access and try again.";
+
+                }
+
+                else if (
+                    error.code ===
+                    error.POSITION_UNAVAILABLE
+                ) {
+
+                    message =
+                        "Your location is currently unavailable. Please try again.";
+
+                }
+
+                else if (
+                    error.code ===
+                    error.TIMEOUT
+                ) {
+
+                    message =
+                        "Location detection timed out. Please try again.";
+
+                }
+
+
+                status.innerHTML = `
+                    <span class="status-dot"></span>
+                    <span>
+                        ${message}
+                    </span>
+                `;
+
+            },
+
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            }
+
+        );
+
+    }
+
+
+    /* =========================================================
+       STAKEHOLDER DATA
+       ========================================================= */
+
+    function getStakeholderData() {
+
+        const element =
+            $(SELECTORS.stakeholderData);
+
+
+        if (!element) {
+
+            console.warn(
+                "Agreement form: #stakeholder-data was not found."
+            );
+
+            return new Map();
+
+        }
+
+
+        try {
+
+            const raw =
+                element.textContent ||
+                element.innerHTML ||
+                "[]";
+
+
+            const data =
+                JSON.parse(raw);
+
+
+            if (!Array.isArray(data)) {
+
+                console.warn(
+                    "Agreement form: stakeholder data is not an array."
+                );
+
+                return new Map();
+
+            }
+
+
+            return new Map(
+
+                data
+
+                    .filter(item => {
+
+                        return (
+                            item &&
+                            item.id !== undefined &&
+                            item.id !== null
+                        );
+
+                    })
+
+                    .map(item => {
+
+                        return [
+                            String(item.id),
+                            item
+                        ];
+
+                    })
+
+            );
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Agreement form: unable to parse stakeholder data.",
+                error
+            );
+
+            return new Map();
+
+        }
+
+    }
+
+
+    /* =========================================================
+       NORMALIZE VALUE
+       ========================================================= */
+
+    function normalizeValue(value) {
+
+        if (
+            value === null ||
+            value === undefined
+        ) {
+            return "";
+        }
+
+        return String(value).trim();
+
+    }
+
+
+    /* =========================================================
+       FIELD FINDER
+       ========================================================= */
+
+    function findField(
+        card,
+        names
+    ) {
+
+        if (!card) {
+            return null;
+        }
+
+
+        /*
+         * Allow either one field name or an array
+         * of possible field names.
+         */
+
+        if (!Array.isArray(names)) {
+
+            names = [names];
+
+        }
+
+
+        /*
+         * First try exact field names at the end
+         * of Django formset names.
+         *
+         * Example:
+         *
+         * form-0-stakeholder
+         * form-0-holder_id
+         * form-0-designation
+         */
+
+        for (
+            const name of names
+        ) {
+
+            const field =
+                card.querySelector(
+                    `[name$="-${name}"]`
+                );
+
+
+            if (field) {
+
+                return field;
+
+            }
+
+        }
+
+
+        /*
+         * Also support fields using data attributes.
+         */
+
+        for (
+            const name of names
+        ) {
+
+            const field =
+                card.querySelector(
+                    `[data-stakeholder-field="${name}"]`
+                );
+
+
+            if (field) {
+
+                return field;
+
+            }
+
+        }
+
+
+        return null;
+
+    }
+
+
+    /* =========================================================
+       GET STAKEHOLDER FIELDS
+       ========================================================= */
+
+    function getStakeholderFields(card) {
+
+        return {
+
+            stakeholder:
+                findField(
+                    card,
+                    [
+                        "stakeholder"
+                    ]
+                ),
+
+
+            holderId:
+                findField(
+                    card,
+                    [
+                        "holder_id",
+                        "stakeholder_identifier",
+                        "holder_identifier",
+                        "identifier"
+                    ]
+                ),
+
+
+            designation:
+                findField(
+                    card,
+                    [
+                        "designation",
+                        "stakeholder_designation"
+                    ]
+                ),
+
+
+            channel:
+                findField(
+                    card,
+                    [
+                        "channel"
+                    ]
+                ),
+
+
+            destination:
+                findField(
+                    card,
+                    [
+                        "destination"
+                    ]
+                )
+
+        };
+
+    }
+
+
+    /* =========================================================
+       GET STAKEHOLDER PROPERTY
+       ========================================================= */
+
+    function getStakeholderProperty(
+        stakeholder,
+        possibleNames
+    ) {
+
+        if (!stakeholder) {
+
+            return "";
+
+        }
+
+
+        for (
+            const name of possibleNames
+        ) {
+
+            if (
+                stakeholder[name] !== undefined &&
+                stakeholder[name] !== null
+            ) {
+
+                return normalizeValue(
+                    stakeholder[name]
+                );
+
+            }
+
+        }
+
+
+        return "";
+
+    }
+
+
+    /* =========================================================
+       UPDATE HOLDER ID
+       ========================================================= */
+
+    function updateHolderId(
+        field,
+        stakeholder
+    ) {
+
+        if (!field) {
+
+            return;
+
+        }
+
+
+        const holderId =
+            getStakeholderProperty(
+                stakeholder,
+                [
+                    "holder_id",
+                    "holderId",
+                    "stakeholder_identifier",
+                    "stakeholderIdentifier",
+                    "holder_identifier",
+                    "holderIdentifier",
+                    "identifier"
+                ]
+            );
+
+
+        field.value =
+            holderId;
+
+
+        /*
+         * Trigger input/change events so any other
+         * JavaScript attached to these fields is notified.
+         */
+
+        field.dispatchEvent(
+            new Event(
+                "input",
+                {
+                    bubbles: true
+                }
+            )
+        );
+
+        field.dispatchEvent(
+            new Event(
+                "change",
+                {
+                    bubbles: true
+                }
+            )
+        );
+
+    }
+
+
+    /* =========================================================
+       UPDATE DESIGNATION
+       ========================================================= */
+
+    function updateDesignation(
+        field,
+        stakeholder
+    ) {
+
+        if (!field) {
+
+            return;
+
+        }
+
+
+        const designation =
+            getStakeholderProperty(
+                stakeholder,
+                [
+                    "designation",
+                    "stakeholder_designation",
+                    "stakeholderDesignation"
+                ]
+            );
+
+
+        field.value =
+            designation;
+
+
+        field.dispatchEvent(
+            new Event(
+                "input",
+                {
+                    bubbles: true
+                }
+            )
+        );
+
+        field.dispatchEvent(
+            new Event(
+                "change",
+                {
+                    bubbles: true
+                }
+            )
+        );
+
+    }
+
+
+    /* =========================================================
+       UPDATE DESTINATION
+       ========================================================= */
+
+    function updateDestination(
+        field,
+        stakeholder,
+        channel
+    ) {
+
+        if (!field) {
+
+            return;
+
+        }
+
+
+        const normalizedChannel =
+            normalizeValue(
+                channel
+            ).toLowerCase();
+
+
+        let destination = "";
+
+
+        /*
+         * EMAIL
+         */
+
+        if (
+            normalizedChannel === "email"
+        ) {
+
+            destination =
+                getStakeholderProperty(
+                    stakeholder,
+                    [
+                        "email",
+                        "email_address",
+                        "emailAddress"
+                    ]
+                );
+
+
+            field.type =
+                "email";
+
+            field.placeholder =
+                "Stakeholder email address";
+
+            field.setAttribute(
+                "inputmode",
+                "email"
+            );
+
+        }
+
+
+        /*
+         * SMS / PHONE
+         */
+
+        else if (
+            normalizedChannel === "sms" ||
+            normalizedChannel === "phone"
+        ) {
+
+            destination =
+                getStakeholderProperty(
+                    stakeholder,
+                    [
+                        "phone",
+                        "phone_number",
+                        "phoneNumber",
+                        "mobile"
+                    ]
+                );
+
+
+            field.type =
+                "tel";
+
+            field.placeholder =
+                "Stakeholder phone number";
+
+            field.setAttribute(
+                "inputmode",
+                "tel"
+            );
+
+        }
+
+
+        /*
+         * OTHER
+         */
+
+        else {
+
+            field.type =
+                "text";
+
+            field.placeholder =
+                "Destination";
+
+            field.removeAttribute(
+                "inputmode"
+            );
+
+        }
+
+
+        field.value =
+            destination;
+
+
+        field.dispatchEvent(
+            new Event(
+                "input",
+                {
+                    bubbles: true
+                }
+            )
+        );
+
+        field.dispatchEvent(
+            new Event(
+                "change",
+                {
+                    bubbles: true
+                }
+            )
+        );
+
+    }
+
+
+    /* =========================================================
+       POPULATE STAKEHOLDER CARD
+       ========================================================= */
+
+    function populateStakeholderCard(
+        card,
+        stakeholders
+    ) {
+
+        if (!card) {
+
+            return;
+
+        }
+
+
+        const fields =
+            getStakeholderFields(card);
+
+
+        /*
+         * Log the discovered fields.
+         *
+         * This is extremely useful if the formset
+         * field names are different from expected.
+         */
+
+        console.debug(
+            "Agreement stakeholder fields:",
+            {
+                stakeholder:
+                    fields.stakeholder?.name,
+
+                holderId:
+                    fields.holderId?.name,
+
+                designation:
+                    fields.designation?.name,
+
+                channel:
+                    fields.channel?.name,
+
+                destination:
+                    fields.destination?.name
+            }
+        );
+
+
+        if (!fields.stakeholder) {
+
+            console.warn(
+                "Agreement form: stakeholder field not found.",
+                card
+            );
+
+            return;
+
+        }
+
+
+        const stakeholderId =
+            normalizeValue(
+                fields.stakeholder.value
+            );
+
+
+        /*
+         * Nothing selected.
+         */
+
+        if (!stakeholderId) {
+
+            if (fields.holderId) {
+
+                fields.holderId.value = "";
+
+            }
+
+
+            if (fields.designation) {
+
+                fields.designation.value = "";
+
+            }
+
+
+            if (fields.destination) {
+
+                fields.destination.value = "";
+
+            }
+
+
+            return;
+
+        }
+
+
+        /*
+         * Find selected stakeholder.
+         */
+
+        const stakeholder =
+            stakeholders.get(
+                stakeholderId
+            );
+
+
+        if (!stakeholder) {
+
+            console.warn(
+                "Agreement form: selected stakeholder was not found in stakeholder-data.",
+                {
+                    stakeholderId:
+                        stakeholderId,
+
+                    availableIds:
+                        Array.from(
+                            stakeholders.keys()
+                        )
+                }
+            );
+
+
+            return;
+
+        }
+
+
+        console.debug(
+            "Agreement form: selected stakeholder:",
+            stakeholder
+        );
+
+
+        /* -----------------------------------------------------
+           HOLDER ID
+           ----------------------------------------------------- */
+
+        updateHolderId(
+            fields.holderId,
+            stakeholder
+        );
+
+
+        /* -----------------------------------------------------
+           DESIGNATION
+           ----------------------------------------------------- */
+
+        updateDesignation(
+            fields.designation,
+            stakeholder
+        );
+
+
+        /* -----------------------------------------------------
+           DESTINATION
+           ----------------------------------------------------- */
+
+        updateDestination(
+            fields.destination,
+            stakeholder,
+            fields.channel
+                ? fields.channel.value
+                : ""
+        );
+
+    }
+
+
+    /* =========================================================
+       INITIALIZE ONE STAKEHOLDER CARD
+       ========================================================= */
+
+    function initializeStakeholderCard(
+        card,
+        stakeholders
+    ) {
+
+        if (!card) {
+
+            return;
+
+        }
+
+
+        /*
+         * Prevent duplicate event listeners.
+         */
+
+        if (
+            card.dataset
+                .stakeholderInitialized === "true"
+        ) {
+
+            /*
+             * Still refresh the fields.
+             */
+
+            populateStakeholderCard(
+                card,
+                stakeholders
+            );
+
+            return;
+
+        }
+
+
+        card.dataset
+            .stakeholderInitialized = "true";
+
+
+        const fields =
+            getStakeholderFields(card);
+
+
+        /* -----------------------------------------------------
+           STAKEHOLDER CHANGE
+           ----------------------------------------------------- */
+
+        if (fields.stakeholder) {
+
+            fields.stakeholder.addEventListener(
+                "change",
+                () => {
+
+                    /*
+                     * Reload latest data in case
+                     * the page dynamically changed it.
+                     */
+
+                    const latestStakeholders =
+                        getStakeholderData();
+
+
+                    populateStakeholderCard(
+                        card,
+                        latestStakeholders
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* -----------------------------------------------------
+           CHANNEL CHANGE
+           ----------------------------------------------------- */
+
+        if (fields.channel) {
+
+            fields.channel.addEventListener(
+                "change",
+                () => {
+
+                    const latestStakeholders =
+                        getStakeholderData();
+
+
+                    populateStakeholderCard(
+                        card,
+                        latestStakeholders
+                    );
+
+                }
+            );
+
+        }
+
+
+        /*
+         * Initial population.
+         */
+
+        populateStakeholderCard(
+            card,
+            stakeholders
+        );
+
+    }
+
+
+    /* =========================================================
+       INITIALIZE ALL STAKEHOLDERS
+       ========================================================= */
+
+    function initializeStakeholders() {
+
+        const stakeholders =
+            getStakeholderData();
+
+
+        const cards =
+            $$(SELECTORS.stakeholderCards);
+
+
+        if (!cards.length) {
+
+            console.warn(
+                "Agreement form: no stakeholder cards found."
+            );
+
+            return;
+
+        }
+
+
+        cards.forEach(card => {
+
+            initializeStakeholderCard(
+                card,
+                stakeholders
+            );
+
+        });
+
+    }
+
+
+    /* =========================================================
+       FORMSET OBSERVER
+       ========================================================= */
+
+    function initializeFormsetObserver() {
+
+        const grid =
+            $(".stakeholder-grid");
+
+
+        if (!grid) {
+
+            return;
+
+        }
+
+
+        const observer =
+            new MutationObserver(
+                () => {
+
+                    initializeStakeholders();
+
+                }
+            );
+
+
+        observer.observe(
+            grid,
+            {
+                childList: true,
+                subtree: true
+            }
+        );
+
+    }
+
+
+    /* =========================================================
+       SYNCHRONIZE BEFORE SUBMIT
+       ========================================================= */
+
+    function synchronizeStakeholders() {
+
+        const stakeholders =
+            getStakeholderData();
+
+
+        $$(SELECTORS.stakeholderCards)
+            .forEach(card => {
+
+                populateStakeholderCard(
+                    card,
+                    stakeholders
+                );
+
+            });
+
+    }
+
+
+    /* =========================================================
+       FORM SUBMISSION
+       ========================================================= */
+
+    function initializeFormSubmission() {
+
+        const form =
+            $(".agreement-form");
+
+
+        if (!form) {
+
+            return;
+
+        }
+
+
+        if (
+            form.dataset
+                .agreementSubmitInitialized === "true"
+        ) {
+
+            return;
+
+        }
+
+
+        form.dataset
+            .agreementSubmitInitialized = "true";
+
+
+        form.addEventListener(
+            "submit",
+            () => {
+
+                /*
+                 * Make absolutely sure all automatically
+                 * populated values are present before Django
+                 * receives the POST request.
+                 */
+
+                synchronizeStakeholders();
+
+            }
+        );
+
+    }
+
+
+    /* =========================================================
+       INITIALIZATION
+       ========================================================= */
+
+    function initialize() {
+
+        /*
+         * Location
+         */
+
+        detectSigningLocation();
+
+
+        /*
+         * Stakeholder auto-population
+         */
+
+        initializeStakeholders();
+
+
+        /*
+         * Formset observer
+         */
+
+        initializeFormsetObserver();
+
+
+        /*
+         * Final synchronization before submit
+         */
+
+        initializeFormSubmission();
+
+
+        /*
+         * Show first section by default if none is active.
+         */
+
+        const activeSection =
+            sections.find(
+                section =>
+                    section.classList.contains(
+                        "active"
+                    )
+            );
+
+
+        if (
+            !activeSection &&
+            sections.length
+        ) {
+
+            showSection(
+                sections[0].id
+            );
+
+        }
+
+    }
+
+
+    /* =========================================================
+       DOM READY
+       ========================================================= */
+
+    if (
+        document.readyState === "loading"
+    ) {
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            initialize,
+            {
+                once: true
+            }
+        );
+
+    }
+
+    else {
+
+        initialize();
+
+    }
+
+
+})();
+</script>
+{% endblock %}
+
+

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="auth-wrap">
+  <div class="panel auth-card">
+    <div class="auth-head">
+      {% load static %}
+      <img class="auth-logo" src="{% static 'images/peacelink.png' %}" alt="PeaceLink logo">
+      <h2>Welcome back</h2>
+      <p>Sign in with username, phone number, email, or USSD identifier.</p>
+    </div>
+    <div class="auth-body">
+      <form method="post">
+        {% csrf_token %}
+        <div class="field"><label for="id_username">Username / phone / email</label>{{ form.username }}</div>
+        <div class="field"><label for="id_password">Password</label>{{ form.password }}</div>
+        {{ form.non_field_errors }}
+        <button class="btn primary" type="submit" style="width:100%"><span class="btn-icon">&rarr;</span>Sign in</button>
+      </form>
+      <p><a href="{% url 'password_reset' %}">Forgot password?</a> · <a href="{% url 'register' %}">Register</a></p>
+    </div>
+  </div>
+</section>
+{% endblock %}

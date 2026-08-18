@@ -1,0 +1,1749 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+
+/* =========================================================
+   CONFLICT DETAIL PAGE
+   ========================================================= */
+
+.conflict-detail {
+    width: 100%;
+    max-width: 1100px;
+
+    margin: 0 auto;
+    padding: 0 0 40px;
+
+    color: #d8d2c5;
+}
+
+
+/* =========================================================
+   TOP HEADER
+   ========================================================= */
+
+.detail-header {
+    position: relative;
+
+    overflow: hidden;
+
+    padding: 25px 28px 24px;
+
+    background:
+        linear-gradient(
+            110deg,
+            #5b2479 0%,
+            #41486b 48%,
+            #087d6d 100%
+        );
+
+    border-radius: 0 0 22px 22px;
+
+    box-shadow:
+        0 12px 35px rgba(0,0,0,.22);
+}
+
+
+.detail-header::after {
+    content: "";
+
+    position: absolute;
+
+    width: 190px;
+    height: 190px;
+
+    right: -70px;
+    top: -100px;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,.04);
+}
+
+
+.detail-header-top {
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+
+.detail-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    color: #d0d7cf;
+
+    font-size: .76rem;
+    font-weight: 700;
+
+    text-decoration: none;
+
+    opacity: .85;
+
+    transition: opacity .2s ease;
+}
+
+
+.detail-back:hover {
+    color: #fff;
+    opacity: 1;
+}
+
+
+.detail-header-main {
+    position: relative;
+    z-index: 2;
+
+    margin-top: 22px;
+}
+
+
+.detail-kicker {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 9px;
+
+    margin-bottom: 8px;
+}
+
+
+.detail-case-id {
+    color: #e5d66c;
+
+    font-size: .76rem;
+    font-weight: 900;
+
+    letter-spacing: .08em;
+}
+
+
+.detail-divider {
+    color: #829080;
+}
+
+
+.detail-type {
+    color: #d7cdbb;
+
+    font-size: .78rem;
+    font-weight: 700;
+}
+
+
+.detail-header h1 {
+    margin: 0;
+
+    color: #f1eadb;
+
+    font-size: clamp(1.5rem, 4vw, 2.15rem);
+    font-weight: 900;
+
+    letter-spacing: .01em;
+}
+
+
+.detail-header-subtitle {
+    margin: 8px 0 0;
+
+    color: #aebbaa;
+
+    font-size: .82rem;
+}
+
+
+.detail-status {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    margin-top: 18px;
+}
+
+
+.detail-stage,
+.detail-severity {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 6px 12px;
+
+    border-radius: 999px;
+
+    font-size: .72rem;
+    font-weight: 900;
+}
+
+
+/* Stage */
+
+.detail-stage {
+    color: #d47cdb;
+
+    background: rgba(89, 35, 103, .48);
+
+    border: 1px solid #81438d;
+}
+
+
+/* Severity */
+
+.detail-severity-low {
+    color: #55d891;
+    background: rgba(15, 104, 58, .30);
+    border: 1px solid #157443;
+}
+
+
+.detail-severity-medium {
+    color: #e6b63d;
+    background: rgba(117, 80, 11, .30);
+    border: 1px solid #8a6217;
+}
+
+
+.detail-severity-high {
+    color: #ff5369;
+    background: rgba(111, 22, 37, .32);
+    border: 1px solid #9c293d;
+}
+
+
+.detail-severity-critical {
+    color: #ff3453;
+    background: rgba(120, 13, 33, .36);
+    border: 1px solid #b31c39;
+}
+
+
+/* =========================================================
+   MAIN CONTENT
+   ========================================================= */
+
+.detail-content {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1.55fr)
+        minmax(310px, .85fr);
+
+    gap: 16px;
+
+    padding: 18px 22px 0;
+}
+
+
+/* =========================================================
+   DARK PANEL
+   ========================================================= */
+
+.detail-panel {
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            135deg,
+            #24242d,
+            #202127
+        );
+
+    border: 1px solid #49325a;
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 8px 24px rgba(0,0,0,.18),
+        inset 0 1px 0 rgba(255,255,255,.015);
+}
+
+
+.detail-panel + .detail-panel {
+    margin-top: 15px;
+}
+
+
+.detail-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    padding: 16px 18px;
+
+    border-bottom: 1px solid #35323c;
+}
+
+
+.detail-panel-title {
+    margin: 0;
+
+    color: #dcd5c8;
+
+    font-size: .92rem;
+    font-weight: 900;
+}
+
+
+.detail-panel-subtitle {
+    margin: 4px 0 0;
+
+    color: #708271;
+
+    font-size: .72rem;
+}
+
+
+/* =========================================================
+   PARTIES
+   ========================================================= */
+
+.parties-panel {
+    padding: 18px;
+}
+
+
+.parties-label {
+    margin-bottom: 11px;
+
+    color: #6e8b73;
+
+    font-size: .68rem;
+    font-weight: 900;
+
+    letter-spacing: .18em;
+    text-transform: uppercase;
+}
+
+
+.parties {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        45px
+        minmax(0, 1fr);
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+
+.party {
+    min-width: 0;
+
+    padding: 15px;
+
+    background: rgba(14, 55, 36, .30);
+
+    border: 1px solid #27553b;
+
+    border-radius: 13px;
+}
+
+
+.party-label {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #648069;
+
+    font-size: .64rem;
+    font-weight: 800;
+
+    text-transform: uppercase;
+    letter-spacing: .08em;
+}
+
+
+.party-name {
+    display: block;
+
+    overflow: hidden;
+
+    color: #c9d3c7;
+
+    font-size: .88rem;
+    font-weight: 800;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+.party-arrow {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: auto;
+
+    border: 1px solid #65386f;
+    border-radius: 50%;
+
+    color: #c75fd0;
+
+    background: #28222d;
+
+    font-size: .9rem;
+}
+
+
+/* =========================================================
+   DESCRIPTION
+   ========================================================= */
+
+.description-panel {
+    padding: 18px;
+}
+
+
+.description-text {
+    margin: 0;
+
+    color: #aeb8aa;
+
+    font-size: .84rem;
+    line-height: 1.75;
+
+    white-space: pre-line;
+}
+
+
+/* =========================================================
+   INFORMATION GRID
+   ========================================================= */
+
+.info-grid {
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+
+.info-item {
+    padding: 15px 17px;
+
+    border-right: 1px solid #35323c;
+    border-bottom: 1px solid #35323c;
+}
+
+
+.info-item:nth-child(2n) {
+    border-right: 0;
+}
+
+
+.info-item:nth-last-child(-n + 2) {
+    border-bottom: 0;
+}
+
+
+.info-label {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #687c6d;
+
+    font-size: .64rem;
+    font-weight: 900;
+
+    text-transform: uppercase;
+    letter-spacing: .1em;
+}
+
+
+.info-value {
+    color: #c9d0c5;
+
+    font-size: .8rem;
+    font-weight: 700;
+}
+
+
+.info-value.muted {
+    color: #69776d;
+}
+
+
+/* =========================================================
+   RESOLUTION SUMMARY
+   ========================================================= */
+
+.resolution-panel {
+    border-color: #285b3e;
+}
+
+
+.resolution-summary {
+    padding: 18px;
+}
+
+
+.resolution-summary p {
+    margin: 0;
+
+    color: #aeb8aa;
+
+    font-size: .82rem;
+    line-height: 1.7;
+
+    white-space: pre-line;
+}
+
+
+/* =========================================================
+   TIMELINE
+   ========================================================= */
+
+.timeline {
+    padding: 17px 18px 20px;
+}
+
+
+.timeline-item {
+    position: relative;
+
+    display: grid;
+
+    grid-template-columns: 32px minmax(0, 1fr);
+
+    gap: 12px;
+
+    padding-bottom: 20px;
+}
+
+
+.timeline-item:last-child {
+    padding-bottom: 0;
+}
+
+
+.timeline-item:not(:last-child)::before {
+    content: "";
+
+    position: absolute;
+
+    left: 15px;
+    top: 31px;
+    bottom: 0;
+
+    width: 1px;
+
+    background: #51365d;
+}
+
+
+.timeline-dot {
+    position: relative;
+    z-index: 2;
+
+    width: 31px;
+    height: 31px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #754080;
+    border-radius: 50%;
+
+    color: #d069d8;
+
+    background: #28222e;
+
+    font-size: .68rem;
+}
+
+
+.timeline-content {
+    min-width: 0;
+
+    padding: 2px 0;
+}
+
+
+.timeline-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+}
+
+
+.timeline-stage {
+    color: #d1c8d1;
+
+    font-size: .79rem;
+    font-weight: 900;
+}
+
+
+.timeline-author {
+    color: #69806e;
+
+    font-size: .68rem;
+}
+
+
+.timeline-note {
+    margin: 7px 0 0;
+
+    color: #8f9b8f;
+
+    font-size: .76rem;
+    line-height: 1.55;
+}
+
+
+.timeline-empty {
+    padding: 22px 0;
+
+    color: #6e7d71;
+
+    font-size: .78rem;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   ACTION PANEL
+   ========================================================= */
+
+.action-panel {
+    position: sticky;
+    top: 20px;
+}
+
+
+.action-intro {
+    padding: 17px 18px;
+
+    border-bottom: 1px solid #35323c;
+}
+
+
+.action-intro h2 {
+    margin: 0;
+
+    color: #ded7c9;
+
+    font-size: 1rem;
+    font-weight: 900;
+}
+
+
+.action-intro p {
+    margin: 6px 0 0;
+
+    color: #718173;
+
+    font-size: .73rem;
+    line-height: 1.5;
+}
+
+
+.action-form {
+    padding: 18px;
+}
+
+
+.form-section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    margin: 0 0 13px;
+
+    color: #b75bc4;
+
+    font-size: .76rem;
+    font-weight: 900;
+
+    text-transform: uppercase;
+    letter-spacing: .1em;
+}
+
+
+.form-section-title i {
+    color: #e3b438;
+}
+
+
+.field {
+    margin-bottom: 14px;
+}
+
+
+.field label {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #809180;
+
+    font-size: .68rem;
+    font-weight: 800;
+}
+
+
+.field input,
+.field textarea,
+.field select {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 10px 11px;
+
+    color: #d1d8ce;
+
+    background: #191b20;
+
+    border: 1px solid #45344d;
+
+    border-radius: 9px;
+
+    outline: none;
+
+    font-family: inherit;
+    font-size: .78rem;
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease;
+}
+
+
+.field input:focus,
+.field textarea:focus,
+.field select:focus {
+    border-color: #865093;
+
+    box-shadow: 0 0 0 2px rgba(134,80,147,.12);
+}
+
+
+.field textarea {
+    min-height: 100px;
+
+    resize: vertical;
+}
+
+
+.field select option {
+    background: #202127;
+    color: #d1d8ce;
+}
+
+
+.field ul.errorlist {
+    margin: 5px 0 0;
+    padding: 0;
+
+    list-style: none;
+
+    color: #ff6174;
+
+    font-size: .68rem;
+}
+
+
+/* =========================================================
+   ACTION BUTTONS
+   ========================================================= */
+
+.action-button {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 11px 14px;
+
+    border: 0;
+    border-radius: 9px;
+
+    cursor: pointer;
+
+    font-family: inherit;
+    font-size: .78rem;
+    font-weight: 900;
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease;
+}
+
+
+.action-button:hover {
+    transform: translateY(-1px);
+}
+
+
+.update-button {
+    color: #f0e8d9;
+
+    background:
+        linear-gradient(
+            100deg,
+            #67367a,
+            #82418c
+        );
+
+    box-shadow:
+        0 7px 18px rgba(103,54,122,.18);
+}
+
+
+.refer-button {
+    color: #f3d18a;
+
+    background:
+        linear-gradient(
+            100deg,
+            #654817,
+            #806021
+        );
+
+    box-shadow:
+        0 7px 18px rgba(128,96,33,.12);
+}
+
+
+.button-icon {
+    font-size: .9rem;
+}
+
+
+.action-divider {
+    height: 1px;
+
+    margin: 22px 0;
+
+    background: #39333f;
+}
+
+
+/* =========================================================
+   CURRENT STATUS CARD
+   ========================================================= */
+
+.status-card {
+    margin-top: 15px;
+
+    padding: 15px 17px;
+
+    background: rgba(14, 55, 36, .24);
+
+    border: 1px solid #28553b;
+
+    border-radius: 12px;
+}
+
+
+.status-card-label {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #63806a;
+
+    font-size: .63rem;
+    font-weight: 900;
+
+    letter-spacing: .1em;
+    text-transform: uppercase;
+}
+
+
+.status-card-value {
+    color: #d1d7cc;
+
+    font-size: .81rem;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 850px) {
+
+    .detail-content {
+        grid-template-columns: 1fr;
+    }
+
+    .action-panel {
+        position: static;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .detail-header {
+        padding: 20px 22px;
+    }
+
+    .detail-content {
+        padding: 15px 16px 0;
+    }
+
+    .detail-header-top {
+        align-items: flex-start;
+    }
+
+    .detail-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .parties {
+        grid-template-columns: 1fr;
+    }
+
+    .party-arrow {
+        transform: rotate(90deg);
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .info-item,
+    .info-item:nth-child(2n) {
+        border-right: 0;
+        border-bottom: 1px solid #35323c;
+    }
+
+    .info-item:last-child {
+        border-bottom: 0;
+    }
+
+    .timeline-top {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 3px;
+    }
+}
+
+</style>
+
+
+<div class="conflict-detail">
+
+
+    <!-- =====================================================
+         CASE HEADER
+         ===================================================== -->
+
+    <header class="detail-header">
+
+        <div class="detail-header-top">
+
+            <a
+                href="{% url 'conflict_list' %}"
+                class="detail-back"
+            >
+                <i class="fa-solid fa-arrow-left"></i>
+                Conflict cases
+            </a>
+
+        </div>
+
+
+        <div class="detail-header-main">
+
+            <div class="detail-kicker">
+
+                <span class="detail-case-id">
+                    {{ case.case_id }}
+                </span>
+
+                <span class="detail-divider">
+                    /
+                </span>
+
+                <span class="detail-type">
+                    {{ case.get_conflict_type_display }}
+                </span>
+
+            </div>
+
+
+            <h1>
+                {{ case.get_conflict_type_display }}
+            </h1>
+
+
+            <p class="detail-header-subtitle">
+                Community conflict resolution case
+                · {{ case.created_at|date:"d M Y" }}
+            </p>
+
+
+            <div class="detail-status">
+
+                <span class="detail-stage">
+                    {{ case.get_stage_display }}
+                </span>
+
+
+                <span
+                    class="
+                        detail-severity
+                        detail-severity-{{ case.severity }}
+                    "
+                >
+                    {{ case.get_severity_display }}
+                </span>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+         ===================================================== -->
+
+    <div class="detail-content">
+
+
+        <!-- =================================================
+             LEFT COLUMN
+             ================================================= -->
+
+        <main>
+
+
+            <!-- PARTIES -->
+
+            <section class="detail-panel">
+
+                <div class="parties-panel">
+
+                    <div class="parties-label">
+                        Conflict parties
+                    </div>
+
+
+                    <div class="parties">
+
+
+                        <div class="party">
+
+                            <span class="party-label">
+                                Community A
+                            </span>
+
+                            <span class="party-name">
+                                {{ case.community_a }}
+                            </span>
+
+                        </div>
+
+
+                        <div class="party-arrow">
+                            ↔
+                        </div>
+
+
+                        <div class="party">
+
+                            <span class="party-label">
+                                Community B
+                            </span>
+
+                            <span class="party-name">
+                                {{ case.community_b }}
+                            </span>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- CASE INFORMATION -->
+
+            <section class="detail-panel">
+
+                <div class="detail-panel-header">
+
+                    <div>
+
+                        <h2 class="detail-panel-title">
+                            Case information
+                        </h2>
+
+                        <p class="detail-panel-subtitle">
+                            Key information about this dispute
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="info-grid">
+
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            Reporter
+                        </span>
+
+                        <span class="info-value">
+                            {{ case.reporter_name }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            Contact
+                        </span>
+
+                        <span class="info-value">
+                            {{ case.reporter_contact }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            Severity
+                        </span>
+
+                        <span class="info-value">
+                            {{ case.get_severity_display }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            Assigned node
+                        </span>
+
+                        <span class="info-value
+                            {% if not case.assigned_node %}
+                                muted
+                            {% endif %}
+                        ">
+                            {{ case.assigned_node|default:"Unassigned" }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            Reported
+                        </span>
+
+                        <span class="info-value">
+                            {{ case.created_at|date:"d M Y, H:i" }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            Current stage
+                        </span>
+
+                        <span class="info-value">
+                            {{ case.get_stage_display }}
+                        </span>
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+
+            <!-- DESCRIPTION -->
+
+            <section class="detail-panel">
+
+                <div class="detail-panel-header">
+
+                    <div>
+
+                        <h2 class="detail-panel-title">
+                            Conflict description
+                        </h2>
+
+                        <p class="detail-panel-subtitle">
+                            Reported circumstances and background
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="description-panel">
+
+                    <p class="description-text">
+                        {{ case.description }}
+                    </p>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- RESOLUTION SUMMARY -->
+
+            {% if case.resolution_summary %}
+
+            <section class="detail-panel resolution-panel">
+
+                <div class="detail-panel-header">
+
+                    <div>
+
+                        <h2 class="detail-panel-title">
+                            Resolution summary
+                        </h2>
+
+                        <p class="detail-panel-subtitle">
+                            Recorded outcome of the case
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="resolution-summary">
+
+                    <p>
+                        {{ case.resolution_summary }}
+                    </p>
+
+                </div>
+
+            </section>
+
+            {% endif %}
+
+
+
+            <!-- =================================================
+                 UPDATES / TIMELINE
+                 ================================================= -->
+
+            <section class="detail-panel">
+
+                <div class="detail-panel-header">
+
+                    <div>
+
+                        <h2 class="detail-panel-title">
+                            Resolution timeline
+                        </h2>
+
+                        <p class="detail-panel-subtitle">
+                            Case progression and mediation updates
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="timeline">
+
+
+                    {% for update in case.updates.all %}
+
+                    <div class="timeline-item">
+
+
+                        <div class="timeline-dot">
+
+                            <i class="fa-solid fa-check"></i>
+
+                        </div>
+
+
+                        <div class="timeline-content">
+
+                            <div class="timeline-top">
+
+                                <span class="timeline-stage">
+                                    {{ update.get_stage_display }}
+                                </span>
+
+                                <span class="timeline-author">
+                                    {{ update.author }}
+                                </span>
+
+                            </div>
+
+
+                            {% if update.note %}
+
+                            <p class="timeline-note">
+                                {{ update.note }}
+                            </p>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                    {% empty %}
+
+                    <div class="timeline-empty">
+
+                        <i class="fa-regular fa-clock"></i>
+
+                        <div style="margin-top:7px;">
+                            No updates have been recorded yet.
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+
+                </div>
+
+            </section>
+
+
+        </main>
+
+
+
+        <!-- =================================================
+             RIGHT COLUMN
+             ================================================= -->
+
+        <aside>
+
+
+            <section class="detail-panel action-panel">
+
+
+                <div class="action-intro">
+
+                    <h2>
+                        Manage case
+                    </h2>
+
+                    <p>
+                        Update the case stage, document mediation progress,
+                        or refer the matter to another authority.
+                    </p>
+
+                </div>
+
+
+                <!-- =============================================
+                     ADD UPDATE
+                     ============================================= -->
+
+                <div class="action-form">
+
+                    <h3 class="form-section-title">
+
+                        <i class="fa-solid fa-pen"></i>
+
+                        Add update
+
+                    </h3>
+
+
+                    <form method="post">
+
+                        {% csrf_token %}
+
+                        {% for field in update_form %}
+
+                        <div class="field">
+
+                            {{ field.label_tag }}
+
+                            {{ field }}
+
+                            {{ field.errors }}
+
+                        </div>
+
+                        {% endfor %}
+
+
+                        <button
+                            class="action-button update-button"
+                            name="add_update"
+                            type="submit"
+                        >
+
+                            <span class="button-icon">
+                                +
+                            </span>
+
+                            Add case update
+
+                        </button>
+
+                    </form>
+
+
+
+                    <!-- =========================================
+                         REFERRAL
+                         ========================================= -->
+
+                    <div class="action-divider"></div>
+
+
+                    <h3 class="form-section-title">
+
+                        <i class="fa-solid fa-share"></i>
+
+                        Refer case
+
+                    </h3>
+
+
+<!--                    <form method="post">-->
+
+<!--                        {% csrf_token %}-->
+
+<!--                        {% for field in referral_form %}-->
+
+<!--                        <div class="field">-->
+
+<!--                            {{ field.label_tag }}-->
+
+<!--                            {{ field }}-->
+
+<!--                            {{ field.errors }}-->
+
+<!--                        </div>-->
+
+<!--                        {% endfor %}-->
+
+
+<!--                        <button-->
+<!--                            class="action-button refer-button"-->
+<!--                            name="add_referral"-->
+<!--                            type="submit"-->
+<!--                        >-->
+
+<!--                            <span class="button-icon">-->
+<!--                                →-->
+<!--                            </span>-->
+
+<!--                            Refer case-->
+
+<!--                        </button>-->
+
+<!--                    </form>-->
+
+
+
+
+
+
+
+
+                    <form method="post" id="referral-form">
+
+    {% csrf_token %}
+
+    <div class="field">
+
+        {{ referral_form.stakeholder_type.label_tag }}
+
+        {{ referral_form.stakeholder_type }}
+
+        {{ referral_form.stakeholder_type.errors }}
+
+    </div>
+
+
+    <div class="field">
+
+        {{ referral_form.stakeholder.label_tag }}
+
+        {{ referral_form.stakeholder }}
+
+        {{ referral_form.stakeholder.errors }}
+
+    </div>
+
+
+    <div class="field">
+
+        {{ referral_form.reason.label_tag }}
+
+        {{ referral_form.reason }}
+
+        {{ referral_form.reason.errors }}
+
+    </div>
+
+
+    <div class="field">
+
+        {{ referral_form.follow_up_date.label_tag }}
+
+        {{ referral_form.follow_up_date }}
+
+        {{ referral_form.follow_up_date.errors }}
+
+    </div>
+
+
+    <div class="field">
+
+        {{ referral_form.status.label_tag }}
+
+        {{ referral_form.status }}
+
+        {{ referral_form.status.errors }}
+
+    </div>
+
+
+    <button
+        class="action-button refer-button"
+        name="add_referral"
+        type="submit"
+    >
+
+        <span class="button-icon">
+            →
+        </span>
+
+        Refer case
+
+    </button>
+
+</form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    <!-- CURRENT STATUS -->
+
+                    <div class="status-card">
+
+                        <span class="status-card-label">
+                            Current status
+                        </span>
+
+                        <span class="status-card-value">
+                            {{ case.get_stage_display }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </aside>
+
+
+    </div>
+
+</div>
+
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const typeSelect = document.getElementById(
+        "id_referral_stakeholder_type"
+    );
+
+    const stakeholderSelect = document.getElementById(
+        "id_referral-stakeholder"
+    );
+
+    if (!typeSelect || !stakeholderSelect) {
+        return;
+    }
+
+    const stakeholderUrl =
+        stakeholderSelect.dataset.stakeholderUrl;
+
+
+    typeSelect.addEventListener("change", function () {
+
+        const stakeholderType = this.value;
+
+
+        // Reset stakeholder dropdown
+        stakeholderSelect.innerHTML = "";
+
+        const defaultOption = document.createElement("option");
+
+        defaultOption.value = "";
+        defaultOption.textContent =
+            stakeholderType
+                ? "Loading stakeholders..."
+                : "Select stakeholder type first";
+
+        stakeholderSelect.appendChild(defaultOption);
+
+
+        if (!stakeholderType) {
+            stakeholderSelect.disabled = true;
+            return;
+        }
+
+
+        stakeholderSelect.disabled = true;
+
+
+        fetch(
+            `${stakeholderUrl}?type=${encodeURIComponent(stakeholderType)}`,
+            {
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            }
+        )
+        .then(response => {
+
+            if (!response.ok) {
+                throw new Error(
+                    "Unable to load stakeholders."
+                );
+            }
+
+            return response.json();
+        })
+        .then(data => {
+
+            stakeholderSelect.innerHTML = "";
+
+
+            const placeholder =
+                document.createElement("option");
+
+            placeholder.value = "";
+            placeholder.textContent =
+                data.stakeholders.length
+                    ? "Select stakeholder"
+                    : "No stakeholders registered for this type";
+
+            stakeholderSelect.appendChild(placeholder);
+
+
+            data.stakeholders.forEach(stakeholder => {
+
+                const option =
+                    document.createElement("option");
+
+                option.value = stakeholder.id;
+                option.textContent = stakeholder.name;
+
+                stakeholderSelect.appendChild(option);
+
+            });
+
+
+            stakeholderSelect.disabled =
+                data.stakeholders.length === 0;
+
+        })
+        .catch(error => {
+
+            console.error(error);
+
+            stakeholderSelect.innerHTML = "";
+
+            const option =
+                document.createElement("option");
+
+            option.value = "";
+            option.textContent =
+                "Unable to load stakeholders";
+
+            stakeholderSelect.appendChild(option);
+
+            stakeholderSelect.disabled = true;
+
+        });
+
+    });
+
+
+    /*
+     * Initial state
+     */
+    if (!typeSelect.value) {
+        stakeholderSelect.disabled = true;
+    }
+
+});
+</script>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="section grid two">
+  <div class="panel">
+    <span class="tag">{{ agreement.get_status_display }}</span>
+    <h1>{{ agreement.agreement_id }}</h1>
+    <p>{{ agreement.detailed_terms }}</p>
+    <div class="list">
+      <div class="item"><strong>Communities</strong><span>{{ agreement.community_a }} / {{ agreement.community_b }}</span></div>
+      <div class="item">
+        <strong>Signed</strong>
+        <span>
+          {{ agreement.date_signed }} at {{ agreement.signing_location }}
+          {% if agreement.signing_map_url %}<br><a class="btn sand map-link" href="{{ agreement.signing_map_url }}" target="_blank" rel="noopener">Open signing location on map</a>{% endif %}
+        </span>
+      </div>
+      <div class="item"><strong>Mediators</strong><span>{{ agreement.mediators }}</span></div>
+      <div class="item"><strong>Follow-up</strong><span>{{ agreement.follow_up_date|default:"Not set" }}</span></div>
+      <div class="item"><strong>Escalation</strong><span>{{ agreement.escalation_contact }}</span></div>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="label">Stakeholder notices</div>
+    <div class="list" style="margin-top:12px">
+      {% for notice in agreement.notices.all %}
+        <div class="item">
+          <span>
+            <strong>{{ notice.stakeholder }}</strong><br>
+            <span class="muted">ID: {{ notice.stakeholder_id }}{% if notice.stakeholder.designation %} &middot; {{ notice.stakeholder.designation }}{% endif %}</span><br>
+            <span class="muted">{{ notice.destination }}</span>
+          </span>
+          <span class="tag">{{ notice.delivery_status }}</span>
+        </div>
+      {% empty %}<p>No stakeholder notices recorded.</p>{% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}
