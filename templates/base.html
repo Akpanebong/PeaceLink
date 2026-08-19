@@ -1,113 +1,777 @@
 {% load static %}
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}{{ APP_NAME }}{% endblock %}</title>
-  <link rel="stylesheet" href="{% static 'css/peacelink.css' %}">
-  <link rel="icon" href="{% static 'images/peacelink.png' %}">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <title>
+    {% block title %}
+      {{ APP_NAME }}
+    {% endblock %}
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="{% static 'css/peacelink.css' %}"
+  >
+
+  <link
+    rel="icon"
+    href="{% static 'images/peacelink.png' %}"
+  >
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+  >
+  <style>
+
+
+/* =========================================================
+   ACTIVE SIDEBAR NAVIGATION
+   ========================================================= */
+
+.sidebar-nav a {
+  position: relative;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.sidebar-nav a.active,
+.sidebar-nav a.active:hover {
+  color: #ffffff !important;
+  background: linear-gradient(
+    90deg,
+    rgba(18, 166, 147, 0.42),
+    rgba(11, 123, 107, 0.18)
+  ) !important;
+  border-color: var(--teal-light) !important;
+  box-shadow:
+    0 6px 20px rgba(18, 166, 147, 0.16);
+}
+
+.sidebar-nav a.active::before {
+  content: "";
+  position: absolute;
+  left: -1px;
+  top: 8px;
+  bottom: 8px;
+  width: 4px;
+  border-radius: 0 6px 6px 0;
+  background: var(--teal-light);
+  box-shadow:
+    0 0 10px rgba(18, 166, 147, 0.7);
+}
+
+.sidebar-nav a.active .nav-icon,
+.sidebar-nav a.active i {
+  color: var(--teal-light) !important;
+}
+
+.sidebar-nav a.active .nav-text {
+  color: #ffffff !important;
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   ACTIVE BOTTOM NAVIGATION
+   ========================================================= */
+
+.bottom-nav a {
+  position: relative;
+  transition:
+    color 0.2s ease,
+    background 0.2s ease;
+}
+
+.bottom-nav a.active,
+.bottom-nav a.active:hover {
+  color: var(--teal-light) !important;
+  font-weight: 900;
+  background: rgba(18, 166, 147, 0.12);
+}
+
+.bottom-nav a.active::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 4px;
+  width: 20px;
+  height: 3px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: var(--teal-light);
+  box-shadow:
+    0 0 8px rgba(18, 166, 147, 0.6);
+}
+  </style>
+
+  {% block extra_css %}{% endblock %}
 </head>
+
+
 <body>
-  <input class="sidebar-toggle-input" type="checkbox" id="sidebar-toggle" aria-label="Collapse sidebar">
+
+  <!-- =====================================================
+       SIDEBAR TOGGLE
+  ====================================================== -->
+
+  <input
+    class="sidebar-toggle-input"
+    type="checkbox"
+    id="sidebar-toggle"
+    aria-label="Collapse sidebar"
+  >
+
+
+  <!-- =====================================================
+       SIDEBAR
+  ====================================================== -->
+
   <aside class="sidebar">
+
     <div class="sidebar-head">
-      <a class="brand" href="{% url 'home' %}">
-        <img class="brand-logo" src="{% static 'images/peacelink.png' %}" alt="PeaceLink logo">
+
+      <a
+        class="brand"
+        href="{% url 'home' %}"
+      >
+
+        <img
+          class="brand-logo"
+          src="{% static 'images/peacelink.png' %}"
+          alt="PeaceLink logo"
+        >
+
         <span class="brand-copy">
-          <span class="brand-title">{{ APP_NAME }}</span>
-          <span class="brand-subtitle">{{ APP_TAGLINE }}</span>
+
+          <span class="brand-title">
+            {{ APP_NAME }}
+          </span>
+
+          <span class="brand-subtitle">
+            {{ APP_TAGLINE }}
+          </span>
+
         </span>
+
       </a>
-      <label class="sidebar-toggle" for="sidebar-toggle" title="Collapse sidebar">
-        <span class="btn-icon">&#9776;</span>
+
+
+      <label
+        class="sidebar-toggle"
+        for="sidebar-toggle"
+        title="Collapse sidebar"
+      >
+        <span class="btn-icon">
+          &#9776;
+        </span>
       </label>
+
     </div>
+
+
+    <!-- =====================================================
+         SIDEBAR NAVIGATION
+    ====================================================== -->
+
     <nav class="nav sidebar-nav">
-      <a href="{% url 'home' %}"><span class="nav-icon">&#8962;</span><span class="nav-text">{{ UI.home }}</span></a>
-      <a href="{% url 'trade_list' %}"><span class="nav-icon">&harr;</span><span class="nav-text">{{ UI.trade }}</span></a>
-      <a href="{% url 'corridor_list' %}"><span class="nav-icon">!</span><span class="nav-text">{{ UI.corridors }}</span></a>
-      <a href="{% url 'agreement_list' %}"><span class="nav-icon">&#10003;</span><span class="nav-text">{{ UI.agreements }}</span></a>
-      <a href="{% url 'conflict_list' %}"><span class="nav-icon">?</span><span class="nav-text">{{ UI.resolve }}</span></a>
-      <a href="{% url 'dashboard' %}"><span class="nav-icon">&#9638;</span><span class="nav-text">{{ UI.dashboard }}</span></a>
+
+
+      <!-- HOME -->
+
+      {% url 'home' as home_url %}
+
+      <a
+        href="{{ home_url }}"
+        class="{% if request.path == home_url %}active{% endif %}"
+      >
+
+        <span class="nav-icon">
+          <i class="fa-solid fa-house"></i>
+        </span>
+
+        <span class="nav-text">
+          {{ UI.home }}
+        </span>
+
+      </a>
+
+
+      <!-- TRADE -->
+
+      {% url 'trade_list' as trade_url %}
+
+      <a
+        href="{{ trade_url }}"
+        class="{% if '/trade/' in request.path %}active{% endif %}"
+      >
+
+        <span class="nav-icon">
+          <i class="fa-solid fa-arrow-right-arrow-left"></i>
+        </span>
+
+        <span class="nav-text">
+          {{ UI.trade }}{% if '/trade/' in request.path %}active{% endif %}
+        </span>
+
+      </a>
+
+
+      <!-- CORRIDORS -->
+
+      {% url 'corridor_list' as corridor_url %}
+
+      <a
+        href="{{ corridor_url }}"
+        class="{% if '/corridor/' in request.path %}active{% endif %}"
+      >
+
+        <span class="nav-icon">
+          <i class="fa-solid fa-route"></i>
+        </span>
+
+        <span class="nav-text">
+          {{ UI.corridors }}
+        </span>
+
+      </a>
+
+
+      <!-- AGREEMENTS -->
+
+      {% url 'agreement_list' as agreement_url %}
+
+      <a
+        href="{{ agreement_url }}"
+        class="{% if '/agreement/' in request.path %}active{% endif %}"
+      >
+
+        <span class="nav-icon">
+          <i class="fa-solid fa-handshake"></i>
+        </span>
+
+        <span class="nav-text">
+          {{ UI.agreements }}
+        </span>
+
+      </a>
+
+
+      <!-- CONFLICT RESOLUTION -->
+
+      {% url 'conflict_list' as conflict_url %}
+
+      <a
+        href="{{ conflict_url }}"
+        class="{% if '/conflict/' in request.path %}active{% endif %}"
+      >
+
+        <span class="nav-icon">
+          <i class="fa-solid fa-shield-halved"></i>
+        </span>
+
+        <span class="nav-text">
+          {{ UI.resolve }}
+        </span>
+
+      </a>
+
+
+      <!-- DASHBOARD -->
+
+      {% url 'dashboard' as dashboard_url %}
+
+      <a
+        href="{{ dashboard_url }}"
+        class="{% if request.path == dashboard_url %}active{% endif %}"
+      >
+
+        <span class="nav-icon">
+          <i class="fa-solid fa-chart-line"></i>
+        </span>
+
+        <span class="nav-text">
+          {{ UI.dashboard }}
+        </span>
+
+      </a>
+
+
+      <!-- COMMUNITY ADMIN -->
+
       {% if user.is_superuser %}
-      <a href="{% url 'community_create' %}"><i class="fa fa-home"></i> <span class="nav-text">Community</span></a>
+
+        {% url 'community_create' as community_create_url %}
+
+        <a
+          href="{{ community_create_url }}"
+          class="{% if '/community/' in request.path or '/stakeholder/' in request.path %}active{% endif %}"
+        >
+
+          <span class="nav-icon">
+            <i class="fa-solid fa-people-group"></i>
+          </span>
+
+          <span class="nav-text">
+            Community
+          </span>
+
+        </a>
+
       {% endif %}
+
+
+      <!-- PROFILE -->
+
       {% if user.is_authenticated %}
-        <a href="{% url 'profile' %}"><span class="nav-icon">&#9679;</span><span class="nav-text">{{ UI.profile }}</span></a>
-        <a href="{% url 'logout' %}"><span class="nav-icon">&larr;</span><span class="nav-text">{{ UI.sign_out }} {{ user.get_full_name|default:user.username }}</span></a>
+
+        {% url 'profile' as profile_url %}
+
+        <a
+          href="{{ profile_url }}"
+          class="{% if request.path == profile_url %}active{% endif %}"
+        >
+
+          <span class="nav-icon">
+            <i class="fa-solid fa-user"></i>
+          </span>
+
+          <span class="nav-text">
+            {{ UI.profile }}
+          </span>
+
+        </a>
+
+
+        <!-- LOGOUT -->
+
+        <a style="background-color: red; color: white"
+          href="{% url 'logout' %}"
+        >
+
+          <span class="nav-icon">
+            <i class="fa-solid fa-right-from-bracket"></i>
+          </span>
+
+          <span class="nav-text">
+
+            {{ UI.sign_out }}
+
+            {{ user.get_full_name|default:user.username }}
+
+          </span>
+
+        </a>
+
+
       {% else %}
-        <a href="{% url 'login' %}"><span class="nav-icon">&rarr;</span><span class="nav-text">{{ UI.sign_in }}</span></a>
+
+
+        <!-- LOGIN -->
+
+        {% url 'login' as login_url %}
+
+        <a
+          href="{{ login_url }}"
+          class="{% if request.path == login_url %}active{% endif %}"
+        >
+
+          <span class="nav-icon">
+            <i class="fa-solid fa-right-to-bracket"></i>
+          </span>
+
+          <span class="nav-text">
+            {{ UI.sign_in }}
+          </span>
+
+        </a>
+
+
       {% endif %}
+
+
     </nav>
+
   </aside>
 
+
+  <!-- =====================================================
+       MOBILE TOP BAR
+  ====================================================== -->
+
   <header class="mobile-topbar shell">
-    <a class="brand" href="{% url 'home' %}">
-      <img class="brand-logo" src="{% static 'images/peacelink.png' %}" alt="PeaceLink logo">
+
+    <a
+      class="brand"
+      href="{% url 'home' %}"
+    >
+
+      <img
+        class="brand-logo"
+        src="{% static 'images/peacelink.png' %}"
+        alt="PeaceLink logo"
+      >
+
       <span class="brand-copy">
-        <span class="brand-title">{{ APP_NAME }}</span>
-        <span class="brand-subtitle">{{ APP_TAGLINE }}</span>
+
+        <span class="brand-title">
+          {{ APP_NAME }}
+        </span>
+
+        <span class="brand-subtitle">
+          {{ APP_TAGLINE }}
+        </span>
+
       </span>
+
     </a>
+
   </header>
 
+
+  <!-- =====================================================
+       MAIN PAGE
+  ====================================================== -->
+
   <div class="page-frame">
+
+
+    <!-- TOP RIGHT CONTROLS -->
+
     <div class="page-top">
+
       {% if user.is_authenticated %}
+
+
+        <!-- LANGUAGE -->
+
         <details class="language-picker">
+
           <summary aria-label="Language">
-            <span class="notification-icon">A</span>
+
+            <span class="notification-icon">
+              <i class="fa-solid fa-language"></i>
+            </span>
+
           </summary>
-          <form class="language-menu" method="post" action="{% url 'set_language_preference' %}">
+
+
+          <form
+            class="language-menu"
+            method="post"
+            action="{% url 'set_language_preference' %}"
+          >
+
             {% csrf_token %}
-            <input type="hidden" name="next" value="{{ request.get_full_path }}">
-            <label class="label" for="id_language">{{ UI.language }}</label>
-            <select class="input" id="id_language" name="language" onchange="this.form.submit()">
+
+            <input
+              type="hidden"
+              name="next"
+              value="{{ request.get_full_path }}"
+            >
+
+            <label
+              class="label"
+              for="id_language"
+            >
+              {{ UI.language }}
+            </label>
+
+
+            <select
+              class="input"
+              id="id_language"
+              name="language"
+              onchange="this.form.submit()"
+            >
+
               {% for code,label in LANGUAGES %}
-                <option value="{{ code }}" {% if code == ACTIVE_LANGUAGE %}selected{% endif %}>{{ label }}</option>
+
+                <option
+                  value="{{ code }}"
+                  {% if code == ACTIVE_LANGUAGE %}selected{% endif %}
+                >
+                  {{ label }}
+                </option>
+
               {% endfor %}
+
             </select>
+
           </form>
+
         </details>
+
+
+        <!-- NOTIFICATIONS -->
+
         <details class="notifications">
+
           <summary aria-label="Notifications">
-            <span class="notification-icon">!</span>
-            {% if NOTIFICATION_COUNT %}<span class="notification-badge">{{ NOTIFICATION_COUNT }}</span>{% endif %}
+
+            <span class="notification-icon">
+              <i class="fa-solid fa-bell"></i>
+            </span>
+
+            {% if NOTIFICATION_COUNT %}
+
+              <span class="notification-badge">
+                {{ NOTIFICATION_COUNT }}
+              </span>
+
+            {% endif %}
+
           </summary>
+
+
           <div class="notification-menu">
-            <div class="label">{{ UI.notifications }}</div>
+
+            <div class="label">
+              {{ UI.notifications }}
+            </div>
+
+
             {% for notification in NOTIFICATIONS %}
-              <a class="notification-item" href="{{ notification.get_absolute_url }}">
-                <strong>{{ notification.title }}</strong>
-                <span>{{ notification.message }}</span>
+
+              <a
+                class="notification-item"
+                href="{{ notification.get_absolute_url }}"
+              >
+
+                <strong>
+                  {{ notification.title }}
+                </strong>
+
+                <span>
+                  {{ notification.message }}
+                </span>
+
               </a>
+
+
             {% empty %}
-              <p>{{ UI.no_new_notifications }}</p>
+
+              <p>
+                {{ UI.no_new_notifications }}
+              </p>
+
             {% endfor %}
+
           </div>
+
         </details>
+
+
       {% endif %}
+
     </div>
+
+
+    <!-- MAIN CONTENT -->
+
     <main class="shell">
+
       {% if messages %}
+
         <div class="messages">
-          {% for message in messages %}<div class="message">{{ message }}</div>{% endfor %}
+
+          {% for message in messages %}
+
+            <div class="message {{ message.tags }}">
+
+              {{ message }}
+
+            </div>
+
+          {% endfor %}
+
         </div>
+
       {% endif %}
+
+
       {% block content %}{% endblock %}
+
     </main>
+
   </div>
 
+
+  <!-- =====================================================
+       MOBILE BOTTOM NAVIGATION
+  ====================================================== -->
+
   <nav class="bottom-nav">
-    <a href="{% url 'home' %}">{{ UI.home }}</a>
-    <a href="{% url 'trade_list' %}">{{ UI.trade }}</a>
-    <a href="{% url 'corridor_list' %}">{{ UI.routes }}</a>
-    <a href="{% url 'agreement_list' %}">{{ UI.agreements }}</a>
-    <a href="{% url 'conflict_report' %}">{{ UI.resolve }}</a>
-    <a href="{% url 'dashboard' %}">{{ UI.intel }}</a>
+
+
+    <!-- HOME -->
+
+    {% url 'home' as home_url %}
+
+    <a
+      href="{{ home_url }}"
+      class="{% if request.path == home_url %}active{% endif %}"
+    >
+
+      <i class="fa-solid fa-house"></i>
+
+      <span>
+        {{ UI.home }}
+      </span>
+
+    </a>
+
+
+    <!-- TRADE -->
+
+    <a
+      href="{% url 'trade_list' %}"
+      class="{% if '/trade/' in request.path %}active{% endif %}"
+    >
+
+      <i class="fa-solid fa-arrow-right-arrow-left"></i>
+
+      <span>
+        {{ UI.trade }}
+      </span>
+
+    </a>
+
+
+    <!-- CORRIDORS -->
+
+    <a
+      href="{% url 'corridor_list' %}"
+      class="{% if '/corridor/' in request.path %}active{% endif %}"
+    >
+
+      <i class="fa-solid fa-route"></i>
+
+      <span>
+        {{ UI.routes }}
+      </span>
+
+    </a>
+
+
+    <!-- AGREEMENTS -->
+
+    <a
+      href="{% url 'agreement_list' %}"
+      class="{% if '/agreement/' in request.path %}active{% endif %}"
+    >
+
+      <i class="fa-solid fa-handshake"></i>
+
+      <span>
+        {{ UI.agreements }}
+      </span>
+
+    </a>
+
+
+    <!-- RESOLUTION -->
+
+    <a
+      href="{% url 'conflict_report' %}"
+      class="{% if '/conflict/' in request.path %}active{% endif %}"
+    >
+
+      <i class="fa-solid fa-shield-halved"></i>
+
+      <span>
+        {{ UI.resolve }}
+      </span>
+
+    </a>
+
+
+    <!-- DASHBOARD -->
+
+    {% url 'dashboard' as dashboard_url %}
+
+    <a
+      href="{{ dashboard_url }}"
+      class="{% if request.path == dashboard_url %}active{% endif %}"
+    >
+
+      <i class="fa-solid fa-chart-line"></i>
+
+      <span>
+        {{ UI.intel }}
+      </span>
+
+    </a>
+
+
   </nav>
+
+
+  {% block extra_js %}{% endblock %}
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const currentPath =
+        window.location.pathname
+            .replace(/\/+$/, "") || "/";
+
+    const navLinks = document.querySelectorAll(
+        ".sidebar-nav a, .bottom-nav a"
+    );
+
+    navLinks.forEach(function (link) {
+
+        link.classList.remove("active");
+
+        const linkPath =
+            new URL(link.href, window.location.origin)
+                .pathname
+                .replace(/\/+$/, "") || "/";
+
+        let isActive = false;
+
+        /*
+         * Exact URL match
+         */
+        if (linkPath === currentPath) {
+            isActive = true;
+        }
+
+        /*
+         * Section-based matching
+         */
+        if (
+            linkPath !== "/" &&
+            currentPath.startsWith(linkPath + "/")
+        ) {
+            isActive = true;
+        }
+
+        if (isActive) {
+            link.classList.add("active");
+        }
+
+    });
+
+});
+</script>
 </body>
+
 </html>
+
+
+
+
+

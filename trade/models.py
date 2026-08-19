@@ -28,6 +28,7 @@ class TradeOffer(TimeStampedModel):
         COMPLETED = "completed", "Completed"
         CLOSED = "closed", "Closed"
 
+    image = models.ImageField(upload_to="trade_products/", blank=True, null=True)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="trade_offers")
     community = models.ForeignKey(Community, on_delete=models.SET_NULL, null=True, blank=True, related_name="trade_offers")
     commodity = models.CharField(max_length=140)

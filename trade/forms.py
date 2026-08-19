@@ -8,13 +8,29 @@ from .models import TradeConnection, TradeOffer
 class TradeOfferForm(forms.ModelForm):
     class Meta:
         model = TradeOffer
-        fields = ("commodity", "category", "quantity", "offer_type", "community", "location", "contact_method", "description")
-        widgets = {"description": forms.Textarea(attrs={"rows": 4})}
+        fields = ("commodity", "image", "category", "quantity", "offer_type", "community", "location", "contact_method", "description")
+        widgets = {
+            "description": forms.Textarea(attrs={"rows": 4}),
+            "image": forms.ClearableFileInput(attrs={"accept": "image/*"}),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs["class"] = "input"
+
+    def clean_image(self):
+
+        image = self.cleaned_data.get("image")
+
+        if image:
+
+            max_size = 5 * 1024 * 1024
+
+            if image.size > max_size:
+                raise forms.ValidationError("Image size must not exceed 5 MB.")
+
+        return image
 
 
 class TradeConnectionForm(forms.ModelForm):
