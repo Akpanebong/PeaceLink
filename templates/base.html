@@ -7,6 +7,7 @@
   <title>{% block title %}{{ APP_NAME }}{% endblock %}</title>
   <link rel="stylesheet" href="{% static 'css/peacelink.css' %}">
   <link rel="icon" href="{% static 'images/peacelink.png' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
 </head>
 <body>
@@ -31,6 +32,9 @@
       <a href="{% url 'agreement_list' %}"><span class="nav-icon">&#10003;</span><span class="nav-text">{{ UI.agreements }}</span></a>
       <a href="{% url 'conflict_list' %}"><span class="nav-icon">?</span><span class="nav-text">{{ UI.resolve }}</span></a>
       <a href="{% url 'dashboard' %}"><span class="nav-icon">&#9638;</span><span class="nav-text">{{ UI.dashboard }}</span></a>
+      {% if user.is_superuser %}
+      <a href="{% url 'community_create' %}"><i class="fa fa-home"></i> <span class="nav-text">Community</span></a>
+      {% endif %}
       {% if user.is_authenticated %}
         <a href="{% url 'profile' %}"><span class="nav-icon">&#9679;</span><span class="nav-text">{{ UI.profile }}</span></a>
         <a href="{% url 'logout' %}"><span class="nav-icon">&larr;</span><span class="nav-text">{{ UI.sign_out }} {{ user.get_full_name|default:user.username }}</span></a>

@@ -1,17 +1,19 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Count, Q
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from agreements.models import Agreement
 from conflicts.models import ConflictCase
 from corridors.models import CorridorNotice
 from trade.models import TradeOffer
-from .models import Activity, Alert, Community
+from .models import Activity, Alert, Community, Stakeholder
 from datetime import timedelta
 from django.utils import timezone
-from django.contrib.auth import get_user_model
-from django.db.models import Q
-from django.shortcuts import render
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
+from django.views.generic import CreateView
+from .forms import CommunityForm, StakeholderForm
 
 
 def home(request):
@@ -526,3 +528,54 @@ def dashboard(request):
         context,
     )
 
+
+class CommunityCreateView(LoginRequiredMixin, CreateView):
+    model = Community
+    form_class = CommunityForm
+    template_name = "core/community_form.html"
+    success_url = reverse_lazy("home")
+    login_url = "login"
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated and not request.user.is_community_node:
+            messages.error(
+                request,
+                "Only authorized community nodes can register communities."
+            )
+            return redirect("conflict_report")
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        messages.success(
+            self.request,
+            f'Community "{form.instance.name}" was created successfully.'
+        )
+
+        return super().form_valid(form)
+
+
+class StakeholderCreateView(LoginRequiredMixin, CreateView):
+    model = Stakeholder
+    form_class = StakeholderForm
+    template_name = "core/stakeholder_form.html"
+    success_url = reverse_lazy("stakeholder_list")
+    login_url = "login"
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated and not request.user.is_community_node:
+            messages.error(
+                request,
+                "Only authorized community nodes can register stakeholders."
+            )
+            return redirect("conflict_report")
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        messages.success(
+            self.request,
+            f'Stakeholder "{form.instance.name}" was created successfully.'
+        )
+
+        return super().form_valid(form)

@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
-
+from django.core.exceptions import ValidationError
 from core.models import Community, TimeStampedModel
 
 
@@ -10,12 +10,28 @@ class CorridorRoute(TimeStampedModel):
     origin = models.ForeignKey(Community, on_delete=models.CASCADE, related_name="origin_routes")
     destination = models.ForeignKey(Community, on_delete=models.CASCADE, related_name="destination_routes")
     description = models.TextField()
-    risk_level = models.CharField(
-        max_length=16,
-        choices=(("low", "Low"), ("medium", "Medium"), ("high", "High")),
-        default="medium",
-    )
+    risk_level = models.CharField(max_length=16,
+                                  choices=(("low", "Low"), ("medium", "Medium"), ("high", "High")), default="medium",)
     active = models.BooleanField(default=True)
+
+
+    def clean(self):
+        super().clean()
+
+        if (
+                self.origin.name and
+                self.destination.name and
+                self.origin.name == self.destination.name
+        ):
+            raise ValidationError(
+                {
+                    "destination": (
+                        "The destination community must "
+                        "be different from the origin community."
+                    )
+                }
+            )
+
 
     class Meta:
         ordering = ("name",)

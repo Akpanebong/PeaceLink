@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import CorridorNotice, CorridorResponse
+from .models import CorridorNotice, CorridorResponse, CorridorRoute
 
 
 class CorridorNoticeForm(forms.ModelForm):
@@ -53,3 +53,60 @@ class CorridorNegotiationOutcomeForm(forms.ModelForm):
         if not value:
             raise forms.ValidationError("Enter the final response from the negotiation.")
         return value
+
+
+class CorridorRouteForm(forms.ModelForm):
+
+    class Meta:
+        model = CorridorRoute
+
+        fields = [
+            "name",
+            "origin",
+            "destination",
+            "description",
+            "risk_level",
+            "active",
+        ]
+
+        widgets = {
+            "name": forms.TextInput(
+                attrs={
+                    "placeholder": "Enter corridor route name"
+                }
+            ),
+
+            "description": forms.Textarea(
+                attrs={
+                    "placeholder": (
+                        "Describe the route, important locations, "
+                        "security concerns or other relevant information..."
+                    ),
+                    "rows": 5,
+                }
+            ),
+
+            "risk_level": forms.Select(
+                attrs={}
+            ),
+        }
+
+
+    def clean(self):
+
+        cleaned_data = super().clean()
+
+        origin = cleaned_data.get("origin")
+        destination = cleaned_data.get("destination")
+
+
+        if origin and destination:
+
+            if origin == destination:
+
+                raise forms.ValidationError(
+                    "The origin and destination communities cannot be the same."
+                )
+
+
+        return cleaned_data

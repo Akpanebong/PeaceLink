@@ -8,4 +8,5 @@ urlpatterns = [
     path("<int:pk>/", views.CorridorDetailView.as_view(), name="corridor_detail"),
     path("<int:pk>/respond/", views.respond, name="corridor_respond"),
     path("responses/<int:pk>/final/", views.update_negotiation_outcome, name="corridor_negotiation_outcome"),
+    path("corridors/create/", views.CorridorRouteCreateView.as_view(), name="corridor_route_create",),
 ]

@@ -43,11 +43,12 @@ class CaseListView(LoginRequiredMixin, ListView):
     login_url = "login"
 
     def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(request, "Conflict case management is private to community nodes.")
+            return redirect("conflict_report")
+
         if not request.user.is_community_node:
-            messages.error(
-                request,
-                "Conflict case management is private to community nodes."
-            )
+            messages.error(request, "Conflict case management is private to community nodes.")
             return redirect("conflict_report")
 
         return super().dispatch(request, *args, **kwargs)

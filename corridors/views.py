@@ -4,10 +4,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import CreateView, DetailView, ListView
 from core.models import Activity, Alert
-from .forms import CorridorNegotiationOutcomeForm, CorridorNoticeForm, CorridorResponseForm
+from .forms import CorridorNegotiationOutcomeForm, CorridorNoticeForm, CorridorResponseForm, CorridorRouteForm
 from .models import CorridorNotice, CorridorResponse, CorridorRoute
 from django.views.generic import ListView
 from django.db.models import Count, Q
+from django.contrib import messages
+from django.urls import reverse_lazy
 
 
 class CorridorListView(ListView):
@@ -122,3 +124,28 @@ def update_negotiation_outcome(request, pk):
             for error in form.errors.get("negotiation_outcome", []):
                 messages.error(request, error)
     return redirect(f"{notice.get_absolute_url()}#response-{response.pk}")
+
+
+class CorridorRouteCreateView(LoginRequiredMixin, CreateView):
+
+    model = CorridorRoute
+    form_class = CorridorRouteForm
+
+    template_name = "corridors/corridor_route_form.html"
+
+    success_url = reverse_lazy("corridor_create")
+
+    def dispatch(self,request, *args, **kwargs):
+        user = request.user
+        if not user.is_authenticated:
+
+            return super().dispatch(request,*args, **kwargs)
+
+        if not getattr(user, "is_community_node", False):
+            messages.error(request,"Only community nodes can manage corridor routes.")
+            return redirect("conflict_report")
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        messages.success(self.request, "Corridor route created successfully.")
+        return super().form_valid(form)

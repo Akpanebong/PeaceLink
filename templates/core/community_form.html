@@ -1,0 +1,1093 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<title>
+    {% if object %}
+        Edit Community
+    {% else %}
+        Register Community
+    {% endif %}
+</title>
+
+
+<style>
+
+    /* =========================================================
+       PEACELINK COMMUNITY FORM
+       ========================================================= */
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+
+        background:
+            radial-gradient(
+                circle at top right,
+                rgba(88, 39, 102, .12),
+                transparent 35%
+            ),
+            #17191d;
+
+        color: #d8d2c5;
+
+        font-family:
+            Inter,
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            sans-serif;
+    }
+
+
+    .peacelink-form-page {
+        width: 100%;
+        max-width: 900px;
+
+        margin: 0 auto;
+        padding: 0 0 45px;
+
+        color: #d8d2c5;
+    }
+
+
+    /* =========================================================
+       HEADER
+       ========================================================= */
+
+    .form-header {
+        position: relative;
+
+        overflow: hidden;
+
+        padding: 24px 28px;
+
+        background:
+            linear-gradient(
+                110deg,
+                #5b2479 0%,
+                #41486b 48%,
+                #087d6d 100%
+            );
+
+        border-radius: 0 0 20px 20px;
+
+        box-shadow:
+            0 10px 30px rgba(0,0,0,.22);
+    }
+
+
+    .form-header::after {
+        content: "";
+
+        position: absolute;
+
+        width: 190px;
+        height: 190px;
+
+        right: -70px;
+        top: -110px;
+
+        border-radius: 50%;
+
+        background: rgba(255,255,255,.04);
+    }
+
+
+    .form-header::before {
+        content: "";
+
+        position: absolute;
+
+        width: 120px;
+        height: 120px;
+
+        left: -50px;
+        bottom: -70px;
+
+        border-radius: 50%;
+
+        background: rgba(255,255,255,.025);
+    }
+
+
+    .form-header-content {
+        position: relative;
+        z-index: 2;
+    }
+
+
+    .form-kicker {
+        display: flex;
+        align-items: center;
+
+        gap: 8px;
+
+        margin-bottom: 8px;
+
+        color: #d1b94c;
+
+        font-size: .68rem;
+        font-weight: 900;
+
+        letter-spacing: .17em;
+        text-transform: uppercase;
+    }
+
+
+    .form-kicker i {
+        color: #e4b932;
+    }
+
+
+    .form-header h1 {
+        margin: 0;
+
+        color: #f1e9d9;
+
+        font-size: clamp(1.45rem, 4vw, 2rem);
+        font-weight: 900;
+    }
+
+
+    .form-header p {
+        max-width: 650px;
+
+        margin: 7px 0 0;
+
+        color: #aebaaa;
+
+        font-size: .78rem;
+        line-height: 1.55;
+    }
+
+
+    /* =========================================================
+       FORM PANEL
+       ========================================================= */
+
+    .form-panel {
+        overflow: hidden;
+
+        margin-top: 15px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #24242d,
+                #202127
+            );
+
+        border: 1px solid #49325a;
+
+        border-radius: 16px;
+
+        box-shadow:
+            0 10px 30px rgba(0,0,0,.20),
+            inset 0 1px 0 rgba(255,255,255,.015);
+    }
+
+
+    /* =========================================================
+       PANEL HEADER
+       ========================================================= */
+
+    .form-panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 15px;
+
+        padding: 18px 20px;
+
+        border-bottom: 1px solid #37333e;
+    }
+
+
+    .form-panel-heading {
+        display: flex;
+        align-items: center;
+
+        gap: 12px;
+    }
+
+
+    .form-panel-icon {
+        width: 39px;
+        height: 39px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border: 1px solid #693b74;
+
+        border-radius: 11px;
+
+        background: rgba(88, 39, 102, .25);
+
+        color: #d36ada;
+
+        font-size: .95rem;
+    }
+
+
+    .form-panel-header h2 {
+        margin: 0;
+
+        color: #ddd6c8;
+
+        font-size: .98rem;
+        font-weight: 900;
+    }
+
+
+    .form-panel-header p {
+        margin: 4px 0 0;
+
+        color: #6f8172;
+
+        font-size: .7rem;
+    }
+
+
+    /* =========================================================
+       FORM BODY
+       ========================================================= */
+
+    .form-body {
+        padding: 22px 20px;
+    }
+
+
+    /* =========================================================
+       FIELD
+       ========================================================= */
+
+    .peacelink-field {
+        margin-bottom: 18px;
+    }
+
+
+    .peacelink-field:last-child {
+        margin-bottom: 0;
+    }
+
+
+    .peacelink-field label {
+        display: block;
+
+        margin-bottom: 7px;
+
+        color: #92a192;
+
+        font-size: .7rem;
+        font-weight: 900;
+
+        letter-spacing: .02em;
+    }
+
+
+    .peacelink-field label .required {
+        margin-left: 3px;
+
+        color: #d86678;
+    }
+
+
+    /* =========================================================
+       INPUTS
+       ========================================================= */
+
+    .peacelink-field input:not([type="checkbox"]):not([type="radio"]),
+    .peacelink-field select,
+    .peacelink-field textarea {
+        width: 100%;
+
+        padding: 11px 12px;
+
+        color: #d5dbd2;
+
+        background: #181a1f;
+
+        border: 1px solid #45354d;
+
+        border-radius: 9px;
+
+        outline: none;
+
+        font-family: inherit;
+        font-size: .79rem;
+
+        transition:
+            border-color .2s ease,
+            box-shadow .2s ease,
+            background .2s ease;
+    }
+
+
+    .peacelink-field input:not([type="checkbox"]):not([type="radio"]):hover,
+    .peacelink-field select:hover,
+    .peacelink-field textarea:hover {
+        border-color: #5b4264;
+    }
+
+
+    .peacelink-field input:not([type="checkbox"]):not([type="radio"]):focus,
+    .peacelink-field select:focus,
+    .peacelink-field textarea:focus {
+        border-color: #865093;
+
+        background: #1a1c21;
+
+        box-shadow:
+            0 0 0 2px rgba(134,80,147,.12);
+    }
+
+
+    .peacelink-field select option {
+        background: #202127;
+        color: #d5dbd2;
+    }
+
+
+    /* =========================================================
+       CHECKBOX
+       ========================================================= */
+
+    .peacelink-field input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+
+        accent-color: #8a4d98;
+
+        cursor: pointer;
+    }
+
+
+    .checkbox-field {
+        display: flex;
+        align-items: center;
+
+        gap: 10px;
+
+        padding-top: 30px;
+    }
+
+
+    .checkbox-field label {
+        margin: 0;
+        cursor: pointer;
+    }
+
+
+    /* =========================================================
+       HELP TEXT
+       ========================================================= */
+
+    .helptext {
+        margin-top: 6px;
+
+        color: #657669;
+
+        font-size: .67rem;
+        line-height: 1.5;
+    }
+
+
+    /* =========================================================
+       ERRORS
+       ========================================================= */
+
+    .peacelink-field .errorlist {
+        margin: 6px 0 0;
+        padding: 0;
+
+        list-style: none;
+
+        color: #ff6678;
+
+        font-size: .68rem;
+        font-weight: 700;
+    }
+
+
+    .peacelink-field:has(.errorlist)
+    input:not([type="checkbox"]),
+    .peacelink-field:has(.errorlist)
+    select {
+        border-color: #963a4e;
+    }
+
+
+    .non-field-errors {
+        margin-bottom: 18px;
+
+        padding: 11px 13px;
+
+        color: #ff7585;
+
+        background: rgba(117, 24, 44, .20);
+
+        border: 1px solid #713243;
+
+        border-radius: 9px;
+
+        font-size: .72rem;
+    }
+
+
+    /* =========================================================
+       TWO COLUMN FORM
+       ========================================================= */
+
+    .form-fields-grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 0 18px;
+    }
+
+
+    .full-width {
+        grid-column: 1 / -1;
+    }
+
+
+    /* =========================================================
+       FORM DIVIDER
+       ========================================================= */
+
+    .form-divider {
+        height: 1px;
+
+        margin: 22px 0;
+
+        background:
+            linear-gradient(
+                90deg,
+                transparent,
+                #4a394f,
+                transparent
+            );
+    }
+
+
+    /* =========================================================
+       FORM FOOTER
+       ========================================================= */
+
+    .form-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 14px;
+
+        padding: 16px 20px;
+
+        background: rgba(10, 25, 18, .25);
+
+        border-top: 1px solid #35323c;
+    }
+
+
+    .form-footer-note {
+        color: #657669;
+
+        font-size: .67rem;
+    }
+
+
+    .form-footer-actions {
+        display: flex;
+        align-items: center;
+
+        gap: 9px;
+    }
+
+
+    /* =========================================================
+       BUTTONS
+       ========================================================= */
+
+    .form-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 8px;
+
+        min-height: 38px;
+
+        padding: 9px 15px;
+
+        border-radius: 9px;
+
+        font-family: inherit;
+        font-size: .74rem;
+        font-weight: 900;
+
+        text-decoration: none;
+
+        cursor: pointer;
+
+        transition:
+            transform .18s ease,
+            box-shadow .18s ease,
+            border-color .18s ease;
+    }
+
+
+    .form-button:hover {
+        transform: translateY(-1px);
+    }
+
+
+    .form-button.primary {
+        color: #f0e8d9;
+
+        background:
+            linear-gradient(
+                100deg,
+                #67367a,
+                #82418c
+            );
+
+        border: 1px solid #8a4b96;
+
+        box-shadow:
+            0 7px 18px rgba(103,54,122,.20);
+    }
+
+
+    .form-button.secondary {
+        color: #9aab9d;
+
+        background: #25282b;
+
+        border: 1px solid #3e4941;
+    }
+
+
+    /* =========================================================
+       MOBILE
+       ========================================================= */
+
+    @media (max-width: 700px) {
+
+        .form-header {
+            padding: 21px 22px;
+        }
+
+
+        .form-panel-header {
+            padding: 16px;
+        }
+
+
+        .form-body {
+            padding: 19px 16px;
+        }
+
+
+        .form-fields-grid {
+            grid-template-columns: 1fr;
+        }
+
+
+        .full-width {
+            grid-column: auto;
+        }
+
+
+        .form-footer {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+
+        .form-footer-actions {
+            width: 100%;
+        }
+
+
+        .form-button {
+            flex: 1;
+        }
+
+
+        .checkbox-field {
+            padding-top: 0;
+        }
+    }
+
+</style>
+
+
+<div class="peacelink-form-page">
+
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <header class="form-header">
+
+        <div class="form-header-content">
+
+            <div class="form-kicker">
+
+                <i class="fa-solid fa-people-group"></i>
+
+                PeaceLink · Community Network
+
+            </div>
+
+
+            <h1>
+
+                {% if object %}
+                    Edit Community
+                {% else %}
+                    Register Community
+                {% endif %}
+
+            </h1>
+
+
+            <p>
+
+                {% if object %}
+
+                    Update community information, location details,
+                    and the current community trust status.
+
+                {% else %}
+
+                    Register a community within the PeaceLink network
+                    to support dialogue, conflict prevention,
+                    and peacebuilding activities.
+
+                {% endif %}
+
+            </p>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         FORM PANEL
+         ===================================================== -->
+
+    <section class="form-panel">
+
+
+        <!-- PANEL HEADER -->
+
+        <div class="form-panel-header">
+
+            <div class="form-panel-heading">
+
+                <div class="form-panel-icon">
+
+                    <i class="fa-solid fa-people-roof"></i>
+
+                </div>
+
+
+                <div>
+
+                    <h2>
+                        Community information
+                    </h2>
+
+                    <p>
+                        Provide the community identity, administrative
+                        location, geographic coordinates and status.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             FORM
+             ================================================= -->
+
+        <form method="post">
+
+            {% csrf_token %}
+
+
+            <div class="form-body">
+
+
+                {% if form.non_field_errors %}
+
+                    <div class="non-field-errors">
+
+                        {{ form.non_field_errors }}
+
+                    </div>
+
+                {% endif %}
+
+
+                <!-- =================================================
+                     BASIC COMMUNITY INFORMATION
+                     ================================================= -->
+
+                <div class="form-fields-grid">
+
+
+                    <div class="peacelink-field">
+
+                        {{ form.name.label_tag }}
+
+                        {{ form.name }}
+
+                        {{ form.name.errors }}
+
+                    </div>
+
+
+                    <div class="peacelink-field">
+
+                        {{ form.ethnic_group.label_tag }}
+
+                        {{ form.ethnic_group }}
+
+                        {{ form.ethnic_group.errors }}
+
+                    </div>
+
+
+                    <div class="peacelink-field">
+
+                        {{ form.county.label_tag }}
+
+                        {{ form.county }}
+
+                        {{ form.county.errors }}
+
+                    </div>
+
+
+                    <div class="peacelink-field">
+
+                        {{ form.payam.label_tag }}
+
+                        {{ form.payam }}
+
+                        {{ form.payam.errors }}
+
+                    </div>
+
+
+                    <div class="peacelink-field full-width">
+
+                        {{ form.boma.label_tag }}
+
+                        {{ form.boma }}
+
+                        {{ form.boma.errors }}
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-divider"></div>
+
+
+                <!-- =================================================
+                     LOCATION INFORMATION
+                     ================================================= -->
+
+                <div class="form-fields-grid">
+
+
+                    <div class="peacelink-field">
+
+                        {{ form.latitude.label_tag }}
+
+                        {{ form.latitude }}
+
+                        <div class="helptext">
+
+                            Optional GPS latitude for the community.
+
+                        </div>
+
+                        {{ form.latitude.errors }}
+
+                    </div>
+
+
+                    <div class="peacelink-field">
+
+                        {{ form.longitude.label_tag }}
+
+                        {{ form.longitude }}
+
+                        <div class="helptext">
+
+                            Optional GPS longitude for the community.
+
+                        </div>
+
+                        {{ form.longitude.errors }}
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-divider"></div>
+
+
+                <!-- =================================================
+                     TRUST AND STATUS
+                     ================================================= -->
+
+                <div class="form-fields-grid">
+
+
+                    <div class="peacelink-field">
+
+                        {{ form.trust_score.label_tag }}
+
+                        {{ form.trust_score }}
+
+                        <div class="helptext">
+
+                            Community trust score between 0 and 100.
+
+                        </div>
+
+                        {{ form.trust_score.errors }}
+
+                    </div>
+
+
+                    <div class="peacelink-field checkbox-field">
+
+                        {{ form.is_active }}
+
+                        {{ form.is_active.label_tag }}
+
+                        {{ form.is_active.errors }}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 FOOTER
+                 ================================================= -->
+
+            <div class="form-footer">
+
+
+                <div class="form-footer-note">
+
+                    <i class="fa-solid fa-shield-heart"></i>
+
+                    Community information supports PeaceLink
+                    conflict prevention and peacebuilding activities.
+
+                </div>
+
+
+                <div class="form-footer-actions">
+
+
+                    <a
+                        href="/"
+                        class="form-button secondary"
+                    >
+
+                        <i class="fa-solid fa-arrow-left"></i>
+
+                        Cancel
+
+                    </a>
+
+
+                    <button
+                        class="form-button primary"
+                        type="submit"
+                    >
+
+                        {% if object %}
+
+                            <i class="fa-solid fa-check"></i>
+
+                            Update Community
+
+                        {% else %}
+
+                            <i class="fa-solid fa-plus"></i>
+
+                            Register Community
+
+                        {% endif %}
+
+                    </button>
+
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </section>
+
+</div>
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const latitudeField =
+        document.getElementById("id_latitude");
+
+    const longitudeField =
+        document.getElementById("id_longitude");
+
+
+    if (!latitudeField || !longitudeField) {
+        return;
+    }
+
+
+    /*
+    ==========================================================
+    DO NOT REPLACE EXISTING COORDINATES
+    ==========================================================
+    */
+
+    if (
+        latitudeField.value.trim() !== "" &&
+        longitudeField.value.trim() !== ""
+    ) {
+        return;
+    }
+
+
+    /*
+    ==========================================================
+    CHECK BROWSER GPS SUPPORT
+    ==========================================================
+    */
+
+    if (!navigator.geolocation) {
+
+        console.warn(
+            "Geolocation is not supported by this browser."
+        );
+
+        return;
+    }
+
+
+    /*
+    ==========================================================
+    GET USER LOCATION
+    ==========================================================
+    */
+
+    navigator.geolocation.getCurrentPosition(
+
+        function (position) {
+
+            const latitude =
+                position.coords.latitude.toFixed(6);
+
+            const longitude =
+                position.coords.longitude.toFixed(6);
+
+
+            /*
+            Only populate empty fields.
+
+            This prevents overwriting coordinates that the
+            user has already entered manually.
+            */
+
+            if (latitudeField.value.trim() === "") {
+
+                latitudeField.value = latitude;
+
+            }
+
+
+            if (longitudeField.value.trim() === "") {
+
+                longitudeField.value = longitude;
+
+            }
+
+
+            /*
+            Trigger change events in case another JavaScript
+            component depends on these fields.
+            */
+
+            latitudeField.dispatchEvent(
+                new Event("change", {
+                    bubbles: true
+                })
+            );
+
+
+            longitudeField.dispatchEvent(
+                new Event("change", {
+                    bubbles: true
+                })
+            );
+
+        },
+
+
+        function (error) {
+
+            console.warn(
+                "Unable to automatically obtain location.",
+                error.message
+            );
+
+        },
+
+
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 300000
+        }
+
+    );
+
+});
+
+</script>
+{% endblock content %}

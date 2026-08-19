@@ -101,9 +101,24 @@
 }
 
 
+.form-header {
+    position: relative;
+}
+
 .form-header-content {
     position: relative;
     z-index: 2;
+}
+
+.form-header-top {
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 20px;
 }
 
 
@@ -768,8 +783,9 @@ textarea {
     <!-- =====================================================
          HEADER
          ===================================================== -->
+<header class="form-header">
 
-    <header class="form-header">
+    <div class="form-header-top">
 
         <div class="form-header-content">
 
@@ -777,7 +793,7 @@ textarea {
 
                 <i class="fa-solid fa-shield-halved"></i>
 
-                PeaceLink action
+                PeaceLink Action
 
             </div>
 
@@ -794,10 +810,23 @@ textarea {
 
         </div>
 
-    </header>
 
+        <a
+            class="btn btn-icon add-route-button"
+            href="{% url 'corridor_route_create' %}"
+        >
 
+            <i class="fa-solid fa-plus"></i>
 
+            Add Route
+
+        </a>
+
+    </div>
+
+</header>
+
+<br/>
 
 
     <!-- =====================================================
