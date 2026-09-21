@@ -108,11 +108,17 @@
     if (!localStorage.getItem("peacelink-install-dismissed") && installPrompt) installPrompt.hidden = false;
   });
   document.querySelector("[data-install-app]")?.addEventListener("click", async () => {
-    if (!deferredInstallPrompt) return;
-    deferredInstallPrompt.prompt();
-    await deferredInstallPrompt.userChoice;
-    deferredInstallPrompt = null;
-    if (installPrompt) installPrompt.hidden = true;
+    if (deferredInstallPrompt) {
+      deferredInstallPrompt.prompt();
+      await deferredInstallPrompt.userChoice;
+      deferredInstallPrompt = null;
+      if (installPrompt) installPrompt.hidden = true;
+      return;
+    }
+    const isApple = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    showToast(isApple
+      ? "To install PeaceLink: tap Share, then Add to Home Screen."
+      : "Use your browser menu and choose Install PeaceLink or Add to Home screen.");
   });
   document.querySelector("[data-dismiss-install]")?.addEventListener("click", () => {
     localStorage.setItem("peacelink-install-dismissed", "1");
@@ -120,5 +126,15 @@
   });
   window.addEventListener("appinstalled", () => { if (installPrompt) installPrompt.hidden = true; });
 
-  if ("serviceWorker" in navigator) navigator.serviceWorker.register("/service-worker.js", { scope: "/" }).catch(() => {});
+  if (!window.matchMedia("(display-mode: standalone)").matches && !localStorage.getItem("peacelink-install-dismissed")) {
+    window.setTimeout(() => { if (installPrompt) installPrompt.hidden = false; }, 1200);
+  }
+
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/service-worker.js", { scope: "/" })
+      .then(registration => navigator.serviceWorker.ready.then(() => {
+        registration.active?.postMessage({ type: "CACHE_URL", url: location.href });
+      }))
+      .catch(() => {});
+  }
 })();
