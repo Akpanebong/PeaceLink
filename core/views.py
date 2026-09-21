@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Count, Q
 from django.shortcuts import render, redirect
+from django.conf import settings
+from django.http import HttpResponse
 
 from agreements.models import Agreement
 from conflicts.models import ConflictCase
@@ -14,6 +16,18 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from .forms import CommunityForm, StakeholderForm
+
+
+def service_worker(request):
+    """Serve the worker at the site root so it can control the whole PWA."""
+    worker_path = settings.BASE_DIR / "static" / "sw.js"
+    response = HttpResponse(
+        worker_path.read_text(encoding="utf-8"),
+        content_type="application/javascript",
+    )
+    response["Service-Worker-Allowed"] = "/"
+    response["Cache-Control"] = "no-cache"
+    return response
 
 
 def home(request):

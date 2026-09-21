@@ -26,6 +26,13 @@
     href="{% static 'images/peacelink.png' %}"
   >
 
+  <link rel="manifest" href="{% static 'manifest.json' %}">
+  <meta name="theme-color" content="#0b7b6b">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="{% static 'images/peacelink.png' %}">
+
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
@@ -206,8 +213,6 @@
         </span>
 
       </a>
-
-
       <!-- TRADE -->
 
       {% url 'trade_list' as trade_url %}
@@ -310,7 +315,7 @@
 
       <!-- COMMUNITY ADMIN -->
 
-      {% if user.is_superuser %}
+      {% if user.is_superuser or user.role == 'node' %}
 
         {% url 'community_create' as community_create_url %}
 
@@ -450,6 +455,11 @@
     <!-- TOP RIGHT CONTROLS -->
 
     <div class="page-top">
+
+      <div class="connectivity-status" data-connectivity-status role="status" aria-live="polite">
+        <span class="connectivity-dot"></span>
+        <span data-connectivity-label>Online</span>
+      </div>
 
       {% if user.is_authenticated %}
 
@@ -720,6 +730,17 @@
 
   {% block extra_js %}{% endblock %}
 
+  <div class="install-prompt" data-install-prompt hidden>
+    <div class="install-prompt-copy">
+      <strong>Install PeaceLink</strong>
+      <span>Keep PeaceLink available from your home screen, even with a weak connection.</span>
+    </div>
+    <button class="btn primary" type="button" data-install-app>Install app</button>
+    <button class="install-dismiss" type="button" data-dismiss-install aria-label="Dismiss install prompt">&times;</button>
+  </div>
+
+  <div class="offline-toast" data-offline-toast hidden role="status" aria-live="polite"></div>
+
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -767,10 +788,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 </script>
+<script src="{% static 'js/offline.js' %}" defer></script>
 </body>
 
 </html>
-
 
 
 
