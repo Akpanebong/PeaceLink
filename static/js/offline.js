@@ -56,22 +56,32 @@
     let items;
     try { items = await readQueue(); } catch (_) { return; }
     let synced = 0;
+    let blocked = false;
     for (const item of items) {
       try {
         const response = await fetch(item.url, {
           method: "POST",
+          redirect: "manual",
           credentials: "same-origin",
           headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8", "X-Offline-Queue-ID": item.id },
           body: item.body
         });
-        if (!response.ok && response.status >= 500) break;
-        if (response.ok || (response.status >= 400 && response.status < 403)) {
+        // Django CreateViews and successful POST handlers redirect. A 200 is
+        // commonly an invalid form rendered again, so it must not be treated
+        // as a successful synchronization.
+        const redirected = response.type === "opaqueredirect" || (response.status >= 300 && response.status < 400);
+        const apiSuccess = response.status >= 201 && response.status < 300;
+        if (redirected || apiSuccess) {
           await removeQueued(item.id);
           synced += 1;
-        } else if (response.status === 401 || response.status === 403) break;
+        } else {
+          blocked = true;
+          break;
+        }
       } catch (_) { break; }
     }
     if (synced) showToast(`${synced} offline update${synced === 1 ? "" : "s"} synchronized.`);
+    if (blocked) showToast("An offline update could not be validated and is still queued. Please review it while online.");
   }
 
   function updateConnectivity() {
@@ -105,7 +115,7 @@
   window.addEventListener("beforeinstallprompt", (event) => {
     event.preventDefault();
     deferredInstallPrompt = event;
-    if (!localStorage.getItem("peacelink-install-dismissed") && installPrompt) installPrompt.hidden = false;
+    if (installPrompt) installPrompt.hidden = false;
   });
   document.querySelector("[data-install-app]")?.addEventListener("click", async () => {
     if (deferredInstallPrompt) {
@@ -118,15 +128,18 @@
     const isApple = /iphone|ipad|ipod/i.test(navigator.userAgent);
     showToast(isApple
       ? "To install PeaceLink: tap Share, then Add to Home Screen."
-      : "Use your browser menu and choose Install PeaceLink or Add to Home screen.");
+      : (window.isSecureContext
+        ? "Your browser has not enabled one-click installation. Open the browser menu and choose Install PeaceLink or Add to Home screen."
+        : "One-click installation requires HTTPS. Open PeaceLink over HTTPS, then choose Install PeaceLink from your browser menu."));
   });
-  document.querySelector("[data-dismiss-install]")?.addEventListener("click", () => {
-    localStorage.setItem("peacelink-install-dismissed", "1");
+  document.querySelector("[data-dismiss-install]")?.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
     if (installPrompt) installPrompt.hidden = true;
   });
   window.addEventListener("appinstalled", () => { if (installPrompt) installPrompt.hidden = true; });
 
-  if (!window.matchMedia("(display-mode: standalone)").matches && !localStorage.getItem("peacelink-install-dismissed")) {
+  if (!window.matchMedia("(display-mode: standalone)").matches) {
     window.setTimeout(() => { if (installPrompt) installPrompt.hidden = false; }, 1200);
   }
 
