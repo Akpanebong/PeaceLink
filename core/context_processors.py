@@ -1,14 +1,20 @@
-from core.translations import language_choices, ui_for
+class EnglishUI(dict):
+    """English labels used by the shared application templates."""
+    def __missing__(self, key):
+        return key.replace("_", " ").title()
 
 
 def peacelink_context(request):
-    active_language = getattr(request, "peacelink_language", "en")
     return {
-        "APP_NAME": "PeaceLink South Sudan",
+        "APP_NAME": "PeaceLink Uganda",
         "APP_TAGLINE": "Connecting Communities. Rebuilding Trust. Sustaining Peace.",
-        "ACTIVE_LANGUAGE": active_language,
-        "UI": ui_for(active_language),
-        "LANGUAGES": language_choices(),
+        "UI": EnglishUI({
+            "home": "Home", "trade": "Trade", "corridors": "Corridors",
+            "routes": "Routes", "agreements": "Agreements", "resolve": "Resolve",
+            "dashboard": "Dashboard", "intel": "Dashboard", "profile": "Profile",
+            "sign_in": "Sign in", "sign_out": "Sign out", "notifications": "Notifications",
+            "no_new_notifications": "No new notifications",
+        }),
     }
 
 

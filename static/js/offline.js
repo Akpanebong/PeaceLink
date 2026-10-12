@@ -98,7 +98,7 @@
     const form = event.target;
     if (!(form instanceof HTMLFormElement) || form.method.toLowerCase() !== "post" || form.enctype === "multipart/form-data") return;
     const action = new URL(form.action || location.href, location.href);
-    if (["/account/login/", "/account/logout/", "/account/language/"].includes(action.pathname)) return;
+    if (["/account/login/", "/account/logout/"].includes(action.pathname)) return;
     if (navigator.onLine) return;
     event.preventDefault();
     const body = new URLSearchParams(new FormData(form)).toString();

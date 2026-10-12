@@ -7,7 +7,7 @@ from .models import Profile
 @admin.register(Profile)
 class ProfileAdmin(UserAdmin):
     list_display = ("username", "email", "phone", "role", "community", "is_staff", "is_active")
-    list_filter = ("role", "preferred_language", "is_staff", "is_active")
+    list_filter = ("role", "is_staff", "is_active")
     search_fields = ("username", "email", "phone", "first_name", "last_name", "organization")
     fieldsets = UserAdmin.fieldsets + (
         (
@@ -19,7 +19,6 @@ class ProfileAdmin(UserAdmin):
                     "community",
                     "organization",
                     "designation",
-                    "preferred_language",
                     "trust_score",
                     "ussd_identifier",
                 )

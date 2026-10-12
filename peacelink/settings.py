@@ -45,7 +45,6 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "account.middleware.PreferredLanguageMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -86,7 +85,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 LANGUAGE_CODE = "en-us"
-TIME_ZONE = "Africa/Juba"
+TIME_ZONE = "Africa/Kampala"
 USE_I18N = True
 USE_TZ = True
 
@@ -120,18 +119,8 @@ AFRICASTALKING_API_KEY = os.environ.get("AFRICASTALKING_API_KEY", "")
 AFRICASTALKING_SENDER_ID = os.environ.get("AFRICASTALKING_SENDER_ID", "PeaceLink")
 
 
-PHONENUMBER_DEFAULT_REGION = "SS"
+PHONENUMBER_DEFAULT_REGION = "UG"
 
 PHONENUMBER_DEFAULT_FORMAT = "E164"
 
 PHONENUMBER_DB_FORMAT = "E164"
-
-AI_TRANSLATION_API_KEY = os.environ.get("OPENAI_API_KEY", "")
-AI_TRANSLATION_MODEL = os.environ.get("AI_TRANSLATION_MODEL", "gpt-4o-mini")
-AI_TRANSLATION_ENDPOINT = os.environ.get(
-    "AI_TRANSLATION_ENDPOINT",
-    "https://api.openai.com/v1/chat/completions",
-)
-AI_TRANSLATION_TIMEOUT = int(os.environ.get("AI_TRANSLATION_TIMEOUT", "12"))
-AI_TRANSLATION_BATCH_ITEMS = int(os.environ.get("AI_TRANSLATION_BATCH_ITEMS", "35"))
-AI_TRANSLATION_BATCH_CHARS = int(os.environ.get("AI_TRANSLATION_BATCH_CHARS", "6000"))

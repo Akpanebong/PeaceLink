@@ -4,10 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
-from django.utils import translation
 from django.views.generic import CreateView, UpdateView
 
-from core.translations import language_choices
 from .forms import ProfileForm, RegistrationForm
 
 
@@ -51,17 +49,3 @@ def logout_view(request):
     messages.success(request, "You have been signed out.")
     return redirect("login")
 
-
-def set_language_preference(request):
-    language = request.POST.get("language") or request.GET.get("language")
-    valid_languages = {value for value, _label in language_choices()}
-    if language in valid_languages:
-        request.session["peacelink_language"] = language
-        translation.activate("en")
-        if request.user.is_authenticated:
-            request.user.preferred_language = language
-            request.user.save(update_fields=["preferred_language"])
-        messages.success(request, "Language preference updated.")
-    else:
-        messages.error(request, "Select a supported language.")
-    return redirect(request.POST.get("next") or request.META.get("HTTP_REFERER") or "home")

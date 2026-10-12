@@ -1,28 +1,15 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.utils.translation import gettext_lazy as _
 
-from core.translations import language_choices
 from phonenumber_field.modelfields import PhoneNumberField
 
 
 class Profile(AbstractUser):
     class Role(models.TextChoices):
-        MEMBER = "member", _("Community member")
-        NODE = "node", _("Community node")
-        COORDINATOR = "coordinator", _("Coordinator")
-        PARTNER = "partner", _("Partner observer")
-
-    class PreferredLanguage(models.TextChoices):
-        ENGLISH = "en", _("English")
-        JUBA_ARABIC = "juba_arabic", _("Juba Arabic")
-        KISWAHILI = "sw", _("Kiswahili")
-        ARABIC = "ar", _("Arabic")
-        DINKA = "din", _("Dinka")
-        NUER = "nus", _("Nuer")
-        BARI = "bfa", _("Bari")
-        ZANDE = "zne", _("Zande")
-        SHILLUK = "shk", _("Shilluk")
+        MEMBER = "member", "Community member"
+        NODE = "node", "Community node"
+        COORDINATOR = "coordinator", "Coordinator"
+        PARTNER = "partner", "Partner observer"
 
     role = models.CharField(max_length=24, choices=Role.choices, default=Role.MEMBER, db_index=True)
     # Store complete international phone numbers using django-phonenumber-field
@@ -36,11 +23,6 @@ class Profile(AbstractUser):
     )
     organization = models.CharField(max_length=160, blank=True)
     designation = models.CharField(max_length=120, blank=True)
-    preferred_language = models.CharField(
-        max_length=24,
-        choices=language_choices,
-        default=PreferredLanguage.ENGLISH,
-    )
     trust_score = models.PositiveSmallIntegerField(default=60)
     ussd_identifier = models.CharField(max_length=32, blank=True)
 

@@ -11,7 +11,7 @@ from trade.models import TradeOffer
 
 
 class Command(BaseCommand):
-    help = "Seed PeaceLink with South Sudan demo data."
+    help = "Seed PeaceLink Uganda demo data."
 
     def handle(self, *args, **options):
         communities = {}
@@ -144,5 +144,5 @@ class Command(BaseCommand):
             )
 
         Alert.objects.get_or_create(title="Corridor notice pending", defaults={"message": str(notice), "level": "watch", "action_url": notice.get_absolute_url()})
-        Activity.objects.get_or_create(actor=node, verb="Demo data loaded", detail="PeaceLink South Sudan workspace ready", accent="teal")
+        Activity.objects.get_or_create(actor=node, verb="Demo data loaded", detail="PeaceLink Uganda workspace ready", accent="teal")
         self.stdout.write(self.style.SUCCESS("PeaceLink demo data loaded. Users: node/member, password: PeaceLink2026!"))

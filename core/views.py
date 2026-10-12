@@ -9,6 +9,7 @@ from conflicts.models import ConflictCase
 from corridors.models import CorridorNotice
 from trade.models import TradeOffer
 from .models import Activity, Alert, Community, Stakeholder
+from agreements.models import Agreement
 from datetime import timedelta
 from django.utils import timezone
 from django.contrib import messages
@@ -75,8 +76,7 @@ def home(request):
         "activities": activities,
 
         "trade_count": TradeOffer.objects.count(),
-
-        "corridor_count": CorridorNotice.objects.count(),
+        "agreement_count": Agreement.objects.count(),
 
         "resolved_count": (
             ConflictCase.objects

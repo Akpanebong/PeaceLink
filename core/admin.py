@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Activity, Alert, Community, Stakeholder, TranslationCache
+from .models import Activity, Alert, Community, Stakeholder
 
 
 @admin.register(Community)
@@ -28,10 +28,3 @@ class ActivityAdmin(admin.ModelAdmin):
     list_display = ("verb", "detail", "actor", "happened_at")
     list_filter = ("accent",)
 
-
-@admin.register(TranslationCache)
-class TranslationCacheAdmin(admin.ModelAdmin):
-    list_display = ("target_language", "source_language", "provider", "updated_at")
-    list_filter = ("target_language", "provider")
-    search_fields = ("source_text", "translated_text")
-    readonly_fields = ("source_hash", "created_at", "updated_at")

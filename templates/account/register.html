@@ -1266,27 +1266,6 @@ textarea::placeholder {
                         </div>
 
 
-                        <!-- Preferred language -->
-                        <div class="form-group">
-
-                            <label
-                                class="form-label"
-                                for="{{ form.preferred_language.id_for_label }}"
-                            >
-                                Preferred language
-                            </label>
-
-                            {{ form.preferred_language }}
-
-                            {% if form.preferred_language.errors %}
-                                <div class="field-error">
-                                    {{ form.preferred_language.errors }}
-                                </div>
-                            {% endif %}
-
-                        </div>
-
-
                         <!-- Organization -->
                         <div class="form-group full">
 
@@ -1712,7 +1691,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 name: "organization",
                 fields: [
                     "role",
-                    "preferred_language",
                     "organization",
                     "designation",
                     "ussd_identifier"

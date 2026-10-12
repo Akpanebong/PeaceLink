@@ -7,7 +7,6 @@ urlpatterns = [
     path("login/", views.PeaceLinkLoginView.as_view(), name="login"),
     path("register/", views.RegisterView.as_view(), name="register"),
     path("profile/", views.profile, name="profile"),
-    path("language/", views.set_language_preference, name="set_language_preference"),
     path("logout/", views.logout_view, name="logout"),
     path(
         "password/change/",

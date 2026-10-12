@@ -1,5 +1,4 @@
 from datetime import datetime
-import hashlib
 import uuid
 from django.conf import settings
 from django.db import models
@@ -113,27 +112,3 @@ class Activity(TimeStampedModel):
     def __str__(self):
         return f"{self.verb}: {self.detail}"
 
-
-class TranslationCache(TimeStampedModel):
-    source_language = models.CharField(max_length=24, default="en")
-    target_language = models.CharField(max_length=24, db_index=True)
-    source_hash = models.CharField(max_length=64, db_index=True)
-    source_text = models.TextField()
-    translated_text = models.TextField()
-    provider = models.CharField(max_length=40, default="openai")
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=("source_hash", "target_language"),
-                name="unique_translation_source_target",
-            )
-        ]
-        ordering = ("target_language", "source_hash")
-
-    def __str__(self):
-        return f"{self.source_language}->{self.target_language}: {self.source_text[:60]}"
-
-    @staticmethod
-    def hash_text(text):
-        return hashlib.sha256(text.encode("utf-8")).hexdigest()

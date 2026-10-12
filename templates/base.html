@@ -18,7 +18,7 @@
 
   <link
     rel="stylesheet"
-    href="{% static 'css/peacelink.css' %}"
+    href="{% static 'css/peacelink.css' %}?v=20261008-2"
   >
 
   <link
@@ -227,7 +227,7 @@
         </span>
 
         <span class="nav-text">
-          {{ UI.trade }}{% if '/trade/' in request.path %}active{% endif %}
+          {{ UI.trade }}
         </span>
 
       </a>
@@ -462,66 +462,6 @@
       </div>
 
       {% if user.is_authenticated %}
-
-
-        <!-- LANGUAGE -->
-
-        <details class="language-picker">
-
-          <summary aria-label="Language">
-
-            <span class="notification-icon">
-              <i class="fa-solid fa-language"></i>
-            </span>
-
-          </summary>
-
-
-          <form
-            class="language-menu"
-            method="post"
-            action="{% url 'set_language_preference' %}"
-          >
-
-            {% csrf_token %}
-
-            <input
-              type="hidden"
-              name="next"
-              value="{{ request.get_full_path }}"
-            >
-
-            <label
-              class="label"
-              for="id_language"
-            >
-              {{ UI.language }}
-            </label>
-
-
-            <select
-              class="input"
-              id="id_language"
-              name="language"
-              onchange="this.form.submit()"
-            >
-
-              {% for code,label in LANGUAGES %}
-
-                <option
-                  value="{{ code }}"
-                  {% if code == ACTIVE_LANGUAGE %}selected{% endif %}
-                >
-                  {{ label }}
-                </option>
-
-              {% endfor %}
-
-            </select>
-
-          </form>
-
-        </details>
 
 
         <!-- NOTIFICATIONS -->
@@ -795,6 +735,4 @@ document.addEventListener("DOMContentLoaded", function () {
 </body>
 
 </html>
-
-
 
